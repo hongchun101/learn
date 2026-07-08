@@ -1,0 +1,59 @@
+error[0m: the type 'Enum-MaybeOption<Int64>' should implement interface 'ToString' in the 'core' package
+  ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:50:38:
+   | 
+50 |     println("列表第二个元素: ${list.mySecond()}")
+   |                               ^ 
+   | 
+
+error[0m: the type 'Enum-MaybeOption<Int64>' should implement interface 'ToString' in the 'core' package
+  ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:51:35:
+   | 
+51 |     println("列表最后一个: ${list.myLast()}")
+   |                             ^ 
+   | 
+
+error[0m: 'toUpperAscii' is not a member of struct 'String'
+   ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:105:40:
+    | 
+105 |         let first = this[0].toString().toUpperAscii()
+    |                                        ^^^^^^^^^^^^ 
+    | 
+
+error[0m: 'substring' is not a member of struct 'String'
+   ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:106:29:
+    | 
+106 |         return first + this.substring(1)
+    |                             ^^^^^^^^^ 
+    | 
+
+error[0m: invalid binary operator '==' on type 'UInt8' and 'Rune'
+   ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:121:19:
+    | 
+121 |             if (c == r' ') {
+    |                   ^^ 
+    | 
+    # note: you may want to implement 'operator func ==(right: Rune)' for type 'UInt8'
+
+error[0m: undeclared identifier 'abs'
+   ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:189:28:
+    | 
+189 |             if ((newY - y).abs() < 0.0000001) { break }
+    |                            ^^^ 
+    | 
+
+error[0m: undeclared identifier 'sqrt'
+   ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:262:16:
+    | 
+262 |         return sqrt(x * x + y * y)
+    |                ^ 
+    | 
+
+error[0m: 'toString' is not found for generic type 'T' in its upper bounds
+   ==> D:\work\project\cangjie-learning\src\extensions\extensions.cj:323:30:
+    | 
+323 |         var result = this[0].toString()
+    |                              ^^^^^^^^ 
+    | 
+
+8 errors generated, 8 errors printed.
+Error: failed to compile package `cangjie_learning.extensions`, return code is 1

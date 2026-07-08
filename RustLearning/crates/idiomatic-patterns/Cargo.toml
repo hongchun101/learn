@@ -1,0 +1,13 @@
+[package]
+name = "idiomatic-patterns"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Patterns that showcase idiomatic Rust (RAII, lock-free structures, zero-copy parsing, etc.)."
+
+[lints]
+workspace = true
+
+[dependencies]
+winnow = { workspace = true }

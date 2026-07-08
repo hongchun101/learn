@@ -1,0 +1,15 @@
+[package]
+name = "ffi-bridge"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Demonstrates C ABI interop: extern \"C\", repr(C), #[no_mangle], callback handlers."
+
+[lints]
+workspace = true
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]

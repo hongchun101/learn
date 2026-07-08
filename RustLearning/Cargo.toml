@@ -1,0 +1,62 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/advanced-syntax",
+    "crates/idiomatic-patterns",
+    "crates/ffi-bridge",
+    "crates/parser-demo",
+    "crates/runtime",
+]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.75"
+authors = ["Rust Learning"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+unsafe_op_in_unsafe_fn = "warn"
+unreachable_pub = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.rustdoc]
+broken_intra_doc_links = "warn"
+private_intra_doc_links = "warn"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+cast_precision_loss = "allow"
+cast_possible_truncation = "allow"
+cast_possible_wrap = "allow"
+cast_lossless = "allow"
+cast_sign_loss = "allow"
+similar_names = "allow"
+struct_excessive_bools = "allow"
+inline_always = "allow"
+default_numeric_fallback = "allow"
+no_effect_under_debug_assertion = "allow"
+needless_pass_by_value = "allow"
+
+[workspace.dependencies]
+thiserror = "1"
+anyhow = "1"
+syn = { version = "2", features = ["full", "extra-traits"] }
+quote = "1"
+proc-macro2 = "1"
+winnow = "0.6"
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+debug = true

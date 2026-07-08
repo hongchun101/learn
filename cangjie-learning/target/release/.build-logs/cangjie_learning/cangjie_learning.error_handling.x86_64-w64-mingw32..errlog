@@ -1,0 +1,9 @@
+warning[0m: unused variable:'_cleanup'
+  ==> D:\work\project\cangjie-learning\src\error_handling\errors.cj:83:9:
+   | 
+83 |     let _cleanup = {
+   |         ^^^^^^^^ unused variable
+   | 
+   # note: this warning can be suppressed by setting the compiler option `-Woff unused`
+
+1 warning generated, 1 warning printed.

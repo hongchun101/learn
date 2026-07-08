@@ -1,0 +1,21 @@
+[package]
+name = "advanced-syntax"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Wide-coverage tour of advanced Rust language features."
+
+[lints]
+workspace = true
+
+[features]
+default = []
+serde = []
+fancy_debug = []
+
+[dependencies]
+thiserror = { workspace = true }
+syn = { workspace = true }
+quote = { workspace = true }
+proc-macro2 = { workspace = true }

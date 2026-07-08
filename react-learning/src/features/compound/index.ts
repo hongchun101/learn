@@ -1,0 +1,1 @@
+export { CompoundPage } from './CompoundPage';

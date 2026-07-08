@@ -1,0 +1,11 @@
+.button {
+  background: var(--color-bg-elev-2);
+  color: var(--color-fg);
+  border: 1px solid var(--color-accent);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+.button:hover {
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+}

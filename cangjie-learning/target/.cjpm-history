@@ -1,0 +1,1113 @@
+{
+  "resolves": [
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\basics",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.basics",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\concurrency",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.concurrency",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\enums",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.enums",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\functions",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.functions",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\interfaces_traits",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.interfaces_traits",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\lambdas",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.lambdas",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\macros",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.macros",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\operator_overloading",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.operator_overloading",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.core": []
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\pattern_matching",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.pattern_matching",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\structs_classes",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.structs_classes",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\advanced_types",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.advanced_types",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [
+        "cangjie_learning.enums"
+      ],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\collection_ops",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.collection_ops",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [
+        "cangjie_learning.enums"
+      ],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\error_handling",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.error_handling",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [
+        "cangjie_learning.enums"
+      ],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\extensions",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.extensions",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [
+        "cangjie_learning.enums"
+      ],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\generics",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.generics",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [
+        "cangjie_learning.enums"
+      ],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\cangjie-learning\\src",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning",
+      "isMacroPackage": false,
+      "output-type": "executable",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [
+        "cangjie_learning.advanced_types",
+        "cangjie_learning.basics",
+        "cangjie_learning.collection_ops",
+        "cangjie_learning.concurrency",
+        "cangjie_learning.enums",
+        "cangjie_learning.error_handling",
+        "cangjie_learning.extensions",
+        "cangjie_learning.functions",
+        "cangjie_learning.generics",
+        "cangjie_learning.interfaces_traits",
+        "cangjie_learning.lambdas",
+        "cangjie_learning.operator_overloading",
+        "cangjie_learning.pattern_matching",
+        "cangjie_learning.structs_classes"
+      ],
+      "std-requires": [
+        {
+          "std.core": []
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    }
+  ],
+  "binDeps": {},
+  "crossBinDeps": {}
+}

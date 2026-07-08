@@ -1,0 +1,51 @@
+warning[0m: unused import 'std.collection.*'
+ ==> D:\work\project\cangjie-learning\src\basics\basics.cj:8:1:
+  | 
+8 | import std.collection.*
+  | ^^^^^^^^^^^^^^^^^^^^^^^ unused import
+  | 
+  # note: this warning can be suppressed by setting the compiler option `-Woff unused`
+
+warning[0m: unused variable:'inferredInt'
+  ==> D:\work\project\cangjie-learning\src\basics\basics.cj:32:9:
+   | 
+32 |     let inferredInt = 100
+   |         ^^^^^^^^^^^ unused variable
+   | 
+   # note: this warning can be suppressed by setting the compiler option `-Woff unused`
+
+warning[0m: unreachable block in 'if' expression
+  ==> D:\work\project\cangjie-learning\src\basics\basics.cj:59:12:
+   | 
+59 |       } else if (intVal < 0) {
+   |  ____________^
+60 | |         "负数"
+   | | ...
+63 | |     }
+   | |_____^ unreachable block in 'if' expression
+   | 
+   # note: this warning can be suppressed by setting the compiler option `-Woff unused`
+
+warning[0m: unreachable block in 'if' expression
+  ==> D:\work\project\cangjie-learning\src\basics\basics.cj:59:28:
+   | 
+59 |       } else if (intVal < 0) {
+   |  ____________________________^
+60 | |         "负数"
+61 | |     } else {
+   | |_____^ unreachable block in 'if' expression
+   | 
+   # note: this warning can be suppressed by setting the compiler option `-Woff unused`
+
+warning[0m: unreachable block in 'if' expression
+  ==> D:\work\project\cangjie-learning\src\basics\basics.cj:61:12:
+   | 
+61 |       } else {
+   |  ____________^
+62 | |         "零"
+63 | |     }
+   | |_____^ unreachable block in 'if' expression
+   | 
+   # note: this warning can be suppressed by setting the compiler option `-Woff unused`
+
+5 warnings generated, 5 warnings printed.

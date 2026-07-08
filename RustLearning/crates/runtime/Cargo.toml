@@ -1,0 +1,12 @@
+[package]
+name = "runtime"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Minimal hand-rolled executor and Waker playground to demystify Pin, Future, and polling."
+
+[lints]
+workspace = true
+
+[dependencies]

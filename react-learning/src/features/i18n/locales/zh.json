@@ -1,0 +1,28 @@
+{
+  "app": {
+    "title": "React 学习",
+    "subtitle": "React 高级概念的全面巡礼"
+  },
+  "nav": {
+    "hooks": "Hooks",
+    "performance": "性能",
+    "patterns": "模式",
+    "routing": "路由",
+    "forms": "表单",
+    "state": "状态",
+    "styling": "样式",
+    "i18n": "国际化",
+    "animation": "动画",
+    "a11y": "可访问性",
+    "error": "错误边界",
+    "polymorphic": "多态",
+    "compound": "组合",
+    "virtualized": "虚拟列表"
+  },
+  "greeting": "你好,{{name}}!",
+  "cart": {
+    "empty": "购物车是空的。",
+    "items_one": "{{count}} 件商品",
+    "items_other": "{{count}} 件商品"
+  }
+}

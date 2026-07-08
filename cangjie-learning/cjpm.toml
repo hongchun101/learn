@@ -1,0 +1,26 @@
+[package]
+name = "cangjie_learning"
+version = "1.0.0"
+description = "Cangjie 高级语法学习项目 - 覆盖仓颉语言全部核心与高级语法特性"
+authors = ["Cangjie Learner"]
+license = "MIT"
+cjc-version = "1.0.0"
+output-type = "executable"
+
+[dependencies]
+
+[features]
+default = []
+
+[scripts]
+test = "cjpm test"
+run = "cjpm run"
+
+[profile.dev]
+opt-level = "none"
+debug = true
+
+[profile.release]
+opt-level = "O2"
+debug = false
+lto = true
