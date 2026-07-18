@@ -1,0 +1,35 @@
+# Stack / Cabal build artefacts
+.stack-work/
+dist/
+dist-newbuild/
+*.cabal.cache
+.ghc.environment.*
+
+# GHC profiling / events
+*.hi
+*.o
+*.p_o
+*.dyn_hi
+*.dyn_o
+*.p_hi
+*.prof
+*.aux
+*.hp
+*.ps
+*.eventlog
+
+# Runtime
+*.rts-bin
+haskell-learning-demo.exe
+haskell-learning-demo
+haskell-learning-test.exe
+haskell-learning-test
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

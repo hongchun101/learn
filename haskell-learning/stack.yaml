@@ -1,0 +1,21 @@
+# Haskell Learning Curriculum — stack build configuration.
+#
+# LTS 22.43 ships GHC 9.6.6 and a mature shape of:
+#   text, containers, mtl, transformers, bytestring, parsec, async, stm,
+#   tasty, hspec, QuickCheck, lens, aeson...
+#
+# Stick with the LTS unless you specifically want GHC 9.8/9.10 features.
+resolver: lts-22.43
+
+# Default flags tuned for a learning project: keep build times low, get clear
+# warnings so beginners learn idiomatic usage.
+ghc-options:
+  "$everything": -Wall
+
+# Project layout: the library modules live in src/, the executable in src/Main.hs
+# and the test-suite in tests/Test.hs. Keep this aligned with `package.yaml`.
+packages:
+  - .
+
+# Allow benchmarks / extra dirs even if empty.
+extra-package-dbs: []

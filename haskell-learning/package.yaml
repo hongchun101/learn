@@ -1,0 +1,106 @@
+name:                haskell-learning
+version:             0.1.0.0
+synopsis:            A from-zero-to-expert Haskell learning curriculum
+description:         From GHC installation and basic syntax to type families, GADTs,
+                     STM, FFI, and Template Haskell. Each module ships runnable
+                     examples and tests.
+license:             MIT
+author:              hongchun
+maintainer:          1251341510@qq.com
+category:            Education
+build-type:          Simple
+
+extra-source-files:
+  - README.md
+  - docs/cangjie_for_haskellers.md
+
+# Default to LTS 22.x — stable GHC 9.6.6 with the libraries we want.
+# Bump or pin differently if your toolchain diverges.
+resolver: lts-22.43
+
+library
+  source-dirs: src
+
+  ghc-options:
+    - -Wall
+    - -Wno-name-shadowing
+    - -fwarn-incomplete-patterns
+  # -fwarn-incomplete-patterns catches `case` heads / `let` equations.
+  # -fno-warn-unused-do-bind for IO tutorials that stage code.
+  build-depends:
+    - base >= 4.14 && < 5
+    - text
+    - containers
+    - mtl
+    - transformers
+    - bytestring
+    - array
+
+  exposed-modules:
+    - Basics
+    - ListsStrings
+    - HigherOrder
+    - TypesClasses
+    - MonoidsFoldable
+    - FunctorsApplicatives
+    - MonadsTransformers
+    - IOChapter
+    - Parsing
+    - Concurrency
+    - Advanced
+    - Expert
+
+  default-extensions:
+    - ScopedTypeVariables
+    - BangPatterns
+    - OverloadedStrings
+    - TypeFamilies
+    - GADTs
+    - RankNTypes
+    - ExistentialQuantification
+    - TypeOperators
+    - FlexibleContexts
+
+tests:
+  haskell-learning-test
+    main:                Test.hs
+    source-dirs:         tests
+    ghc-options:
+      - -Wall
+
+    dependencies:
+      - haskell-learning
+      - base >= 4.14 && < 5
+      - text
+      - containers
+      - mtl
+      - transformers
+      - bytestring
+      - array
+
+      - tasty
+      - tasty-hunit
+      - tasty-quickcheck
+      - QuickCheck
+
+    default-extensions:
+      - ScopedTypeVariables
+
+executables:
+  haskell-learning-demo
+    main:                Main.hs
+    source-dirs:         src
+    ghc-options:
+      - -Wall
+      - -threaded
+      - -rtsopts
+
+    dependencies:
+      - haskell-learning
+      - base >= 4.14 && < 5
+      - text
+      - containers
+      - mtl
+      - transformers
+      - bytestring
+      - array
