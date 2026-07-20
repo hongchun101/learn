@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "db-engine-learning"
+version = "0.1.0"
+description = "From-0-to-expert curriculum on database engine internals"
+requires-python = ">=3.11"
+license = {text = "BSD-3-Clause"}
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-timeout>=2.3",
+    "mypy>=1.10",
+    "ruff>=0.5",
+    "hypothesis>=6.100",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --tb=short"
+markers = [
+    "module01: storage engine chapter",
+    "module02: WAL/recovery chapter",
+    "module03: MVCC chapter",
+    "module04: parser chapter",
+    "module05: logical planner chapter",
+    "module06: volcano executor chapter",
+    "module07: joins chapter",
+    "module08: CBO chapter",
+    "module09: indexes chapter",
+    "module10: vectorized chapter",
+    "module11: parallel chapter",
+    "module12: distributed chapter",
+    "module13: columnar chapter",
+    "module14: OLAP chapter",
+    "module15: codegen chapter",
+    "module16: observability chapter",
+    "module17: wire protocol chapter",
+    "module18: capstone chapter",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "PL", "RUF"]
+ignore = ["PLR0913", "PLR2004", "B008"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src/db_engine", "tests"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_decorators = false
