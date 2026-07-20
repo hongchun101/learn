@@ -1,0 +1,39 @@
+{
+  "name": "blockchain-learning",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A zero-to-expert blockchain curriculum: cryptography, consensus, EVM, smart contracts, L2, MEV, and cross-chain.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint src tests",
+    "format": "prettier --write src tests",
+    "format:check": "prettier --check src tests",
+    "demo": "tsx scripts/run-all-demos.ts"
+  },
+  "dependencies": {
+    "@noble/curves": "1.7.0",
+    "@noble/hashes": "1.6.1",
+    "@scure/base": "1.2.2",
+    "@scure/bip32": "1.6.0",
+    "@scure/bip39": "1.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@typescript-eslint/eslint-plugin": "8.18.1",
+    "@typescript-eslint/parser": "8.18.1",
+    "@vitest/coverage-v8": "2.1.8",
+    "eslint": "9.17.0",
+    "prettier": "3.4.2",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}
