@@ -1,0 +1,4 @@
+-- Exercise 13 — Functions and triggers
+-- Q1: Write a SECURITY DEFINER function add_credit() that explicitly fixes search_path.
+-- Q2: Write a trigger that on UPDATE fills a 'updated_at' column.
+-- Q3: Write a PL/pgSQL function debitable with EXCEPTION handling.

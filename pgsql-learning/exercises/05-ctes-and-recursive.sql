@@ -1,0 +1,4 @@
+-- Exercise 05 — CTEs and Recursive
+-- Q1: For sales(id, amt, day), find the running total per day using a CTE.
+-- Q2: Walk a tree employees(id, manager_id) and emit depth.
+-- Q3: Detect a cycle in the manager chain and break it (filter out cycle rows).

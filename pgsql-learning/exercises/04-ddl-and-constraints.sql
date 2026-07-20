@@ -1,0 +1,5 @@
+-- Exercise 04 — DDL and Constraints
+-- Q1: Create a table 'e' with an IDENTITY primary key, a NOT NULL name, and a CHECK that
+--     ensures 'value' is positive.
+-- Q2: Add an FK from e.tag_id to tags(id); use NOT VALID + VALIDATE.
+-- Q3: Add a row-level CHECK that ensures e.status in ('ok','review','reject').

@@ -1,0 +1,4 @@
+-- Exercise 20 — Replication
+-- Q1: List repl state via pg_stat_replication on primary.
+-- Q2: Build a publication on a table and subscribe on the replica.
+-- Q3: Promote a replica; show pg_last_wal_replay_lsn on the new primary.

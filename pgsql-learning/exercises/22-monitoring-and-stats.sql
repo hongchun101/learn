@@ -1,0 +1,4 @@
+-- Exercise 22 — Monitoring
+-- Q1: Capture a snapshot row from pg_stat_activity.
+-- Q2: Run a slow query, capture pg_stat_statements.
+-- Q3: Identify per-table I/O pattern; pick a table with high seq_scan but few rows.

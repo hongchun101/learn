@@ -1,0 +1,4 @@
+-- Exercise 18 — Planner and catalogs
+-- Q1: List the top 10 tables by pg_total_relation_size in pg_class.
+-- Q2: Show pg_stats rows for one of your tables; identify n_distinct values.
+-- Q3: Add extended statistics for two columns; ANALYZE and re-EXPLAIN.

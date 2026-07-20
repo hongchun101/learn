@@ -1,0 +1,8 @@
+graph TD
+  client[client app] --> pgBouncer[(pgBouncer)]
+  pgBouncer --> primary[(primary)]
+  pgBouncer --> replica[(replica 1)]
+  primary -. WAL .-> replica
+  primary --> wal_archive[(WAL archive)]
+  wal_archive --> baseBackup[(base backups)]
+  primary -. logical .-> logicalRep[(logical publication)]

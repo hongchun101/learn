@@ -1,0 +1,47 @@
+name: verify
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      primary:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: learning
+        ports: [ "5432:5432" ]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      replica:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: learning
+        ports: [ "5433:5432" ]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run module demos
+        env:
+          PGPASSWORD: postgres
+          PRIMARY_HOST: localhost
+          PRIMARY_PORT: 5432
+        run: |
+          chmod +x scripts/verify-modules.sh
+          ./scripts/verify-modules.sh
+      - name: Run capstone
+        env:
+          PGPASSWORD: postgres
+        run: |
+          chmod +x scripts/verify-capstone.sh
+          ./scripts/verify-capstone.sh

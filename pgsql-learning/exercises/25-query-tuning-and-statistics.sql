@@ -1,0 +1,4 @@
+-- Exercise 25 — Tuning
+-- Q1: Capture EXPLAIN (ANALYZE, BUFFERS) of a slow query; fix via index.
+-- Q2: Show how n_distinct changes after ANALYZE on a stale table.
+-- Q3: Decide whether a partial index is the right fix for a hot query.

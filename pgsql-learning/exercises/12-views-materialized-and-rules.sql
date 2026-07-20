@@ -1,0 +1,4 @@
+-- Exercise 12 — Views
+-- Q1: Write an updatable view over orders with WITH CHECK OPTION.
+-- Q2: Materialise a per-day total and refresh concurrently.
+-- Q3: Write a rule that, on INSERT into orders, also inserts an audit row.

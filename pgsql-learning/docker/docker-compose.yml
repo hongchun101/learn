@@ -1,0 +1,123 @@
+# PostgreSQL learning stack
+# - primary: writes, repl source
+# - replica: streaming hot standby
+# - pgadmin (optional)
+#
+# Usage:
+#   docker compose -f docker/docker-compose.yml up -d
+#   docker compose -f docker/docker-compose.yml exec primary psql -U postgres
+#
+# Endpoints:
+#   primary: localhost:5432 (postgres / postgres)
+#   replica: localhost:5433 (postgres / postgres)
+#   pgadmin: http://localhost:5050 (admin@local / admin)
+#
+version: "3.9"
+
+services:
+  primary:
+    image: postgres:16-alpine
+    container_name: pgsql_primary
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: learning
+      # wal_level = replica (default), but we expose settings used in modules
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=replica"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "wal_keep_size=256MB"
+      - "-c"
+      - "shared_buffers=512MB"
+      - "-c"
+      - "effective_cache_size=2GB"
+      - "-c"
+      - "work_mem=32MB"
+      - "-c"
+      - "maintenance_work_mem=256MB"
+      - "-c"
+      - "log_min_duration_statement=300ms"
+      - "-c"
+      - "log_lock_waits=on"
+      - "-c"
+      - "log_connections=on"
+      - "-c"
+      - "log_disconnections=on"
+      - "-c"
+      - "auto_explain.log_min_duration=500ms"
+      - "-c"
+      - "auto_explain.log_analyze=on"
+      - "-c"
+      - "auto_explain.log_buffers=on"
+      - "-c"
+      - "auto_explain.log_format=json"
+      - "-c"
+      - "track_activities=on"
+      - "-c"
+      - "track_io_timing=on"
+      - "-c"
+      - "track_counts=on"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../:/workspace:ro
+      - primary_data:/var/lib/postgresql/data
+      - ../sql/00-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d learning"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  replica:
+    image: postgres:16-alpine
+    container_name: pgsql_replica
+    depends_on:
+      primary:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: learning
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=replica"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "hot_standby=on"
+    ports:
+      - "5433:5432"
+    volumes:
+      - ../:/workspace:ro
+      - replica_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d learning"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgsql_pgadmin
+    depends_on:
+      - primary
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    profiles: ["ui"]
+
+volumes:
+  primary_data:
+  replica_data:

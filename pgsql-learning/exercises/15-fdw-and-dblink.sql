@@ -1,0 +1,4 @@
+-- Exercise 15 — FDW
+-- Q1: Build a file_fdw that reads your CSV.
+-- Q2: Declare a postgres_fdw server pointing at the replica.
+-- Q3: Push down a join between two foreign tables.

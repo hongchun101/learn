@@ -1,0 +1,4 @@
+-- Exercise 10 — EXPLAIN
+-- Q1: Run EXPLAIN (ANALYZE, BUFFERS) on a query of your choice; identify where time is spent.
+-- Q2: Show FORMAT JSON plan; explain what a Hash Join's `Hash Cond:` line tells you.
+-- Q3: Estimate vs actual rows: which nodes are off, and what would you ANALYZE?

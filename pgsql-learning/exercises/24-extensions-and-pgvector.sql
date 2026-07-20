@@ -1,0 +1,4 @@
+-- Exercise 24 — Extensions
+-- Q1: Install pg_trgm; build a GIN trigram index on a docs table; run similarity search.
+-- Q2: If pgvector is installed, write a HNSW index on vector(384); run a 5-NN query.
+-- Q3: Compare HNSW and IVFFLAT recall/latency on a small dataset.

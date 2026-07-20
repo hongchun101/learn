@@ -1,0 +1,4 @@
+-- Exercise 23 — Roles and security
+-- Q1: Create an 'app_ro' role; grant SELECT on a table only.
+-- Q2: Enable RLS on a table; write a policy that filters by region.
+-- Q3: Set up a custom pgaudit configuration.

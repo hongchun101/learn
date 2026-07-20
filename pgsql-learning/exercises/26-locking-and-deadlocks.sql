@@ -1,0 +1,4 @@
+-- Exercise 26 — Locking
+-- Q1: Open two psql sessions; show blocked + blocking on pg_locks.
+-- Q2: Use SKIP LOCKED in a worker-style batch.
+-- Q3: Show a deliberate deadlock from two sessions; recognise SQLSTATE 40P01.

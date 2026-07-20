@@ -1,0 +1,4 @@
+-- Exercise 11 — Indexes
+-- Q1: For products_11 find an index that makes WHERE name = 'x' an Index Scan.
+-- Q2: Add a partial index for WHERE category = 'fruit'.
+-- Q3: Add a covering index (category, price) INCLUDE (name) and verify IOS in EXPLAIN.

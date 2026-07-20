@@ -1,0 +1,6 @@
+-- Exercise 07 — Window Functions
+-- orders_w(customer_id, placed_at, total) — for each customer, compute:
+--   row_number by placed_at
+--   running_total
+--   rank_dense by total desc
+--   lag-prev and lead-next totals (default 0)

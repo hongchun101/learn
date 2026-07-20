@@ -1,0 +1,4 @@
+-- Exercise 08 — Set Operations and UNNEST
+-- Q1: UNION ALL two customer lists, then deduplicate with INTERSECT.
+-- Q2: Take the union of 1..5 and (5,6,7); what is the result?
+-- Q3: UNNEST an array of 3 ints and present them with WITH ORDINALITY.

@@ -1,0 +1,4 @@
+-- Exercise 28 — Scaling
+-- Q1: Set up a read replica with pg_basebackup; route SELECTs through it.
+-- Q2: Use partitioning for a 100M-row events table; verify partition pruning.
+-- Q3: Decide when NOT to shard (cite one or two hard reasons).

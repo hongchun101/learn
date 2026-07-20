@@ -1,0 +1,7 @@
+sequenceDiagram
+    participant T1
+    participant T2
+    participant Heap
+    T1->>Heap: INSERT xmin=100
+    T2->>Heap: SELECT
+    Note over Heap: visible if t_xmin committed and t_xmax not set

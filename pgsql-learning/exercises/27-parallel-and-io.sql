@@ -1,0 +1,4 @@
+-- Exercise 27 — Parallel
+-- Q1: Inspect parallel plan for an aggregation on a 1M row table.
+-- Q2: pg_prewarm a table; check Buffers:shared hit/read ratio before/after.
+-- Q3: Compare cost of a single backend vs parallel workers on a Seq Scan.

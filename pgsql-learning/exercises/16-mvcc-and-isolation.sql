@@ -1,0 +1,4 @@
+-- Exercise 16 — MVCC
+-- Q1: Use pageinspect to inspect the heap pages of a freshly inserted table.
+-- Q2: Demonstrate that two READ COMMITTED transactions can observe different rows.
+-- Q3: List the five isolation anomalies and the level PG prevents each at.

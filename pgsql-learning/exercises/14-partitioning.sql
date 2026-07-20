@@ -1,0 +1,4 @@
+-- Exercise 14 — Partitioning
+-- Q1: Create a RANGE-partitioned table by day with 7 partitions.
+-- Q2: Show EXPLAIN for a one-month query: confirm pruning.
+-- Q3: ATTACH a new partition for next month; DETACH an old one.

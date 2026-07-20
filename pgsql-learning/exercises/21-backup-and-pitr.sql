@@ -1,0 +1,4 @@
+-- Exercise 21 — Backup
+-- Q1: Take a base backup into ./data/base.
+-- Q2: Set archive_mode on + a working archive_command.
+-- Q3: Recover up to a specific LSN; verify only the rows before that LSN survive.

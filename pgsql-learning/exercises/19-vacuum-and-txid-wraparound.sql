@@ -1,0 +1,4 @@
+-- Exercise 19 — Vacuum and wraparound
+-- Q1: Show autovacuum GUCs.
+-- Q2: Force 1000 dead tuples; run VACUUM; show pg_stat_user_tables.
+-- Q3: Show the wraparound horizon: SELECT age(datfrozenxid) FROM pg_database.

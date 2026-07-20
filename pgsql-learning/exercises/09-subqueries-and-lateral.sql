@@ -1,0 +1,5 @@
+-- Exercise 09 — Subqueries and LATERAL
+-- customers(id, region); orders(customer_id, total, created_at)
+-- Q1: First-order count per region using a scalar subquery.
+-- Q2: Customers with no orders using NOT EXISTS.
+-- Q3: First month of orders per customer (top 1 by total) via LATERAL.

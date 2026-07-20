@@ -1,0 +1,4 @@
+-- Exercise 17 — WAL
+-- Q1: Record the current WAL LSN, do 1000 inserts, record again. Diff?
+-- Q2: Force a CHECKPOINT; observe any reaction in pg_stat_bgwriter.
+-- Q3: Use pg_walinspect to inspect a specific LSN range.
