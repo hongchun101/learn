@@ -1,0 +1,7 @@
+duckdb>=0.10
+pandas>=2.0
+pyarrow>=14
+polars>=0.20
+pytest>=8.0
+sqlalchemy>=2.0
+faker>=22
