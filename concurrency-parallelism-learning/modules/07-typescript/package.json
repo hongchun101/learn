@@ -1,0 +1,19 @@
+{
+  "name": "concurrency-parallelism-learning-typescript",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Module 07 — Advanced TypeScript on concurrency & parallelism. Type-level concurrency primitives, branded worker pools, traced pipelines, and the six cross-language contract tasks.",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "demo": "tsx scripts/run-all-demos.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

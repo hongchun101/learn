@@ -1,0 +1,30 @@
+{
+  "name": "learn-concurrency-javascript",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JavaScript (Node 24) concurrency & parallelism module: event loop, workers, atomics, streams, abort, patterns.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "demo:eventloop": "node src/ch01-eventloop/run.js",
+    "demo:trace": "node src/ch01-eventloop/trace-events.js",
+    "demo:workers": "node src/ch02-workers/worker_pool.js",
+    "demo:sab": "node src/ch02-workers/shared_array_buffer.js",
+    "demo:lock": "node src/ch03-atomics/lock.js",
+    "demo:seqlock": "node src/ch03-atomics/seq_lock.js",
+    "demo:wait": "node src/ch03-atomics/wait_notify.js",
+    "demo:readable": "node src/ch04-streams/readable.js",
+    "demo:transform": "node src/ch04-streams/transform.js",
+    "demo:backpressure": "node src/ch04-streams/backpressure.js",
+    "demo:cancel": "node src/ch05-abort/cancel.js",
+    "demo:patterns": "node src/ch06-patterns/index.js"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

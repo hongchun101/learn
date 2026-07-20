@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: cp-python
+Version: 0.1.0
+Summary: A practical Python concurrency and parallelism curriculum
+Author: Concurrency and Parallelism Learning Project
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Education
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21; extra == "dev"
+Requires-Dist: mypy>=1.11; extra == "dev"
+Requires-Dist: ruff>=0.8; extra == "dev"
+
+# Python Concurrency and Parallelism: From Scheduling to Systems Judgment
+
+## Abstract
+
+Python offers several concurrency models because no one scheduler, isolation boundary, or memory model is optimal for every workload. This module develops a decision procedure rather than a catalogue: threads for blocking work and shared state, `asyncio` for large numbers of cooperative I/O tasks, and processes for CPU-bound Python bytecode. Every example is typed, executable, and tied to one of six language-neutral patterns so that the semantic trade-offs can be compared with other ecosystems.
+
+## 1. Execution model
+
+A CPython process contains interpreter state, Python objects, operating-system threads, and usually a **global interpreter lock (GIL)**. In the conventional 3.12 build used by this module, a thread must hold the GIL while executing Python bytecode. The interpreter considers switching at the interval reported by `sys.getswitchinterval()`, but the interval is a scheduling hint, not a fairness or latency guarantee. Blocking I/O and many C extensions release the GIL, so threads can overlap I/O and can run native work concurrently when that extension documents GIL release. They generally cannot speed up a pure-Python CPU loop.
+
+The practical consequence is precise: the GIL makes individual reference-count operations safe, not compound program operations. `if key not in d: d[key] = value` is still a check-then-act race. Use `Lock`, queues, ownership, or immutability to establish the program invariant. The Python language does not promise that an implementation-specific atomic-looking operation remains atomic across versions, interpreters, or the free-threaded build.
+
+CPython 3.13 introduced an experimental **free-threaded build**, commonly installed with a `t` ABI suffix (`python3.13t`), implementing PEP 703. It can run Python threads without a process-wide GIL, while using biased/deferred reference counting and container locking. Some C extensions may re-enable the GIL when imported if they are not marked as free-threading-compatible. Therefore “3.13t” is an alternate C-accelerated CPython build, not a promise that unchanged shared mutable code is race-free or faster. Benchmark the actual interpreter and extension set.
+
+## 2. Primitive families
+
+### 2.1 `threading`: shared memory and blocking coordination
+
+`Thread` supplies OS-thread concurrency. `Lock` establishes mutual exclusion; `RLock` permits recursive acquisition by its owning thread. `Event` broadcasts a level-triggered flag. `Condition` couples a predicate with a lock and must always be waited on in a predicate loop. `Semaphore` bounds concurrent access, while `BoundedSemaphore` additionally detects over-release. `Timer` schedules delayed work, `Barrier` releases a fixed party count together, and `local()` provides per-thread state. Chapter 1 demonstrates all of them without relying on timing for correctness.
+
+### 2.2 `multiprocessing`: isolation and CPU parallelism
+
+A `Process` owns a separate interpreter and GIL. `Queue` and `Pipe` serialize messages; a `Manager` hosts proxy objects behind a server process. `Value` and `Array` expose shared memory and require an explicit `multiprocessing.Lock` for compound updates. `Pool` is a task-oriented API. Process isolation prevents accidental ordinary-object sharing but imposes serialization, startup, and lifecycle costs. On spawn-based platforms, worker callables must be importable and process creation must occur under a safe entry point in applications.
+
+### 2.3 `concurrent.futures`: one task API, two execution policies
+
+`ThreadPoolExecutor` and `ProcessPoolExecutor` share the `Executor.submit`/`Future` interface. That unified API makes policy visible at construction: threads are normally selected for blocking I/O or native code that releases the GIL; processes for sufficiently coarse pure-Python CPU tasks. `as_completed` consumes completion order, `wait` observes sets, and `Future.add_done_callback` supports notification without blocking a coordinator. Cancellation is cooperative: a running callable is not forcibly rolled back.
+
+### 2.4 `asyncio`: structured cooperative concurrency
+
+A coroutine runs until it awaits. One event-loop thread can therefore coordinate many I/O operations with low per-task cost, but a blocking call stalls every task on that loop. `gather` preserves input order; Python 3.11's `TaskGroup` gives structured lifetime and raises an `ExceptionGroup` when siblings fail. `Queue` provides backpressure, `Semaphore` bounds fan-out, and `Event`, `Lock`, and `Condition` coordinate loop tasks. `wait_for` and the `asyncio.timeout` context turn an unbounded wait into an explicit deadline. `to_thread` is a bridge for blocking I/O, not an escape from the GIL for pure-Python CPU work.
+
+## 3. Selecting a model
+
+| Workload | Default | Why | Primary hazard |
+|---|---|---|---|
+| Many sockets with async libraries | `asyncio` | cooperative tasks, bounded resources | blocking the loop |
+| Blocking file/network library | thread executor | simple shared address space | races and unbounded fan-out |
+| Pure-Python CPU work | process executor | independent GIL per worker | startup and serialization |
+| NumPy/native kernel | threads, then benchmark | native code may release GIL | oversubscription |
+| Strong failure/lifetime tree | `TaskGroup` | sibling cancellation and joined scope | unhandled `ExceptionGroup` |
+
+`multiprocessing.Pool` remains useful for direct data-parallel maps and initializer-heavy worker processes. `ProcessPoolExecutor` is preferable when code already speaks in `Future`s, needs `submit`, `wait`, or callbacks, or switches between thread and process policy. Neither makes a tiny task efficient; batch work so useful compute dominates pickling and scheduling.
+
+## 4. Reusable patterns
+
+Chapter 6 implements the shared curriculum contract:
+
+1. **Fan-out/fan-in** uses a fixed worker set and stores results by source index, preserving order despite completion order.
+2. **Pipeline** applies every synchronous or asynchronous stage to each source item in stage order.
+3. **Rate limiting** paces admissions using `time.perf_counter`, a monotonic high-resolution clock; it never uses civil time for elapsed duration.
+4. **Barrier** uses a generation counter so a wake-up from one cycle cannot satisfy the next.
+5. **Bounded MPMC queue** makes full and empty states waitable, applies producer backpressure, supports timeout-based dequeue, and wakes all parties on close.
+6. **Parallel reduce** partitions into contiguous chunks and combines partials left-to-right. Associativity is required; preserving chunk order also supports associative, non-commutative operations.
+
+These patterns encode memory-ordering edges. In documented CPython terms, lock release/acquire and queue hand-off provide the synchronization required by the primitive's contract; do not generalize incidental GIL behavior into a language memory model. Message passing reduces the surface on which shared-memory reasoning is necessary.
+
+## 5. The GIL experiment
+
+Chapter 5 times the same pure-Python kernel sequentially, in a `ThreadPoolExecutor`, and in a warmed `ProcessPoolExecutor`. It records elapsed time with `perf_counter`, worker PIDs, the switch interval, and speedup ratios. Conventional CPython threads share one PID and one GIL, so their CPU work is interleaved rather than parallel. Process workers have distinct PIDs and can execute simultaneously on distinct CPU cores. Run the experiment on an otherwise idle multi-core machine and size tasks above process-transport overhead. Timing tests only assert robust semantic facts; the reported local measurement supplies the machine-specific performance evidence.
+
+The chapter also contains a deliberately fenced demonstration of `PyThreadState_SetAsyncExc`. Injecting an exception into a thread is a CPython-specific emergency mechanism: delivery occurs only when that thread next executes Python bytecode, arbitrary invariants may be broken, and it is not a cancellation API. Prefer cooperative cancellation with `Event`.
+
+## 6. Exercises
+
+1. Replace the fan-out worker pool with one task per item. Measure memory and explain why the semaphore alone may not bound queued task count.
+2. Add cancellation to the pipeline. State whether an accepted item is drained, discarded, or completed when cancellation arrives.
+3. Extend the rate limiter to a burst-capable token bucket. Prove the maximum admissions over every interval.
+4. Break the barrier by removing its generation predicate, then construct a two-cycle execution that releases a caller incorrectly.
+5. Add producer timeout to the MPMC queue and specify the race between timeout and capacity becoming available.
+6. Use an associative but non-commutative operator to expose why round-robin reduce partitions can violate sequential order.
+7. Run the GIL benchmark on standard CPython, a free-threaded 3.13t build, and PyPy. Record interpreter, extension compatibility, CPU utilization, and confidence intervals.
+8. Modify a `TaskGroup` example so two children fail before cancellation is observed; handle selected leaves with `except*` and preserve unrelated errors.
+
+## 7. What an expert can do after this module
+
+- [ ] Explain what the conventional CPython GIL protects—and what program invariants it does not.
+- [ ] Choose threads, `asyncio`, processes, or native parallelism from workload and isolation requirements.
+- [ ] Design cancellation, deadlines, backpressure, and shutdown before launching concurrent work.
+- [ ] Use every core `threading`, `multiprocessing`, `concurrent.futures`, and `asyncio` coordination primitive demonstrated here.
+- [ ] Diagnose deadlock, starvation, oversubscription, event-loop blocking, serialization overhead, and false speedup claims.
+- [ ] Interpret `TaskGroup` failure as an `ExceptionGroup` and handle only intended exception leaves.
+- [ ] Implement ordered fan-in, staged pipelines, rate limiting, reusable barriers, bounded MPMC queues, and associative reduction.
+- [ ] Benchmark GIL effects with a monotonic clock, warmed workers, repeated trials, and worker-identity evidence.
+- [ ] Audit C-extension and shared-state assumptions before adopting a free-threaded CPython build.
+
+## References
+
+- Python 3.12 documentation, [Threading](https://docs.python.org/3.12/library/threading.html), [Multiprocessing](https://docs.python.org/3.12/library/multiprocessing.html), [Concurrent futures](https://docs.python.org/3.12/library/concurrent.futures.html), and [Asyncio synchronization](https://docs.python.org/3.12/library/asyncio-sync.html).
+- Python documentation, [Global Interpreter Lock glossary entry](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
+- PEP 703, [Making the Global Interpreter Lock Optional in CPython](https://peps.python.org/pep-0703/).
+- Python free-threading HOWTO, [Python support for free threading](https://docs.python.org/3/howto/free-threading-python.html).
+- PEP 654, [Exception Groups and `except*`](https://peps.python.org/pep-0654/).
+- PEP 3156, [Asynchronous IO Support Rebooted](https://peps.python.org/pep-3156/).

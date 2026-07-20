@@ -1,0 +1,11 @@
+[package]
+name = "ch07-ffi"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Ch07 — exposing a Rust thread pool over the C ABI"
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+path = "src/lib.rs"

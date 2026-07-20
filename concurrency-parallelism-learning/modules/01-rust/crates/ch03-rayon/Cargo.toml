@@ -1,0 +1,13 @@
+[package]
+name = "ch03-rayon"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Ch03 — rayon: par_iter, par_chunks, par_bridge, scope, ThreadPoolBuilder"
+
+[dependencies]
+rayon = { workspace = true }
+
+[lib]
+path = "src/lib.rs"

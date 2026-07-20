@@ -1,0 +1,15 @@
+[package]
+name = "ch06-patterns"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Ch06 — the six cross-language tasks reimplemented in idiomatic Rust"
+
+[dependencies]
+crossbeam-channel = { workspace = true }
+crossbeam-utils   = { workspace = true }
+tokio            = { workspace = true }
+
+[lib]
+path = "src/lib.rs"

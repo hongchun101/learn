@@ -1,0 +1,16 @@
+[package]
+name = "ch04-crossbeam"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Ch04 — crossbeam: channel, queue (ArrayQueue), utils (Backoff, CachePadded, ShardedLock)"
+
+[dependencies]
+crossbeam-channel = { workspace = true }
+crossbeam-queue   = { workspace = true }
+crossbeam-utils   = { workspace = true }
+parking_lot       = { workspace = true }
+
+[lib]
+path = "src/lib.rs"

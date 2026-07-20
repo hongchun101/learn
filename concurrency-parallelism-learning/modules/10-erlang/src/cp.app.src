@@ -1,0 +1,9 @@
+{application, cp,
+ [{description, "Concurrency & parallelism curriculum"},
+  {vsn, "0.1.0"},
+  {registered, [cp_sup]},
+  {applications, [kernel, stdlib]},
+  {modules, []},
+  {licenses, ["BSD-3-Clause"]},
+  {links, []}
+ ]}.

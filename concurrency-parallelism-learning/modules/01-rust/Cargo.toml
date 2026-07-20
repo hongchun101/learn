@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/ch01-threads",
+    "crates/ch02-async-tokio",
+    "crates/ch03-rayon",
+    "crates/ch04-crossbeam",
+    "crates/ch05-lockfree",
+    "crates/ch06-patterns",
+    "crates/ch07-ffi",
+]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.75"
+license = "BSD-3-Clause"
+
+[workspace.dependencies]
+tokio        = { version = "1", features = ["full"] }
+rayon        = "1"
+crossbeam-channel = "0.5"
+crossbeam-queue   = "0.3"
+crossbeam-utils   = "0.8"
+parking_lot  = "0.12"
+loom         = { version = "0.7", features = ["default"] }
+criterion    = { version = "0.5", features = ["html_reports"] }
+proptest     = "1"
+
+[profile.dev]
+opt-level = 1
