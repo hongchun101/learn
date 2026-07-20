@@ -1,0 +1,23 @@
+[package]
+name = "crypto-curriculum-rust"
+version = "0.1.0"
+edition = "2021"
+description = "From-0-to-expert cryptography curriculum: Rust primitives"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+hmac = "0.12"
+sha2 = "0.10"
+hkdf = "0.12"
+getrandom = "0.2"
+hex = "0.4"
+
+[dev-dependencies]
+# Uses Rust's built-in test framework; no external test deps required.
+
+[features]
+# Optional AES-GCM support; toggle with `cargo test --features aes`.
+default = []
+aes = []

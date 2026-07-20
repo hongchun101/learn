@@ -1,0 +1,12 @@
+[project]
+name = "learncrypto-python"
+version = "0.1.0"
+description = "Python reference primitives for the crypto curriculum"
+requires-python = ">=3.10"
+dependencies = [
+    "cryptography>=42",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

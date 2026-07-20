@@ -1,0 +1,24 @@
+{
+  "name": "crypto-curriculum",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "From-0-to-expert cryptography curriculum: classical, symmetric, asymmetric, hashes, signatures, randomness, protocols, post-quantum. Eight chapters, six cross-chapter contracts, runnable TypeScript harness.",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src tests --ext .ts",
+    "demo": "tsx scripts/run-all-chapter-demos.ts",
+    "curriculum": "tsx scripts/print-curriculum.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
