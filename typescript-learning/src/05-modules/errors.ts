@@ -1,6 +1,6 @@
 /**
- * Tagged error: a discriminated union of known error categories.
- * Used by consumers to do `if (err instanceof TaggedError) { ... }`.
+ * 标签化错误：由已知错误类别构成的可辨识联合。
+ * 供使用者通过 `if (err instanceof TaggedError) { ... }` 进行判断。
  */
 
 export class TaggedError extends Error {

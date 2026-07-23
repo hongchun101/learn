@@ -1,20 +1,20 @@
 /**
- * Module 4: Classes & OOP
+ * 模块 4：类与 OOP
  *
- * Covers:
- *  - Parameter properties, `readonly`, `private`/`protected`/`public`
- *  - Getters/setters and `useDefineForClassFields`
- *  - `abstract` classes
- *  - Generic classes
- *  - Mixin pattern (no native multiple inheritance, but mixins are composable)
- *  - Decorators (legacy experimental & TC39 stage 3)
- *  - `override` keyword
- *  - `this`-typing and polymorphism
- *  - `implements` vs. `extends`
+ * 涵盖内容：
+ *  - 参数属性、`readonly`、`private`/`protected`/`public`
+ *  - getter/setter 与 `useDefineForClassFields`
+ *  - `abstract` 类
+ *  - 泛型类
+ *  - Mixin 模式（没有原生多重继承，但 mixin 可以组合）
+ *  - 装饰器（旧版实验性装饰器与 TC39 Stage 3 装饰器）
+ *  - `override` 关键字
+ *  - `this` 类型标注与多态
+ *  - `implements` 与 `extends` 的区别
  */
 
 // ---------------------------------------------------------------------------
-// 1. Abstract classes and `override`
+// 1. 抽象类与 `override`
 // ---------------------------------------------------------------------------
 
 export interface Shape {
@@ -62,7 +62,7 @@ export class Rectangle extends Shape2D {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Generic class
+// 2. 泛型类
 // ---------------------------------------------------------------------------
 
 export class Container<T> {
@@ -83,12 +83,12 @@ export class Container<T> {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Mixin pattern — composable behaviors
+// 3. Mixin 模式——可组合的行为
 // ---------------------------------------------------------------------------
 
-// Constructable type for mixin base.
-// `any[]` (not `never[]`) is the standard pattern: TS requires
-// "a single rest parameter of type 'any[]'" for mixin classes.
+// Mixin 基类的可构造类型。
+// `any[]`（而非 `never[]`）是标准模式：TS 要求 mixin 类使用
+// “一个类型为 'any[]' 的剩余参数”。
 export type Constructor<T = object> = new (...args: any[]) => T;
 
 export interface Timestamped {
@@ -130,11 +130,11 @@ export const SerializableTimestampedTag = Serializable(TimestampedTag);
 
 const t = new SerializableTimestampedTag('urgent');
 t.touch();
-// t is both Timestamped and Serializable; you can call .toJSON() and read .createdAt.
+// t 同时是 Timestamped 和 Serializable；可以调用 .toJSON() 并读取 .createdAt。
 void t;
 
 // ---------------------------------------------------------------------------
-// 4. `this`-parameter polymorphism (F-bounded polymorphism)
+// 4. `this` 参数多态（F-有界多态）
 // ---------------------------------------------------------------------------
 
 export interface Comparable<T> {
@@ -153,16 +153,16 @@ export class Version implements Comparable<Version> {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Decorators — TC39 Stage 3 (TS 5.x)
+// 5. 装饰器——TC39 Stage 3（TS 5.x）
 // ---------------------------------------------------------------------------
 
-// Class decorator factory
+// 类装饰器工厂
 export function sealed(constructor: Function): void {
   Object.seal(constructor);
   Object.freeze(constructor.prototype);
 }
 
-// Method decorator (TC39 signature: 2 args + descriptor)
+// 方法装饰器（TC39 签名：2 个参数 + descriptor）
 export function logged(_target: object, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
   const original = descriptor.value as (...args: unknown[]) => unknown;
   descriptor.value = function (...args: unknown[]): unknown {
@@ -173,10 +173,10 @@ export function logged(_target: object, propertyKey: string, descriptor: Propert
   return descriptor;
 }
 
-// Field decorator (TC39 signature: 2 args)
+// 字段装饰器（TC39 签名：2 个参数）
 export function format(_fmt: string) {
   return (_target: object, _propertyKey: string | symbol): void => {
-    /* no-op */
+    /* 无操作 */
   };
 }
 
@@ -193,13 +193,13 @@ export class Invoice {
 }
 
 // ---------------------------------------------------------------------------
-// 6. Accessor with `get`/`set` and validation
+// 6. 带验证的 `get`/`set` 访问器
 // ---------------------------------------------------------------------------
 
 export class Port {
   #port: number = 0;
   constructor(port: number) {
-    this.port = port; // goes through setter
+    this.port = port; // 通过 setter 赋值
   }
   get port(): number {
     return this.#port;

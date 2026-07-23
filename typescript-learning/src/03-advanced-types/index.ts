@@ -1,38 +1,38 @@
 /**
- * Module 3: Advanced Types
+ * 模块 3：高级类型
  *
- * Covers:
- *  - Mapped types
- *  - Conditional types + `infer`
- *  - Template literal types
- *  - Recursive / deferred types
- *  - `key remapping` (`as` clause in mapped types)
- *  - Built-in utility types and how to author your own
+ * 涵盖内容：
+ *  - 映射类型
+ *  - 条件类型与 `infer`
+ *  - 模板字面量类型
+ *  - 递归类型与延迟类型
+ *  - `key remapping`（映射类型中的 `as` 子句）
+ *  - 内置工具类型以及如何自行编写工具类型
  */
 
 // ---------------------------------------------------------------------------
-// 1. Mapped types — the foundation of utility types
+// 1. 映射类型——工具类型的基础
 // ---------------------------------------------------------------------------
 
-// Make every property optional.
+// 将每个属性设为可选。
 export type MyPartial<T> = { [K in keyof T]?: T[K] };
 
-// Make every property required.
+// 将每个属性设为必需。
 export type MyRequired<T> = { [K in keyof T]-?: T[K] };
 
-// Make everything readonly.
+// 将所有内容设为 readonly。
 export type MyReadonly<T> = { readonly [K in keyof T]: T[K] };
 
-// Add a flag `readonly` filter — drop properties of a certain shape.
+// 添加 `readonly` 标记过滤器——移除具有特定形态的属性。
 export type FunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends (...args: never[]) => unknown ? K : never;
 }[keyof T];
 
 // ---------------------------------------------------------------------------
-// 2. Key remapping — `as` clause in mapped types (TS 4.1+)
+// 2. 键重映射——映射类型中的 `as` 子句（TS 4.1+）
 // ---------------------------------------------------------------------------
 
-// Getters: turn each property into a function that returns it.
+// Getters：将每个属性转换为返回该属性的函数。
 export type Getters<T> = {
   [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K];
 };
@@ -48,47 +48,47 @@ export const personGetters: Getters<PersonShape> = {
 };
 
 // ---------------------------------------------------------------------------
-// 3. Template literal types — type-level string manipulation
+// 3. 模板字面量类型——类型层面的字符串操作
 // ---------------------------------------------------------------------------
 
 export type EventName<TKind extends string> = `on${Capitalize<TKind>}`;
 export type CssValue = `${number}${'px' | 'rem' | 'em' | '%'}`;
 export type ApiPath = `/api/${string}`;
 
-// Type-level assertions, exported so tests can verify them.
+// 类型层面的断言，导出后供测试验证。
 export type _EventNameCheck = EventName<'click'>; // "onClick"
 export type _CssValueCheck = CssValue;            // `${number}${'px' | 'rem' | 'em' | '%'}`
 export type _ApiPathCheck = ApiPath;              // `/api/${string}`
 
 // ---------------------------------------------------------------------------
-// 4. Conditional types + `infer`
+// 4. 条件类型与 `infer`
 // ---------------------------------------------------------------------------
 
-// Extract the awaited type (re-export semantics of Awaited<>).
+// 提取 await 后的类型（复现 Awaited<> 的语义）。
 export type MyAwaited<T> = T extends Promise<infer Inner>
   ? Inner extends Promise<unknown>
     ? MyAwaited<Inner>
     : Inner
   : T;
 
-// Extract return type.
+// 提取返回类型。
 export type MyReturnType<T> = T extends (...args: never[]) => infer R ? R : never;
 
-// Extract first argument.
+// 提取第一个参数。
 export type MyFirstArg<T> = T extends (first: infer F, ...rest: never[]) => unknown ? F : never;
 
 // ---------------------------------------------------------------------------
-// 5. Distributive conditional types
+// 5. 分布式条件类型
 // ---------------------------------------------------------------------------
 
-// `T extends U` distributes over unions when T is a naked type parameter.
+// 当 T 是裸类型参数时，`T extends U` 会分布到联合类型的各成员上。
 export type ToPromise<T> = T extends unknown ? Promise<T> : never;
 
-// Strip null and undefined.
+// 移除 null 和 undefined。
 export type NonNullableDeep<T> = T extends NonNullable<T> ? T : never;
 
 // ---------------------------------------------------------------------------
-// 6. Recursive types — type-level JSON
+// 6. 递归类型——类型层面的 JSON
 // ---------------------------------------------------------------------------
 
 export type Json =
@@ -100,7 +100,7 @@ export type Json =
   | { readonly [key: string]: Json };
 
 // ---------------------------------------------------------------------------
-// 7. Deferred conditional types — pattern-match on tuple shapes
+// 7. 延迟条件类型——对元组形态进行模式匹配
 // ---------------------------------------------------------------------------
 
 export type Reverse<T extends readonly unknown[]> = T extends readonly [infer Head, ...infer Tail]
@@ -112,7 +112,7 @@ export type Reverse<T extends readonly unknown[]> = T extends readonly [infer He
 export type _ReverseCheck = Reverse<[1, 2, 3]>; // [3, 2, 1]
 
 // ---------------------------------------------------------------------------
-// 8. `as const` + satisfies — the precision pattern
+// 8. `as const` + satisfies——精确类型模式
 // ---------------------------------------------------------------------------
 
 export interface Route {
@@ -121,7 +121,7 @@ export interface Route {
   readonly auth: boolean;
 }
 
-// `satisfies` keeps literal types AND ensures the contract.
+// `satisfies` 既保留字面量类型，又确保满足约定。
 export const routes = {
   listUsers: { path: '/users', method: 'GET', auth: true },
   createUser: { path: '/users', method: 'POST', auth: true },
@@ -129,12 +129,12 @@ export const routes = {
   health: { path: '/health', method: 'GET', auth: false },
 } as const satisfies Record<string, Route>;
 
-// `routes.listUsers.method` is the literal 'GET', not the union, because of `as const`.
-// `routes` is also exhaustively checked against `Record<string, Route>`.
+// 由于使用了 `as const`，`routes.listUsers.method` 是字面量 'GET'，而不是联合类型。
+// 同时还会根据 `Record<string, Route>` 对 `routes` 进行完整检查。
 export type _RoutesMethod = (typeof routes)['listUsers']['method']; // "GET"
 
 // ---------------------------------------------------------------------------
-// 9. Indexed access types — `T[K]` and `T[K1 | K2]`
+// 9. 索引访问类型——`T[K]` 和 `T[K1 | K2]`
 // ---------------------------------------------------------------------------
 
 export type ValueOf<T> = T[keyof T];
@@ -142,7 +142,7 @@ export type ValueOf<T> = T[keyof T];
 export const routesHealth: ValueOf<typeof routes> = routes.health;
 
 // ---------------------------------------------------------------------------
-// 10. `Opaque` & friends — preventing accidental interchange
+// 10. `Opaque` 及相关类型——防止意外混用
 // ---------------------------------------------------------------------------
 
 export type Opaque<T, K extends symbol> = T & { readonly [k in K]: never };
@@ -154,7 +154,7 @@ export type Seconds = Opaque<number, typeof SecondsBrand>;
 export const meters = (n: number): Meters => n as Meters;
 export const seconds = (n: number): Seconds => n as Seconds;
 
-// Compile error: cannot add a Meters to a Seconds.
+// 编译错误：不能将 Meters 与 Seconds 相加。
 // const _bad: number = meters(1) + seconds(1);
 
 if (import.meta.url === `file:///${process.argv[1]}`) {

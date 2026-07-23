@@ -1,21 +1,21 @@
 /**
- * Module 5: Modules, Declaration Files, Ambient Types
+ * 模块 5：模块、声明文件、环境类型
  *
- * Covers:
- *  - ES module syntax: named/default/namespace exports, re-exports
- *  - Module resolution: classic vs. node vs. bundler
- *  - `import type` for type-only imports
- *  - Declaration merging (interface + interface, interface + namespace, module + namespace)
- *  - Ambient declarations via `.d.ts`
- *  - `declare module` augmentation
- *  - `globalThis` typing
- *  - `satisfies` and export types
+ * 涵盖：
+ *  - ES module 语法：named/default/namespace exports、re-exports
+ *  - 模块解析：classic、node 与 bundler
+ *  - 使用 `import type` 进行仅类型导入
+ *  - 声明合并（interface + interface、interface + namespace、module + namespace）
+ *  - 通过 `.d.ts` 进行环境声明
+ *  - `declare module` 扩展
+ *  - `globalThis` 类型标注
+ *  - `satisfies` 与导出类型
  */
 
 import type { Brand as _Brand } from './types.js';
 
 // ---------------------------------------------------------------------------
-// 1. Module re-export patterns
+// 1. 模块再导出模式
 // ---------------------------------------------------------------------------
 
 export * from './barrel.js';
@@ -25,7 +25,7 @@ export { default as TaggedError } from './errors.js';
 export type { UserId, OrderId, Iso8601, Page } from './types.js';
 
 // ---------------------------------------------------------------------------
-// 2. Declaration merging: interface + interface
+// 2. 声明合并：interface + interface
 // ---------------------------------------------------------------------------
 
 export interface User {
@@ -38,10 +38,10 @@ export interface User {
   createdAt: Date;
 }
 
-// A merged `User` has all four fields.
+// 合并后的 `User` 包含全部四个字段。
 
 // ---------------------------------------------------------------------------
-// 3. Declaration merging: interface + namespace
+// 3. 声明合并：interface + namespace
 // ---------------------------------------------------------------------------
 
 export interface Currency {
@@ -57,7 +57,7 @@ export namespace Currency {
 }
 
 // ---------------------------------------------------------------------------
-// 4. Module augmentation: extend NodeJS.ProcessEnv
+// 4. 模块扩展：扩展 NodeJS.ProcessEnv
 // ---------------------------------------------------------------------------
 
 declare global {
@@ -75,17 +75,17 @@ export function readEnv(): NodeJS.ProcessEnv {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Ambient module declaration (for libraries without types)
+// 5. 环境模块声明（用于没有类型的库）
 // ---------------------------------------------------------------------------
 
-// In a real `.d.ts` file:
+// 在真实的 `.d.ts` 文件中：
 //   declare module 'left-pad' {
 //     export function leftPad(str: string, len: number, ch?: string): string;
 //     export default leftPad;
 //   }
 
 // ---------------------------------------------------------------------------
-// 6. Type-only exports
+// 6. 仅类型导出
 // ---------------------------------------------------------------------------
 
 export type { _Brand };
@@ -103,21 +103,21 @@ export type Asyncify<T> = T extends (...args: infer A) => infer R
     : T;
 
 // ---------------------------------------------------------------------------
-// 7. `verbatimModuleSyntax` and `import type` discipline
+// 7. `verbatimModuleSyntax` 与 `import type` 规范
 // ---------------------------------------------------------------------------
 
-// `import type` is required for any import that only feeds the type layer.
-// (Done at the top of this file.)
+// 任何仅供类型层使用的导入都必须使用 `import type`。
+// （已在此文件顶部完成。）
 
 // ---------------------------------------------------------------------------
-// 8. The `barrel.ts` pattern — see `./barrel.ts` for an example.
+// 8. `barrel.ts` 模式——示例请参见 `./barrel.ts`。
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// 9. Conditional exports / `exports` field in package.json
+// 9. 条件导出 / package.json 中的 `exports` 字段
 // ---------------------------------------------------------------------------
 
-// `package.json` can use `"exports"` to map multiple entry points:
+// `package.json` 可以使用 `"exports"` 映射多个入口点：
 //   {
 //     "exports": {
 //       ".": {
@@ -130,7 +130,7 @@ export type Asyncify<T> = T extends (...args: infer A) => infer R
 //   }
 
 // ---------------------------------------------------------------------------
-// 10. `globalThis` typing
+// 10. `globalThis` 类型标注
 // ---------------------------------------------------------------------------
 
 declare global {
@@ -144,5 +144,5 @@ export function getVersion(): string {
   return g.__APP_VERSION__;
 }
 
-// Required to make this a module under `isolatedModules`.
+// 需要此语句才能在 `isolatedModules` 下将本文件视为模块。
 export {};

@@ -1,19 +1,18 @@
 /**
- * Module 8: Functional Patterns
+ * 模块 8：函数式编程模式
  *
- * Covers:
- *  - `Option<T>` (a.k.a. `Maybe<T>`)
- *  - `Either<E, A>` and a small `Result` API
- *  - `pipe` and `flow` — type-safe composition
- *  - Currying and partial application
- *  - `Lens<S, A>` for immutable updates
- *  - `Memoize<T>` with weak maps
- *  - `Lazy<T>`, thunk, defer
- *  - Total functions over partial data
+ * 内容包括：
+ *  - `Option<T>`（又称 `Maybe<T>`）
+ *  - `Either<E, A>` 以及一套简明的 `Result` API
+ *  - `pipe` 与 `flow` —— 类型安全的组合
+ *  - 柯里化与偏函数应用
+ *  - `Lens<S, A>`，用于不可变更新
+ *  - 基于 `WeakMap` 的 `Memoize<T>`
+ *  - `Lazy<T>`、thunk、defer
+ *  - 在部分数据上的全函数（total function）
  *
- * This is a taste of functional patterns, expressed with the same primitives
- * a UI or backend module would use. Keep this minimal — pull in `fp-ts` only
- * if you actually need it.
+ * 这只是函数式模式的一个概览，使用与 UI 或后端模块相同的原语来表达。
+ * 保持精简 —— 只有在真正需要时再引入 `fp-ts`。
  */
 
 import { assertNever } from '../01-basics/index.js';
@@ -40,12 +39,12 @@ export function unwrapOption<T>(o: Option<T>, fallback: T): T {
   return o.kind === 'some' ? o.value : fallback;
 }
 
-// `fromNullable` is a small but well-named boundary.
+// `fromNullable` 是一个简单但命名贴切的边界转换。
 export const fromNullable = <T>(value: T | null | undefined): Option<T> =>
   value === null || value === undefined ? none : some(value);
 
 // ---------------------------------------------------------------------------
-// 2. `Either<E, A>` — for richer error reasons than `Result`
+// 2. `Either<E, A>` —— 用于承载比 `Result` 更丰富的错误原因
 // ---------------------------------------------------------------------------
 
 export type Either<E, A> = { readonly kind: 'left'; readonly left: E } | { readonly kind: 'right'; readonly right: A };
@@ -61,13 +60,13 @@ export function flatMapEither<E, A, B>(e: Either<E, A>, f: (a: A) => Either<E, B
   return e.kind === 'right' ? f(e.right) : e;
 }
 
-// Convert from Result<T,E> to Either<E,T>
+// 将 Result<T,E> 转换为 Either<E,T>
 export function resultToEither<T, E>(r: Result<T, E>): Either<E, T> {
   return r.ok ? right(r.value) : left(r.error);
 }
 
 // ---------------------------------------------------------------------------
-// 3. `pipe` and `flow` — type-safe composition
+// 3. `pipe` 与 `flow` —— 类型安全的组合
 // ---------------------------------------------------------------------------
 
 export function pipe<A>(a: A): A;
@@ -90,21 +89,21 @@ export function flow<A extends readonly ((x: never) => never)[]>(...fns: A): (..
 }
 
 // ---------------------------------------------------------------------------
-// 4. Currying
+// 4. 柯里化
 // ---------------------------------------------------------------------------
 
-// Generic curry for binary functions.
+// 二元函数的通用柯里化。
 export function curry2<A, B, C>(fn: (a: A, b: B) => C): (a: A) => (b: B) => C {
   return (a) => (b) => fn(a, b);
 }
 
-// Generic curry for ternary functions.
+// 三元函数的通用柯里化。
 export function curry3<A, B, C, D>(fn: (a: A, b: B, c: C) => D): (a: A) => (b: B) => (c: C) => D {
   return (a) => (b) => (c) => fn(a, b, c);
 }
 
 // ---------------------------------------------------------------------------
-// 5. Lenses — typed field accessors with immutable updates
+// 5. Lenses —— 带类型的字段访问器，支持不可变更新
 // ---------------------------------------------------------------------------
 
 export interface Lens<S, A> {
@@ -116,8 +115,8 @@ export function lens<S, A>(get: (s: S) => A, set: (s: S, a: A) => S): Lens<S, A>
   return { get, set };
 }
 
-// `compose` two lenses — `lensA` reads/writes `A` inside `S`, `lensB` reads/writes
-// `B` inside `A`, the result reads/writes `B` inside `S`.
+// `compose` 两个 lens —— `lensA` 在 `S` 内读写 `A`，`lensB` 在 `A` 内读写
+// `B`，结果就是在 `S` 内读写 `B`。
 export function composeLens<S, A, B>(outer: Lens<S, A>, inner: Lens<A, B>): Lens<S, B> {
   return lens(
     (s) => inner.get(outer.get(s)),
@@ -126,7 +125,7 @@ export function composeLens<S, A, B>(outer: Lens<S, A>, inner: Lens<A, B>): Lens
 }
 
 // ---------------------------------------------------------------------------
-// 6. Memoize — with WeakMap when key is an object
+// 6. Memoize —— 当键是对象时使用 WeakMap
 // ---------------------------------------------------------------------------
 
 export function memoize1<A extends readonly unknown[], R>(fn: (...args: A) => R): (...args: A) => R {
@@ -153,12 +152,12 @@ export function memoizeWeak<A extends object, R>(fn: (arg: A) => R): (arg: A) =>
 }
 
 // ---------------------------------------------------------------------------
-// 7. Lazy evaluation
+// 7. 惰性求值
 // ---------------------------------------------------------------------------
 
 export type Lazy<T> = { readonly value: T };
 
-// Lazy<T> memoizes the result on first access. Uses a sentinel for undefined.
+// Lazy<T> 在首次访问时记忆结果。对 undefined 使用哨兵值处理。
 export const lazy = <T>(fn: () => T): Lazy<T> => {
   let computed = false;
   let memo: T;
@@ -174,16 +173,16 @@ export const lazy = <T>(fn: () => T): Lazy<T> => {
 };
 
 // ---------------------------------------------------------------------------
-// 8. Total functions over partial data
+// 8. 在部分数据上的全函数
 // ---------------------------------------------------------------------------
 
-// `first` returns `some(x)` if `pred(x)`, else `none`.
+// `first` 在 `pred(x)` 为真时返回 `some(x)`，否则返回 `none`。
 export const first = <T>(items: readonly T[], pred: (item: T) => boolean): Option<T> => {
   for (const x of items) if (pred(x)) return some(x);
   return none;
 };
 
-// `findIndex` — find an item's index; returns Option for totalness.
+// `findIndex` —— 查找元素的索引；为保证全函数性，返回 Option。
 export const findIndex = <T>(items: readonly T[], pred: (item: T) => boolean): Option<number> => {
   for (let i = 0; i < items.length; i++) {
     if (pred(items[i]!)) return some(i);
@@ -192,7 +191,7 @@ export const findIndex = <T>(items: readonly T[], pred: (item: T) => boolean): O
 };
 
 // ---------------------------------------------------------------------------
-// 9. Foldable — reduce with a typed initial value
+// 9. Foldable —— 使用带类型的初始值进行归约
 // ---------------------------------------------------------------------------
 
 export const foldLeft = <T, B>(items: readonly T[], init: B, fn: (acc: B, item: T) => B): B => {
@@ -208,7 +207,7 @@ export const foldRight = <T, B>(items: readonly T[], init: B, fn: (acc: B, item:
 };
 
 // ---------------------------------------------------------------------------
-// 10. Exhaustiveness utility re-export
+// 10. 穷尽性工具的再导出
 // ---------------------------------------------------------------------------
 
 export { assertNever };

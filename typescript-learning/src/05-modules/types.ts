@@ -1,5 +1,5 @@
 /**
- * Shared types used across modules.
+ * 跨模块使用的共享类型。
  */
 
 export type Brand<T, K extends string> = T & { readonly __brand: K };

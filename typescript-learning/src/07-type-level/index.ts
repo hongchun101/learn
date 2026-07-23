@@ -1,21 +1,21 @@
 /**
- * Module 7: Type-Level Programming
+ * 模块 7：类型级编程
  *
- * Covers:
- *  - Tuple manipulation at the type level
- *  - Type-level natural numbers, arithmetic, comparison
- *  - Path navigation types: `Get<T, 'a.b.c'>`
- *  - Type-level string operations (Split, Join)
- *  - Type-state machines (state encoded in the type)
- *  - Builder pattern with literal type accumulation
- *  - HKT simulation via kind-tagged interfaces
+ * 涵盖内容：
+ *  - 类型级元组操作
+ *  - 类型级自然数、算术和比较
+ *  - 路径导航类型：`Get<T, 'a.b.c'>`
+ *  - 类型级字符串操作（Split、Join）
+ *  - 类型状态机（将状态编码进类型）
+ *  - 累积字面量类型的构建器模式
+ *  - 通过带有种类标签的接口模拟 HKT
  *
- * The point of this module: TS's type system is a tiny lambda calculus.
- * Push it as far as it'll go to make impossible states unrepresentable.
+ * 本模块的要点：TS 的类型系统是一个微型 lambda 演算系统。
+ * 将它发挥到极致，使不可能的状态无法表示。
  */
 
 // ---------------------------------------------------------------------------
-// 1. Tuple ops
+// 1. 元组操作
 // ---------------------------------------------------------------------------
 
 export type Length<T extends readonly unknown[]> = T['length'];
@@ -45,10 +45,10 @@ export type Zip<A extends readonly unknown[], B extends readonly unknown[]> = A 
   : [];
 
 // ---------------------------------------------------------------------------
-// 2. Type-level natural numbers
+// 2. 类型级自然数
 // ---------------------------------------------------------------------------
 
-// Build a tuple of length N (capped at ~30 to avoid TS recursion limits).
+// 构建长度为 N 的元组（上限约为 30，以免触及 TS 递归限制）。
 type BuildTuple<L extends number, Acc extends unknown[] = []> = Acc['length'] extends L
   ? Acc
   : BuildTuple<L, [unknown, ...Acc]>;
@@ -59,7 +59,7 @@ export type Sub<A extends number, B extends number> = BuildTuple<A> extends [...
   ? R['length']
   : 0;
 // ---------------------------------------------------------------------------
-// 3. Type-level comparison
+// 3. 类型级比较
 // ---------------------------------------------------------------------------
 export type IsZero<N extends number> = N extends 0 ? true : false;
 export type GreaterThan<A extends number, B extends number> = BuildTuple<A> extends [
@@ -74,7 +74,7 @@ export type LessThan<A extends number, B extends number> = GreaterThan<B, A>;
 export type Equals<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 
 // ---------------------------------------------------------------------------
-// 4. Path navigation: `Get<T, 'a.b.c'>`
+// 4. 路径导航：`Get<T, 'a.b.c'>`
 // ---------------------------------------------------------------------------
 
 export type Get<T, P extends string> = P extends `${infer Head}.${infer Rest}`
@@ -94,11 +94,11 @@ export type _HostType = Get<Config, 'server.host'>; // string
 export type _PortType = Get<Config, 'server.port'>; // number
 export type _TlsEnabled = Get<Config, 'server.tls.enabled'>; // boolean
 
-// Set path (writes) — keep as an exercise: this is a common interview prompt.
-// type Set<T, P extends string, V> = { ... } — partial on the path; rest spread.
+// 路径写入 Set — 留作练习：这是常见的面试题。
+// type Set<T, P extends string, V> = { ... } — 沿路径局部修改；其余属性使用展开语法。
 
 // ---------------------------------------------------------------------------
-// 5. String ops at the type level
+// 5. 类型级字符串操作
 // ---------------------------------------------------------------------------
 
 export type Split<S extends string, D extends string> = S extends `${infer Head}${D}${infer Tail}`
@@ -118,11 +118,11 @@ export const splitExample: Split<'a.b.c', '.'> = ['a', 'b', 'c'];
 export const joinExample: Join<['x', 'y', 'z'], '-'> = 'x-y-z';
 
 // ---------------------------------------------------------------------------
-// 6. Type-state machine
+// 6. 类型状态机
 // ---------------------------------------------------------------------------
 
-// The connection's state is encoded in its type. You can only call methods
-// valid for the current state.
+// 连接状态编码在其类型中。
+// 只能调用对当前状态有效的方法。
 export interface Disconnected {
   readonly status: 'disconnected';
 }
@@ -158,14 +158,14 @@ export function fail(c: Conn<Connecting>, reason: string): Conn<Failed> {
   return { state: { status: 'failed', reason } };
 }
 
-// You can't call `ready` on a `Conn<Disconnected>` — compile error.
+// 不能对 `Conn<Disconnected>` 调用 `ready`，否则会产生编译错误。
 
 // ---------------------------------------------------------------------------
-// 7. Builder with literal accumulation
+// 7. 累积字面量的构建器
 // ---------------------------------------------------------------------------
 
-// Each method appends a key to a string-literal union, so by the end
-// `result` knows all keys that were set.
+// 每个方法都向字符串字面量联合中追加一个键，因此最终
+// `result` 会知晓所有已设置的键。
 export class EventBuilder<Keys extends string = never> {
   private handlers: Partial<Record<string, () => void>> = {};
   private _keys: Keys[] = [];
@@ -187,17 +187,17 @@ export class EventBuilder<Keys extends string = never> {
 }
 
 // ---------------------------------------------------------------------------
-// 8. HKT simulation
+// 8. HKT 模拟
 // ---------------------------------------------------------------------------
 
-// TS lacks true HKTs. We simulate them with a `Kind` interface and apply.
+// TS 没有真正的 HKT。这里使用 `Kind` 接口和应用操作来模拟它们。
 export interface Kind<F, A> {
   readonly _f: F;
   readonly _a: A;
 }
 
 export interface ArrayF extends Kind<ArrayF, never> {
-  // marker
+  // 标记
 }
 export interface OptionF extends Kind<OptionF, never> {}
 
@@ -205,9 +205,9 @@ export interface MapF<F, A, B> {
   <X>(fa: Kind<F, A> & { value: X }): Kind<F, B> & { value: X };
 }
 
-// A tiny "type-class" for Functor: real HKTs would let us write it generically.
-// The `F` parameter is phantom — the type-class is keyed by F but the methods
-// here operate on the underlying { value } container, so we accept it and ignore.
+// 一个用于 Functor 的微型“类型类”：真正的 HKT 能让我们以泛型方式编写它。
+// `F` 参数是幻象参数：该类型类以 F 为键，但这里的方法
+// 操作底层的 { value } 容器，因此我们接受该参数但忽略它。
 export interface FunctorOps<F> {
   map<A, B>(fa: { value: A }, f: (a: A) => B): { value: B };
   readonly _phantom?: F;
@@ -218,7 +218,7 @@ export const arrayFunctor: FunctorOps<ArrayF> = {
 };
 
 // ---------------------------------------------------------------------------
-// 9. Type-level sort (illustrative, capped)
+// 9. 类型级排序（示例性，存在上限）
 // ---------------------------------------------------------------------------
 
 export type Sort<T extends readonly number[]> = T extends readonly [

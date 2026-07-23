@@ -1,17 +1,17 @@
 /**
- * Module 9: DTOs, Runtime Validation, Branded Types
+ * 模块 9：DTO、运行时校验、品牌类型
  *
- * Covers:
- *  - The "validate at the boundary, trust the type" pattern
- *  - Building a small schema validator without external dependencies
- *  - Branded primitives (string-IDs, validated numbers)
- *  - Smart constructors
- *  - Form-style DTO parsing for query strings / request bodies
- *  - OpenAPI-style contract shape
+ * 内容包括：
+ *  - "在边界处校验，在类型层信任" 模式
+ *  - 不依赖任何外部库，构建一个轻量的 schema 校验器
+ *  - 品牌化的基本类型（字符串 ID、经过校验的数字）
+ *  - 智能构造函数
+ *  - 适用于查询字符串 / 请求体的表单式 DTO 解析
+ *  - 类似 OpenAPI 的契约形态
  *
- * Note: this module implements a tiny validator to demonstrate the pattern.
- * For real projects, prefer Zod / Valibot / Typia. We don't add a dependency
- * here to keep the example self-contained.
+ * 注意：本模块实现了一个迷你校验器，用于演示该模式。
+ * 在实际项目中，更推荐使用 Zod / Valibot / Typia。这里不引入额外依赖，
+ * 是为了保持示例自包含。
  */
 
 import { ok, err, unwrap } from '../01-basics/index.js';
@@ -19,10 +19,10 @@ import type { Result } from '../01-basics/index.js';
 import type { Brand as _Brand } from '../05-modules/types.js';
 
 // ---------------------------------------------------------------------------
-// 1. Branded primitives
+// 1. 品牌化的基本类型
 // ---------------------------------------------------------------------------
 
-// A reusable Brand: T at runtime, branded at compile time.
+// 可复用的 Brand：运行时是 T，编译时被品牌化。
 type Brand<T, K extends string> = T & { readonly __brand: K };
 
 export type UserId = Brand<string, 'UserId'>;
@@ -31,7 +31,7 @@ export type PositiveInt = Brand<number, 'PositiveInt'>;
 export type Iso8601 = Brand<string, 'Iso8601'>;
 export type NonEmptyString = Brand<string, 'NonEmptyString'>;
 
-// Smart constructors — only the constructor can produce these.
+// 智能构造函数 —— 只有这些构造函数能够产出对应的品牌类型。
 export const UserId = (s: string): Result<UserId, string> =>
   /^u_[A-Za-z0-9]+$/.test(s) ? ok(s as UserId) : err(`not a valid UserId: ${s}`);
 
@@ -48,10 +48,10 @@ export const NonEmptyString = (s: string): Result<NonEmptyString, string> =>
   s.length > 0 ? ok(s as NonEmptyString) : err('string is empty');
 
 // ---------------------------------------------------------------------------
-// 2. A tiny schema combinator library
+// 2. 一个迷你的 schema 组合子库
 // ---------------------------------------------------------------------------
 
-// A `Parser<A>` takes `unknown` and returns a `Result<A, string>`.
+// `Parser<A>` 接收 `unknown`，返回 `Result<A, string>`。
 export type Parser<A> = (input: unknown) => Result<A, string>;
 
 export const string: Parser<string> = (u) =>
@@ -82,7 +82,7 @@ export const array = <A>(p: Parser<A>): Parser<readonly A[]> => (u) => {
   return ok(out);
 };
 
-// Object parser: { [K in keyof S]: Parser<S[K]> }
+// 对象解析器：{ [K in keyof S]: Parser<S[K]> }
 export type ObjectSchema<S> = {
   [K in keyof S]: Parser<S[K]>;
 };
@@ -111,7 +111,7 @@ export const union = <A extends readonly Parser<unknown>[]>(...parsers: A) => (
 };
 
 // ---------------------------------------------------------------------------
-// 3. Branded parsers built on top of the schema primitives
+// 3. 基于 schema 原语构建的品牌化解析器
 // ---------------------------------------------------------------------------
 
 export const userIdParser: Parser<UserId> = (u) => {
@@ -125,7 +125,7 @@ export const emailParser: Parser<Email> = (u) => {
 };
 
 // ---------------------------------------------------------------------------
-// 4. DTO with branded fields
+// 4. 带有品牌字段的 DTO
 // ---------------------------------------------------------------------------
 
 export interface CreateUserDto {
@@ -163,7 +163,7 @@ export const parseCreateUserDto = (raw: unknown): Result<CreateUserDto, string> 
   object(createUserDtoSchema)(raw) as Result<CreateUserDto, string>;
 
 // ---------------------------------------------------------------------------
-// 5. Trusted-side usage: a function that takes a parsed DTO
+// 5. 受信端的用法：接收已解析 DTO 的函数
 // ---------------------------------------------------------------------------
 
 export function createUser(dto: CreateUserDto): { id: UserId; welcome: string } {
@@ -174,7 +174,7 @@ export function createUser(dto: CreateUserDto): { id: UserId; welcome: string } 
 }
 
 // ---------------------------------------------------------------------------
-// 6. Environment parsing — use at process start
+// 6. 环境变量解析 —— 在进程启动时使用
 // ---------------------------------------------------------------------------
 
 interface EnvShape {
@@ -198,6 +198,6 @@ if (import.meta.url === `file:///${process.argv[1]}`) {
   console.info('createUser =', createUser(dto));
 }
 
-// Brand is already imported as `_Brand` from types.ts and used internally.
-// Re-export the canonical alias to keep the public API consistent.
+// Brand 已经作为 `_Brand` 从 types.ts 中导入并在内部使用。
+// 重新导出规范的别名，以保持对外 API 的一致性。
 export type { _Brand as Brand };

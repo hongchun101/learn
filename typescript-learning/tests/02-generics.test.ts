@@ -29,7 +29,7 @@ describe('Module 2: Generics', () => {
   it('tuple infers tuple type', () => {
     const t = tuple(1, 'a', true);
     expect(t).toEqual([1, 'a', true]);
-    // Tuple type: each element typed by its position.
+    // 元组类型：每个元素根据其位置被单独定型。
     const _t: readonly [number, string, boolean] = t;
     expect(_t).toEqual([1, 'a', true]);
   });
@@ -39,7 +39,7 @@ describe('Module 2: Generics', () => {
     const o: OrderId = orderId('o_1');
     expect(typeof u).toBe('string');
     expect(typeof o).toBe('string');
-    // Compile-time check: this WOULD be a type error if uncommented.
+    // 编译期检查：取消注释下面这一行将会触发类型错误。
     const _checkPhantom: UserId = userId('u_2');
     expect(_checkPhantom).toBe('u_2');
   });

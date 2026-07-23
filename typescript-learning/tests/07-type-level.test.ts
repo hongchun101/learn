@@ -36,8 +36,8 @@ describe('Module 7: Type-Level Programming', () => {
     expectTypeOf<Dec<5>>().toEqualTypeOf<4>();
     expectTypeOf<Add<3, 4>>().toEqualTypeOf<7>();
     expectTypeOf<Sub<10, 3>>().toEqualTypeOf<7>();
-    // Note: Mul is not exported to keep the public surface small; the
-    // recursive implementation lives in module 7.
+    // 注意：Mul 没有导出，以保持公开 API 精简；
+    // 其递归实现位于模块 7 内部。
   });
 
   it('Path navigation with Get', () => {

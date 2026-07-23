@@ -42,9 +42,9 @@ describe('Module 6: Async, Iterators, Generators', () => {
   });
 
   it('abortable stops on signal via aborted flag', async () => {
-    // Verifies that abortable() checks signal.aborted between yields
-    // and returns early. Build a stream where each item is checked
-    // against the signal as it flows through.
+    // 验证 abortable() 会在每次 yield 之间检查 signal.aborted，
+    // 从而提前返回。下面构造一个流，让每个元素在传递过程中
+    // 都会对照 signal 进行检查。
     const values = [1, 2, 3, 4, 5];
     const ctrl = new AbortController();
     async function* source() {

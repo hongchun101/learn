@@ -1,11 +1,11 @@
 /**
- * Global ambient declarations for the project.
+ * 项目的全局环境声明。
  *
- * This file is loaded automatically because of tsconfig's `include` glob.
- * Use it for:
- *   - Augmenting global namespaces (NodeJS.ProcessEnv, etc.)
- *   - Declaring ambient modules (e.g. CSS modules, static assets)
- *   - Adding custom global values
+ * 由于 tsconfig 的 `include` glob，此文件会被自动加载。
+ * 用途：
+ *   - 扩展全局命名空间（NodeJS.ProcessEnv 等）
+ *   - 声明环境模块（例如 CSS modules、静态资源）
+ *   - 添加自定义全局值
  */
 
 declare global {
@@ -22,13 +22,13 @@ declare global {
   }
 }
 
-// Ambient module declaration: importing JSON modules with a typed shape.
+// 环境模块声明：导入具有指定类型结构的 JSON 模块。
 declare module '*.json' {
   const value: unknown;
   export default value;
 }
 
-// Ambient module declaration: CSS modules
+// 环境模块声明：CSS modules
 declare module '*.module.css' {
   const classes: Readonly<Record<string, string>>;
   export default classes;

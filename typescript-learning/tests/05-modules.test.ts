@@ -9,8 +9,8 @@ describe('Module 5: Modules & Declaration Files', () => {
   });
 
   it('process.env is typed via global augmentation', () => {
-    // readEnv() returns NodeJS.ProcessEnv (the augmented type).
-    // We do not assert specific values because they're process-dependent.
+    // readEnv() 返回 NodeJS.ProcessEnv（即经过全局增强后的类型）。
+    // 这里不对具体值做断言，因为它们取决于运行时的进程环境。
     const env = readEnv();
     expect(typeof env).toBe('object');
   });

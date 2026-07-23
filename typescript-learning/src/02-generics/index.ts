@@ -1,19 +1,19 @@
 /**
- * Module 2: Generics
+ * 模块 2：泛型
  *
- * Covers:
- *  - Generic functions, classes, interfaces
- *  - Constraints: `extends` keyword, `keyof`, conditional constraints
- *  - Default type parameters
- *  - Variance: covariance, contravariance, bivariance, invariance
- *  - The bivariance hack and `--strictFunctionTypes` / `strictFunctionTypes`
- *  - Inferring from call sites, manual specification, contextual typing
- *  - Higher-kinded types via type-level simulation (we can't truly do HKT in TS)
- *  - Phantom types
+ * 内容涵盖：
+ *  - 泛型函数、类、接口
+ *  - 约束：`extends` 关键字、`keyof`、条件约束
+ *  - 默认类型参数
+ *  - 变型：协变、逆变、双变、不变
+ *  - 双变技巧与 `--strictFunctionTypes` / `strictFunctionTypes`
+ *  - 从调用点推断、手动指定、上下文类型推断
+ *  - 通过类型层模拟实现的高阶类型（TS 实际上无法实现真正的 HKT）
+ *  - 幻影类型
  */
 
 // ---------------------------------------------------------------------------
-// 1. Generic interface with constraints
+// 1. 带约束的泛型接口
 // ---------------------------------------------------------------------------
 
 export interface Repository<T extends { id: string }> {
@@ -22,20 +22,20 @@ export interface Repository<T extends { id: string }> {
   delete(id: string): Promise<void>;
 }
 
-// `keyof` constraint — keys of T whose value extends V.
+// `keyof` 约束 —— 取 T 中值类型满足 V 的键。
 export function pick<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> {
   const out = {} as Pick<T, K>;
   for (const k of keys) out[k] = obj[k];
   return out;
 }
 
-// Mapped type derived from a generic — strict lookup with keyof.
+// 由泛型派生的映射类型 —— 使用 keyof 进行严格的查找。
 export function get<T extends object, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key];
 }
 
 // ---------------------------------------------------------------------------
-// 2. Default type parameters and `noUncheckedIndexedAccess` aware API
+// 2. 默认类型参数以及对 `noUncheckedIndexedAccess` 友好的 API
 // ---------------------------------------------------------------------------
 
 export interface ApiResponse<TData, TError = ApiError> {
@@ -63,34 +63,34 @@ export async function fetchJson<TData, TError = ApiError>(
 }
 
 // ---------------------------------------------------------------------------
-// 3. Variance: function parameters are contravariant, returns are covariant
+// 3. 变型：函数参数为逆变，返回值为协变
 // ---------------------------------------------------------------------------
 
-// Produces a `Box<T>` for any T — covariant in T.
+// 为任意 T 产生一个 `Box<T>` —— 关于 T 是协变的。
 export interface Box<out T> {
   readonly value: T;
 }
 
 export const box = <T>(value: T): Box<T> => ({ value });
-// A consumer is contravariant: it consumes T.
+// Consumer 是逆变的：它消费 T。
 export interface Consumer<in T> {
   consume(value: T): void;
 }
 
 export const stringConsumer: Consumer<string> = { consume: (v) => console.info('got', v) };
-// `Consumer<unknown>` is NOT assignable to `Consumer<string>` (contravariance).
-//   const wider: Consumer<unknown> = stringConsumer; // compile error
-// A `Consumer<Animal>` IS assignable to `Consumer<Dog>` (consumers get less specific).
+// `Consumer<unknown>` 不能赋值给 `Consumer<string>`（逆变性）。
+//   const wider: Consumer<unknown> = stringConsumer; // 编译错误
+// `Consumer<Animal>` 可以赋值给 `Consumer<Dog>`（消费者的具体度更低）。
 const narrower: Consumer<'a' | 'b' | 'c'> = stringConsumer;
 void narrower;
 
 // ---------------------------------------------------------------------------
-// 4. Method bivariance vs. strict function types
+// 4. 方法的双变与严格函数类型
 // ---------------------------------------------------------------------------
 
-// With `strictFunctionTypes: true`, this assignment FAILS:
-//   let f: (x: Animal) => void = (x: Dog) => void; // would be unsound, error.
-// Methods declared with method shorthand are bivariant for legacy reasons.
+// 在 `strictFunctionTypes: true` 下，下面的赋值会失败：
+//   let f: (x: Animal) => void = (x: Dog) => void; // 不健全，将报错。
+// 使用方法简写声明的方法出于历史原因保持双变。
 export interface Animal {
   name: string;
 }
@@ -99,10 +99,10 @@ export interface Dog extends Animal {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Phantom types — carry a type-level tag that has no runtime presence
+// 5. 幻影类型 —— 携带一个在运行时无实际表现，仅在类型层存在的标签
 // ---------------------------------------------------------------------------
 
-// Common use case: branded IDs / state machines.
+// 常见用例：品牌化 ID / 状态机。
 export type Brand<T, B extends string> = T & { readonly __brand: B };
 
 export type UserId = Brand<string, 'UserId'>;
@@ -111,11 +111,11 @@ export type OrderId = Brand<string, 'OrderId'>;
 export const userId = (s: string): UserId => s as UserId;
 export const orderId = (s: string): OrderId => s as OrderId;
 
-// Compile-time error: cannot pass OrderId where UserId expected.
+// 编译期错误：不能把 OrderId 传给期望 UserId 的位置。
 // const _bad: UserId = orderId('o-1');
 
 // ---------------------------------------------------------------------------
-// 6. Conditional inference — building a "Last" type via conditional types
+// 6. 条件类型推断 —— 通过条件类型构造一个 “Last” 类型
 // ---------------------------------------------------------------------------
 
 export type Last<T extends readonly unknown[]> = T extends readonly [...unknown[], infer L] ? L : never;
@@ -124,7 +124,7 @@ export type _LastNum = Last<[1, 2, 3]>; // number
 export type _LastStr = Last<['a', 'b', 'c']>; // "c"
 
 // ---------------------------------------------------------------------------
-// 7. Tuple-style rest in generic positions
+// 7. 泛型位置的元组风格 rest
 // ---------------------------------------------------------------------------
 
 export function tuple<T extends readonly unknown[]>(...args: T): T {
@@ -132,7 +132,7 @@ export function tuple<T extends readonly unknown[]>(...args: T): T {
 }
 
 // ---------------------------------------------------------------------------
-// 8. Type-level sort (illustrates full power of conditional + infer)
+// 8. 类型层排序（展示条件类型 + infer 的完整威力）
 // ---------------------------------------------------------------------------
 
 export type Length<T extends readonly unknown[]> = T['length'];
@@ -150,7 +150,7 @@ type BuildTuple<L extends number, Acc extends unknown[] = []> = Acc['length'] ex
   ? Acc
   : BuildTuple<L, [unknown, ...Acc]>;
 
-// Compile-time check: 5 > 3 is true, 2 > 4 is false.
+// 编译期检查：5 > 3 为 true，2 > 4 为 false。
 type _GtCheck1 = GreaterThan<5, 3>; // true
 type _GtCheck2 = GreaterThan<2, 4>; // false
 void (0 as unknown as _GtCheck1);

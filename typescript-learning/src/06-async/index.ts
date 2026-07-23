@@ -1,20 +1,20 @@
 /**
- * Module 6: Async, Iterators, Generators
+ * 模块 6：异步、迭代器与生成器
  *
- * Covers:
- *  - Promises: typing, `Promise.all` / `Promise.race` / `Promise.allSettled`
- *  - `async`/`await` with try/catch and the "no floating promises" rule
- *  - Generators: `function*`, `yield*`, `return`/`next`
- *  - Async iterators: `AsyncIterable<T>`, `for await ... of`
- *  - Async generators: `async function*`
+ * 涵盖内容：
+ *  - Promise：类型标注、`Promise.all` / `Promise.race` / `Promise.allSettled`
+ *  - 结合 try/catch 使用 `async`/`await`，以及“禁止浮动 Promise”规则
+ *  - 生成器：`function*`、`yield*`、`return`/`next`
+ *  - 异步迭代器：`AsyncIterable<T>`、`for await ... of`
+ *  - 异步生成器：`async function*`
  *  - `Disposable` / `AsyncDisposable` / `using`/`await using`
- *  - `AbortSignal` and `AbortController`
- *  - `Promise.withResolvers()` (ES2024)
- *  - Cancellation patterns
+ *  - `AbortSignal` 和 `AbortController`
+ *  - `Promise.withResolvers()`（ES2024）
+ *  - 取消模式
  */
 
 // ---------------------------------------------------------------------------
-// 1. Promise.all / race / allSettled — exact tuple types
+// 1. Promise.all / race / allSettled — 精确的元组类型
 // ---------------------------------------------------------------------------
 
 export async function loadUserAndPosts(
@@ -34,7 +34,7 @@ async function fetchPosts(_id: string): Promise<readonly { id: string; title: st
   return [];
 }
 
-// Promise.allSettled gives a discriminated union of outcomes.
+// Promise.allSettled 会返回由不同结果构成的可辨识联合。
 export async function bestEffort<T>(
   tasks: readonly (() => Promise<T>)[],
 ): Promise<{ fulfilled: T[]; rejected: { reason: unknown }[] }> {
@@ -49,7 +49,7 @@ export async function bestEffort<T>(
 }
 
 // ---------------------------------------------------------------------------
-// 2. `Promise.withResolvers` — explicit handle for resolve/reject (ES2024)
+// 2. `Promise.withResolvers` — resolve/reject 的显式句柄（ES2024）
 // ---------------------------------------------------------------------------
 
 export function deferred<T>(): {
@@ -61,26 +61,26 @@ export function deferred<T>(): {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Generators
+// 3. 生成器
 // ---------------------------------------------------------------------------
 
 export function* range(start: number, end: number, step = 1): Generator<number, void, unknown> {
   for (let i = start; i < end; i += step) yield i;
 }
 
-// `yield*` delegates to another iterable.
+// `yield*` 委托给另一个可迭代对象。
 export function* flat<T>(items: readonly Iterable<T>[]): Generator<T, void, unknown> {
   for (const it of items) yield* it;
 }
 
-// `next(value)` types: Generator<Yield, Return, Next>.
+// `next(value)` 的类型：Generator<Yield, Return, Next>。
 export function* echo<T>(): Generator<T, T, T> {
-  const v: T = yield undefined as unknown as T; // placeholder
+  const v: T = yield undefined as unknown as T; // 占位值
   return v;
 }
 
 // ---------------------------------------------------------------------------
-// 4. Async iterators
+// 4. 异步迭代器
 // ---------------------------------------------------------------------------
 
 export interface PageQuery {
@@ -93,7 +93,7 @@ export interface PageResult<T> {
   nextCursor?: string;
 }
 
-// A paged async generator: yields pages until exhausted.
+// 分页异步生成器：持续生成页面，直至数据耗尽。
 export async function* paginate<T>(
   fetch: (q: PageQuery) => Promise<PageResult<T>>,
   pageSize: number,
@@ -109,7 +109,7 @@ export async function* paginate<T>(
   }
 }
 
-// `for await ... of` consumes an async iterator.
+// `for await ... of` 消费异步迭代器。
 export async function collect<T>(iter: AsyncIterable<T>): Promise<T[]> {
   const out: T[] = [];
   for await (const x of iter) out.push(x);
@@ -117,7 +117,7 @@ export async function collect<T>(iter: AsyncIterable<T>): Promise<T[]> {
 }
 
 // ---------------------------------------------------------------------------
-// 5. AbortController / AbortSignal — cancellation
+// 5. AbortController / AbortSignal — 取消操作
 // ---------------------------------------------------------------------------
 
 export function withTimeout<T>(p: Promise<T>, ms: number, signal?: AbortSignal): Promise<T> {
@@ -140,7 +140,7 @@ export function withTimeout<T>(p: Promise<T>, ms: number, signal?: AbortSignal):
   return promise;
 }
 
-// `for await ... of` respects an AbortSignal via the iterator's `return()`.
+// `for await ... of` 通过迭代器的 `return()` 遵循 AbortSignal。
 export async function* abortable<T>(
   source: AsyncIterable<T>,
   signal: AbortSignal,
@@ -152,7 +152,7 @@ export async function* abortable<T>(
 }
 
 // ---------------------------------------------------------------------------
-// 6. AsyncDisposable and `await using`
+// 6. AsyncDisposable 与 `await using`
 // ---------------------------------------------------------------------------
 
 export interface Logger extends AsyncDisposable {
@@ -182,14 +182,14 @@ async function openStream(): Promise<Stream> {
 }
 
 export async function doWork(): Promise<void> {
-  // `await using` is the new resource management syntax (TS 5.2+).
+  // `await using` 是新的资源管理语法（TS 5.2+）。
   await using logger = await makeLogger();
   logger.log('hello');
-  // On scope exit, `[Symbol.asyncDispose]()` is called.
+  // 退出作用域时，会调用 `[Symbol.asyncDispose]()`。
 }
 
 // ---------------------------------------------------------------------------
-// 7. `Symbol.iterator` / `Symbol.asyncIterator` typing
+// 7. `Symbol.iterator` / `Symbol.asyncIterator` 类型标注
 // ---------------------------------------------------------------------------
 
 export class AsyncCounter implements AsyncIterable<number> {
@@ -200,13 +200,13 @@ export class AsyncCounter implements AsyncIterable<number> {
 }
 
 // ---------------------------------------------------------------------------
-// 8. Promised types — extracting values from a Promise recursively
+// 8. Promise 类型 — 从 Promise 中递归提取值
 // ---------------------------------------------------------------------------
 
 export type AwaitedDeep<T> = T extends Promise<infer Inner> ? AwaitedDeep<Inner> : T;
 
 // ---------------------------------------------------------------------------
-// 9. Type-safe sequential vs parallel execution
+// 9. 类型安全的串行与并行执行
 // ---------------------------------------------------------------------------
 
 export async function sequential<T, R>(

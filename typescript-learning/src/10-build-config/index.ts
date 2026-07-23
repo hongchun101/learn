@@ -1,146 +1,145 @@
 /**
- * Module 10: Build & Project Configuration
+ * 模块 10：构建与项目配置
  *
- * Covers (in code comments, not runtime — these are configuration recipes):
- *  - tsconfig matrix: base, build, test, lib
- *  - `composite: true` + project references
- *  - ESM vs CJS: `"type": "module"`, `.cjs`/`.mjs` extensions
+ * 涵盖（以代码注释形式给出，不是运行时内容——它们是配置配方）：
+ *  - tsconfig 矩阵：base、build、test、lib
+ *  - `composite: true` 与项目引用
+ *  - ESM 与 CJS：`"type": "module"`，`.cjs`/`.mjs` 扩展名
  *  - `moduleResolution: "Bundler" | "NodeNext" | "Node"`
- *  - Path aliases in tsconfig vs. runtime
- *  - `isolatedModules`, `verbatimModuleSyntax`, `noUncheckedIndexedAccess`
- *  - Library declarations: `declaration: true`, `declarationMap: true`
- *  - Source maps: `sourceMap: true`, `inlineSources: true`
- *  - OutDir structure
- *  - Worker / DOM lib selection
- *  - Type-only package exports
+ *  - tsconfig 中的路径别名与运行时的对应
+ *  - `isolatedModules`、`verbatimModuleSyntax`、`noUncheckedIndexedAccess`
+ *  - 库的声明输出：`declaration: true`、`declarationMap: true`
+ *  - 源码映射：`sourceMap: true`、`inlineSources: true`
+ *  - outDir 结构
+ *  - Worker / DOM lib 选择
+ *  - 仅类型的包导出
  *
- * The runtime code in this file is intentionally tiny — it's the comments
- * that are the lesson.
+ * 本文件中的运行时代码刻意保持极少。
+ * 注释才是学习重点。
  */
 
 // ---------------------------------------------------------------------------
-// 1. tsconfig matrix — what each config is for
+// 1. tsconfig 矩阵——每个配置的用途
 // ---------------------------------------------------------------------------
 
-//   tsconfig.json        — base: shared compilerOptions, includes src + tests
-//   tsconfig.build.json  — extends base, sets noEmit:false + outDir + rootDir
-//   tsconfig.test.json   — extends base, sets types: ["vitest/globals", "node"]
-//   tsconfig.lib.json    — extends build, adds composite:true for project refs
-//   tsconfig.react.json  — extends build, swaps target/lib to ES2020+DOM+ES2022
+//   tsconfig.json        — 基础：共享 compilerOptions，包含 src 与 tests
+//   tsconfig.build.json  — 继承 base，设置 noEmit:false + outDir + rootDir
+//   tsconfig.test.json   — 继承 base，设置 types: ["vitest/globals", "node"]
+//   tsconfig.lib.json    — 继承 build，为项目引用追加 composite:true
+//   tsconfig.react.json  — 继承 build，将 target/lib 切换为 ES2020+DOM+ES2022
 //
-//   Each consumer (vite, tsc, eslint) picks the right one.
+//   每个消费者（vite、tsc、eslint）各自选用合适的配置。
 
 // ---------------------------------------------------------------------------
-// 2. Project references — incremental builds
+// 2. 项目引用——增量构建
 // ---------------------------------------------------------------------------
 
-//   In a monorepo, packages reference each other with:
+//   在 monorepo 中，包之间互相引用：
 //     {
 //       "references": [
 //         { "path": "./packages/core" },
 //         { "path": "./packages/ui" }
 //       ]
 //     }
-//   And the referenced tsconfigs use:
+//   被引用的 tsconfig 需要：
 //     "composite": true,
 //     "declaration": true,
 //     "declarationMap": true
-//   Run: `tsc -b` to build incrementally using `.tsbuildinfo` files.
+//   运行：`tsc -b` 基于 `.tsbuildinfo` 文件进行增量构建。
 
 // ---------------------------------------------------------------------------
-// 3. ESM/CJS interop matrix
+// 3. ESM/CJS 互操作矩阵
 // ---------------------------------------------------------------------------
 
-//   "type": "module" in package.json ⇒ all .js treated as ESM.
-//   .cjs files are always CJS, .mjs always ESM, regardless of "type".
-//   `import x from './y.js'` — the .js extension is mandatory in ESM
-//   unless `moduleResolution: "Bundler"` is set.
+//   在 package.json 中设置 "type": "module" ⇒ 所有 .js 都视为 ESM。
+//   .cjs 文件始终是 CJS，.mjs 始终是 ESM，无论 "type" 是什么。
+//   `import x from './y.js'`——在 ESM 中必须显式写 .js 扩展名，
+//   除非设置了 `moduleResolution: "Bundler"`。
 //
-//   When depending on a CJS module from ESM:
+//   当 ESM 依赖 CJS 模块时：
 //     import pkg from 'cjs-pkg';
-//     const { named } = pkg; // access named export via .default or destructure
-//   Or with `esModuleInterop: true` (the default) you can `import pkg from 'cjs-pkg'`.
+//     const { named } = pkg; // 通过 .default 或解构访问具名导出
+//   也可以在 `esModuleInterop: true`（默认值）时直接 `import pkg from 'cjs-pkg'`。
 //
-//   For dual-publishing: see the "Conditional exports" block in module 05.
+//   双发布相关：参见模块 05 中的 "Conditional exports" 段落。
 
 // ---------------------------------------------------------------------------
-// 4. `isolatedModules` and `verbatimModuleSyntax`
+// 4. `isolatedModules` 与 `verbatimModuleSyntax`
 // ---------------------------------------------------------------------------
 
-//   `isolatedModules: true` forces each file to be parseable in isolation
-//   (e.g. esbuild, swc). Implications:
-//     - You can't `const x = foo + bar` where foo is type-only.
-//     - You must use `import type` for type-only imports.
-//   `verbatimModuleSyntax: true` is stricter: any unused import that the
-//   compiler would have elided must be marked `import type`.
-//   Always pair these with `tsc --noEmit` in CI.
+//   `isolatedModules: true` 强制每个文件都能被独立解析（例如 esbuild、swc）。
+//   影响：
+//     - 不允许 `const x = foo + bar`，其中 foo 是仅类型。
+//     - 仅类型的导入必须写成 `import type`。
+//   `verbatimModuleSyntax: true` 更严格：编译器原本会移除的未使用导入，
+//   必须显式标记为 `import type`。
+//   在 CI 中务必搭配 `tsc --noEmit` 使用。
 
 // ---------------------------------------------------------------------------
 // 5. `noUncheckedIndexedAccess`
 // ---------------------------------------------------------------------------
 
-//   With this on, `arr[i]` is `T | undefined`, not just `T`.
-//   Forces you to handle "missing" explicitly — catches off-by-one bugs.
-//   Trade-off: more nullish checks. Keep it on; the safety is worth it.
+//   开启后，`arr[i]` 的类型为 `T | undefined`，而不仅是 `T`。
+//   强制显式处理“缺失”情形——有助于捕获 off-by-one 错误。
+//   代价是更多空值检查；建议保持开启，换来的安全性值得。
 
 // ---------------------------------------------------------------------------
-// 6. Path aliases — tsconfig + runtime
+// 6. 路径别名——tsconfig 与运行时
 // ---------------------------------------------------------------------------
 
-//   tsconfig.json has:
+//   tsconfig.json 中：
 //     "paths": { "@/*": ["src/*"] }
-//   Node won't read tsconfig. You need a runtime mirror:
-//     - tsx: reads tsconfig automatically.
-//     - vitest: configure `resolve.alias` in `vitest.config.ts`.
-//     - ts-node: `--paths` flag or `tsconfig-paths` package.
-//     - bundlers (Vite/esbuild/webpack): configure alias in their config.
-//   Keep them in sync — or use a tool like `tsconfig-paths` to load them at runtime.
+//   Node 不会读取 tsconfig，需要运行时镜像：
+//     - tsx：自动读取 tsconfig。
+//     - vitest：在 `vitest.config.ts` 中配置 `resolve.alias`。
+//     - ts-node：使用 `--paths` 标志或 `tsconfig-paths` 包。
+//     - 打包器（Vite/esbuild/webpack）：在其配置中设置 alias。
+//   需要保持二者同步——或使用 `tsconfig-paths` 之类的工具在运行时加载它们。
 
 // ---------------------------------------------------------------------------
-// 7. Library declaration output
+// 7. 库的声明文件输出
 // ---------------------------------------------------------------------------
 
-//   For publishing:
-//     "declaration": true,                  // emit .d.ts files
-//     "declarationMap": true,               // emit .d.ts.map files (for go-to-def)
-//     "sourceMap": true,                    // emit .js.map files
-//     "inlineSources": true,                // embed source in source maps
-//     "removeComments": false,              // keep JSDoc
-//   This lets consumers get typed imports AND navigation that follows into
-//   your source code.
+//   发布时：
+//     "declaration": true,                  // 生成 .d.ts 文件
+//     "declarationMap": true,               // 生成 .d.ts.map 文件（用于跳转到定义）
+//     "sourceMap": true,                    // 生成 .js.map 文件
+//     "inlineSources": true,                // 把源码嵌入到 source map 中
+//     "removeComments": false,              // 保留 JSDoc
+//   这样消费者既能获得类型化导入，也能“跳转到定义”跟入你的源码。
 
 // ---------------------------------------------------------------------------
-// 8. Library target & lib selection
+// 8. 库的 target 与 lib 选择
 // ---------------------------------------------------------------------------
 
-//   target  ES2022 + lib ES2022 ⇒ can use class fields, top-level await, ??., etc.
-//   For older runtimes (Node 14), target ES2020 or ES2019.
-//   For browser: add "DOM" or "DOM.Iterable" to lib.
-//   For workers: omit DOM; the worker globals come from "WebWorker" lib.
+//   target  ES2022 + lib ES2022 ⇒ 可使用 class fields、top-level await、??. 等。
+//   面向更老的运行时（Node 14），可选择 target ES2020 或 ES2019。
+//   浏览器端：向 lib 中加入 "DOM" 或 "DOM.Iterable"。
+//   Worker：去掉 DOM；Worker 全局对象来自 "WebWorker" lib。
 
 // ---------------------------------------------------------------------------
-// 9. Build performance
+// 9. 构建性能
 // --------------------------------------------------------------------------
 
-//   - `incremental: true` writes a .tsbuildinfo cache.
-//   - `tsc -b` uses project references and parallelizes builds.
-//   - `skipLibCheck: true` skips type-checking .d.ts files (huge speedup).
-//   - `isolatedModules` enables parallel transpilation in esbuild/swc.
+//   - `incremental: true` 写入 .tsbuildinfo 缓存。
+//   - `tsc -b` 使用项目引用并并行化构建。
+//   - `skipLibCheck: true` 跳过对 .d.ts 文件的类型检查（速度大幅提升）。
+//   - `isolatedModules` 在 esbuild/swc 中启用并行转译。
 
 // ---------------------------------------------------------------------------
-// 10. Enforcing boundaries between modules
+// 10. 强制模块之间的边界
 // ---------------------------------------------------------------------------
 
-//   - Use path aliases: `import from '@core/x'` not `import from '../../core/x'`.
-//   - ESLint `no-restricted-imports` rule can ban deep imports or
-//     relative paths beyond a depth.
-//   - Lint rules:
+//   - 使用路径别名：`import from '@core/x'`，而不是 `import from '../../core/x'`。
+//   - ESLint 的 `no-restricted-imports` 规则可禁止深层导入
+//     或超过特定层级的相对路径。
+//   - 相关 Lint 规则：
 //       import/no-internal-modules
 //       import/no-cycle
-//       import/order (alphabetical + grouped)
+//       import/order（按字母顺序 + 分组）
 
 // ---------------------------------------------------------------------------
-// Runtime demo: print which `moduleResolution` is active in the project.
+// 运行时演示：打印当前项目中生效的 `moduleResolution`。
 // ---------------------------------------------------------------------------
 
 import { readFileSync } from 'node:fs';

@@ -1,24 +1,22 @@
 /**
- * Module 11: Patterns
+ * 模块 11：模式
  *
- * Covers:
- *  - Type-state machines: encode states in the type so illegal transitions
- *    are compile errors.
- *  - Fluent / builder APIs that only `build()` when the configuration is
- *    fully valid.
- *  - Repository pattern with a generic interface.
- *  - Observer / event-emitter typed with mapped event names.
- *  - Smart constructor + nominal type.
- *  - The "command pattern" via discriminated union.
- *  - Visitor pattern with a discriminated dispatch.
- *  - Saga pattern for async orchestration.
+ * 内容涵盖：
+ *  - 类型状态机：将状态编码进类型，使非法状态转移成为编译错误。
+ *  - 流式 / 构建器 API，只有在配置完全合法时才允许调用 `build()`。
+ *  - 使用泛型接口实现的 Repository 模式。
+ *  - 使用映射事件名进行类型化的 Observer / 事件发射器。
+ *  - 智能构造函数 + 名义类型。
+ *  - 通过可辨识联合实现的“命令模式”。
+ *  - 使用可辨识分派实现的访问者模式。
+ *  - 用于异步编排的 Saga 模式。
  */
 
 import { assertNever, ok, err } from '../01-basics/index.js';
 import type { Result } from '../01-basics/index.js';
 
 // ---------------------------------------------------------------------------
-// 1. Type-state machine (exhaustive)
+// 1. 类型状态机（穷尽式）
 // ---------------------------------------------------------------------------
 
 export type ConnectionState =
@@ -27,8 +25,8 @@ export type ConnectionState =
   | { readonly kind: 'open'; readonly since: Date; readonly peer: string }
   | { readonly kind: 'closed'; readonly since: Date; readonly reason: 'normal' | 'error' };
 
-// The `S extends ConnectionState` parameter pins the state to a specific kind.
-// Method signatures constrain `this` via S so the next state is enforced.
+// `S extends ConnectionState` 参数将状态固定到具体的 kind。
+// 方法签名通过 S 约束 `this`，从而强制下一个状态的合法性。
 export class Connection<S extends ConnectionState = ConnectionState> {
   private constructor(public readonly state: S) {}
   static idle(): Connection<{ kind: 'idle' }> {
@@ -74,11 +72,11 @@ export class Connection<S extends ConnectionState = ConnectionState> {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Builder with literal accumulation
+// 2. 通过字面量累积的构建器
 // ---------------------------------------------------------------------------
 
-// `Builder<Required, Optional>` ensures the user supplies only the keys
-// declared `Required` and may or may not supply `Optional` ones.
+// `Builder<Required, Optional>` 强制使用者必须提供声明为 `Required` 的键，
+// 而 `Optional` 的键则可提供也可不提供。
 export interface QueryParams {
   readonly limit: number;
   readonly offset: number;
@@ -86,13 +84,13 @@ export interface QueryParams {
   readonly fields?: readonly string[];
 }
 
-// Required: limit and offset must be supplied before .build() can succeed.
-// Optional: sort and fields may be supplied; .build() accepts their absence.
-// (Type-level tracking via the `Have` generic on QueryBuilder.)
+// 必填：在 .build() 成功之前必须提供 limit 和 offset。
+// 可选：sort 和 fields 可按需提供；.build() 接受它们缺失的情况。
+// （通过 QueryBuilder 上的 `Have` 泛型在类型层进行追踪。）
 export type Required = 'limit' | 'offset';
 export type Optional = 'sort' | 'fields';
 
-// Internal mutable shape for accumulation. We only expose the readonly view.
+// 内部可变的累积结构。我们仅对外暴露只读视图。
 type MutableQueryParams = {
   -readonly [K in keyof QueryParams]: QueryParams[K];
 };
@@ -127,7 +125,7 @@ export class QueryBuilder<Have extends string = never> {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Repository pattern
+// 3. Repository 模式
 // ---------------------------------------------------------------------------
 
 export interface Identified {
@@ -162,13 +160,13 @@ export class InMemoryRepository<T extends Identified> implements Repository<T> {
 }
 
 // ---------------------------------------------------------------------------
-// 4. Typed event emitter
+// 4. 类型化的事件发射器
 // ---------------------------------------------------------------------------
 
 // `Emitter<{ login: (u: User) => void; logout: (u: User) => void }>`
-//   .on('login', u => ...)  // u is User
-// Constraint: an event map must be a record whose values are functions.
-// We accept any record-shaped type with function values.
+//   .on('login', u => ...)  // u 的类型为 User
+// 约束：事件映射必须是值类型为函数的 Record。
+// 我们接受任何形状为 Record 且值为函数的类型。
 type AnyEventMap = Record<string, (...args: never[]) => unknown>;
 
 export class Emitter<E extends AnyEventMap> {
@@ -191,7 +189,7 @@ export class Emitter<E extends AnyEventMap> {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Visitor pattern
+// 5. 访问者模式
 // ---------------------------------------------------------------------------
 
 export interface ExprVisitor<R> {
@@ -219,9 +217,9 @@ export const expr: {
   neg: (e) => ({ kind: 'neg', expr: e }),
 };
 
-// Visitor: single object that dispatches each Expr kind.
-// Methods reference the named exports directly to avoid `this`-binding
-// surprises (this object is also a value, not a class).
+// Visitor：单一对象，按 Expr 的 kind 进行分派。
+// 方法直接引用具名导出，以避免 `this` 绑定带来的意外
+// （该对象本身也是一个值，而非类）。
 export const evaluate: ExprVisitor<number> = {
   number: (n) => n,
   add: (l, r) => evaluateVisitor(l) + evaluateVisitor(r),
@@ -247,11 +245,11 @@ function evaluateVisitor(e: Expr): number {
 export { evaluateVisitor as visit };
 
 // ---------------------------------------------------------------------------
-// 6. Saga / async orchestration via generator
+// 6. 通过生成器实现的 Saga / 异步编排
 // ---------------------------------------------------------------------------
 
-// A saga is a generator that yields step handles. The runner awaits them
-// and feeds the result back. Keeps async state machines flat and testable.
+// Saga 是一个会产出 step handle 的生成器。运行器会 await 它们，
+// 并把结果回喂给生成器。这让异步状态机保持扁平且易于测试。
 export interface SagaStep<T> {
   readonly kind: 'fetch';
   readonly url: string;
@@ -276,7 +274,7 @@ export async function runSaga<T>(gen: Generator<SagaStep<unknown>, T, unknown>, 
 }
 
 // ---------------------------------------------------------------------------
-// 7. Command pattern
+// 7. 命令模式
 // ---------------------------------------------------------------------------
 
 export type Command =
