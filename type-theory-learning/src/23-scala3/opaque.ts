@@ -1,9 +1,9 @@
-// Opaque type alias in TypeScript.
+// TypeScript 中的 opaque 类型别名。
 //
 //   opaque type UserId = String
 //
-// The alias is private: outside the module `UserId` and `String` are
-// nominally distinct. We encode this with a brand on the value type.
+// 该别名是私有的：模块外 `UserId` 与 `String` 名义上是不同的。
+// 我们通过在值类型上打一个 brand 来实现这一点。
 
 interface UserIdBrand {
   readonly _userId: unique symbol;
@@ -19,7 +19,7 @@ const UserIdModule = (() => {
 
 export const UserId = UserIdModule;
 
-/** Another opaque wrapper for ClientSecret to demonstrate distinct branding. */
+/** 另一个 opaque 包装类型 ClientSecret，用于展示不同的 brand。 */
 interface ClientSecretBrand {
   readonly _cs: unique symbol;
 }

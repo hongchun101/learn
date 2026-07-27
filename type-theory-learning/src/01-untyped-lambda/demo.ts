@@ -1,5 +1,5 @@
 // @ts-nocheck
-// Runnable demo for Chapter 01.
+// 第 01 章的可运行 demo。
 //
 //   $ npx tsx src/01-untyped-lambda/demo.ts
 
@@ -53,13 +53,13 @@ export function runDemo(): void {
   const fixed = evalNormalOrder(C.app(C.Y, C.lam('g', C.lam('x', C.v('x')))), 1000);
   console.log('[Y]      Y (λg.λx.x) applied to identity →', pretty(fixed));
 
-  // List head on `cons 1 nil`.
+  // 在 `cons 1 nil` 上求列表首元素。
   void C.head;
   void C.isZero;
   console.log('[ok]  Chapter 01 demo finished');
 }
 
-// Re-export C so demo compiles after import optimisation; record used for one case.
+// 重新导出 C 以便 demo 在导入优化后仍能编译；此记录在某用例中被使用。
 const _: Record<string, unknown> = { Church: C };
 void _;
 

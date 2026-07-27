@@ -1,20 +1,20 @@
-// Lexer + parser for the surface syntax of the untyped lambda calculus.
+// 无类型 lambda 演算表面语法的词法分析器与语法分析器。
 //
-//   t   ::=  λ x . t        (lambda, right-assoc)
-//         | t t              (application, left-assoc)
+//   t   ::=  λ x . t        （lambda，右结合）
+//         | t t              （application，左结合）
 //         | x | ( t )
 //
-// `lam` may also be written as `\` (ASCII).
+// `lam` 也可以写成 `\`（ASCII 形式）。
 //
-// Grammar:
+// 文法：
 //
 //   expr   ::= lambda | app
 //   lambda ::= 'λ' x '.' expr
 //   app    ::= atom+
 //   atom   ::= x | '(' expr ')'
 //
-// Top level accepts an expr or a parenthesised expr (which may be followed by
-// further atoms forming an application).
+// 顶层接受一个 expr 或一个带括号的 expr（其后还可接其他 atom
+// 构成 application）。
 
 import type { Term, Var } from './ast';
 import { app, lam, v } from './ast';
@@ -130,8 +130,8 @@ export function parse(input: string): Term {
     return lam(head.name, body);
   }
 
-  // Top-level expression: lambda OR app, but a (expr)-prefix may also be followed
-  // by more atoms, forming an application. We handle both cases in one routine.
+  // 顶层表达式：lambda 或 app，但 (expr) 前缀之后还可接更多
+  // atom 从而构成 application。我们在同一个例程中处理这两种情况。
   function parseExpr(): Term {
     const head = peek();
     if (head === undefined) throw new ParseError('unexpected end of input');

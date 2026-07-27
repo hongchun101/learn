@@ -1,21 +1,19 @@
-//! Type-state builder, phantom types, and zero-sized types.
+//! 类型状态构建器、幽灵类型与零大小类型。
 //!
-//! This module shows how to use the type system to make invalid states
-//! unrepresentable. Three patterns:
+//! 本模块展示如何借助类型系统让非法状态无法被表达。包含三种模式：
 //!
-//! 1. **Type-state builder**: each method on the builder is only available when
-//!    the previous method has been called, encoded with marker types.
-//! 2. **Phantom types**: a generic parameter that carries information for the
-//!    type system but is zero-sized at runtime.
-//! 3. **Zero-sized types**: unit structs used as compile-time witnesses.
+//! 1. **类型状态构建器**：构建器上每个方法仅在上一个方法被调用后才可用，
+//!    通过标记类型进行编码。
+//! 2. **幽灵类型**：一个仅用于类型系统、运行时不占空间的泛型参数。
+//! 3. **零大小类型**：作为编译期见证使用的 unit 结构体。
 
 use std::marker::PhantomData;
 
 // ---------------------------------------------------------------------------
-// 1. Type-state builder
+// 1. 类型状态构建器
 // ---------------------------------------------------------------------------
 
-/// Public, type-state-marked handle. Only `Builder<Empty>` is constructible.
+/// 公开的、带类型状态标记的句柄。只有 `Builder<Empty>` 可以被构造。
 pub struct Builder<State> {
     items: Vec<String>,
     _state: PhantomData<State>,
@@ -82,10 +80,10 @@ fn add(mut v: Vec<String>, item: String) -> Vec<String> {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Phantom types
+// 2. 幽灵类型
 // ---------------------------------------------------------------------------
 
-/// A wrapper that exists purely to carry a phantom type parameter.
+/// 仅用于携带幽灵类型参数的包装器。
 pub struct Typed<Tag, T> {
     inner: T,
     _tag: PhantomData<Tag>,
@@ -127,10 +125,10 @@ pub fn kilometers<T>(value: T) -> Typed<Kilometers, T> {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Zero-sized types
+// 3. 零大小类型
 // ---------------------------------------------------------------------------
 
-/// A compile-time witness that does not occupy space at runtime.
+/// 编译期见证，运行时不占据空间。
 #[derive(Debug)]
 pub struct Authenticated;
 #[derive(Debug)]

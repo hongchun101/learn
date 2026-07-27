@@ -1,12 +1,10 @@
 -- |
--- = Chapter 08 — IO, text, ByteString, exceptions
+-- = 第八章 — IO、Text、ByteString 与异常 =
 --
--- * `IO a` is the type of "computations that describe interaction
---   with the world."
--- * `getArgs` returns the command-line arguments.
--- * `withFile` opens a file and runs an action on the handle, freeing
---   it on every exit path (including exceptions) via bracket.
--- * `Text` for human-readable Unicode; `ByteString` for raw bytes.
+-- * `IO a` 是“描述与世界交互的计算”的类型。
+-- * `getArgs` 返回命令行参数。
+-- * `withFile` 打开文件并在句柄上运行动作，通过 bracket 在每条退出路径（包括异常）上释放句柄。
+-- * `Text` 用于人类可读的 Unicode；`ByteString` 用于原始字节。
 module IOChapter (withFileText, withFileBytes, argc, main', selfWrite,
                   TooBig(..), ensureSmall, tryTooBig, transcode, ioChapter) where
 
@@ -18,27 +16,26 @@ import           System.IO          (withFile, IOMode(..))
 import           System.Environment (getArgs)
 import           Control.Exception  (IOException, try, evaluate, throwIO, Exception)
 
--- | Read a file's body via `withFile`. `withFile` itself is the
---   built-in bracket specialised to handles, so all early exits
---   (including async exceptions) free the handle.
+-- | 通过 `withFile` 读取文件内容。`withFile` 本身是专用于句柄的
+--   内置 bracket，因此所有提前退出（包括异步异常）都会释放句柄。
 withFileText :: FilePath -> (T.Text -> IO a) -> IO a
 withFileText path k =
   withFile path ReadMode $ \h -> do
     contents <- TIO.hGetContents h
     k contents
 
--- | Same for binary.
+-- | 二进制版本。
 withFileBytes :: FilePath -> (B.ByteString -> IO a) -> IO a
 withFileBytes path k =
   withFile path ReadMode $ \h -> do
     contents <- BC.hGetContents h
     k contents
 
--- | Number of command-line arguments.
+-- | 命令行参数数量。
 argc :: IO Int
 argc = length <$> getArgs
 
--- | Hello-world CLI: uses `main'`, not `main`. Kept educational.
+-- | 问候世界命令行程序：使用 `main'`，而不是 `main`。保留用于教学。
 main' :: IO ()
 main' = do
   xs <- getArgs
@@ -49,7 +46,7 @@ main' = do
       putStrLn ("got " ++ show (length xs) ++ " args")
       mapM_ (\a -> putStrLn (" -> " ++ a)) xs
 
--- | Safe write to a sample file (folded into its own scope).
+-- | 安全写入示例文件（折叠到其自身作用域中）。
 selfWrite :: IO ()
 selfWrite = do
   let f = "data/sample-output.txt"
@@ -59,30 +56,30 @@ selfWrite = do
     Right () -> TIO.putStrLn ("wrote: " <> T.pack f)
     Left err -> TIO.putStrLn ("could not write: " <> T.pack (show err))
 
--- | A typed exception we'll deliberately throw.
+-- | 一个我们将有意抛出的类型化异常。
 newtype TooBig = TooBig { howBig :: Int }
   deriving (Show)
 
 instance Exception TooBig where
-  -- Use default methods (toException, fromException).
+  -- 使用默认方法（toException、fromException）。
 
--- | Force a value to WHNF and throw if it is over the limit.
+-- | 将值强制到 WHNF，若超过限制则抛出异常。
 ensureSmall :: Int -> Int -> IO ()
 ensureSmall max n = do
-  v <- evaluate n           -- forces `n` to its value
+  v <- evaluate n           -- 将 `n` 强制为其值
   case compare v max of
     LT -> pure ()
     _  -> throwIO (TooBig v)
 
--- | Helper: catch TooBig and return Either.
+-- | 捕获 TooBig 并返回 Either。
 tryTooBig :: IO a -> IO (Either TooBig a)
 tryTooBig = try
 
--- | A simple pretty-printer over Text.
+-- | 对 Text 执行简单的美化打印。
 transcode :: T.Text -> T.Text
 transcode = T.toLower . T.replace (T.pack ":q") (T.pack "")
 
--- | The exported demo.
+-- | 导出的演示。
 ioChapter :: IO ()
 ioChapter = do
   putStrLn "-- io"
@@ -91,7 +88,6 @@ ioChapter = do
   putStrLn $ "transcode \"Hello:q\" = " <> show (transcode (T.pack "Hello:q"))
   putStrLn $ "ensureSmall 5 3 = " <> show (tryTooBig (ensureSmall 5 3))
   putStrLn $ "ensureSmall 5 7 = " <> show (tryTooBig (ensureSmall 5 7))
-  -- `selfWrite` writes a sample file; safe even if the directory
-  -- is read-only.
+  -- `selfWrite` 写入示例文件；即使目录为只读也很安全。
   selfWrite
 

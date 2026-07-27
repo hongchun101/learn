@@ -1,10 +1,9 @@
 /**
- * Module 09 — TypeScript contract surface.
+ * 模块 09 —— TypeScript 契约接口面。
  *
- * Defines *branded* types for Ed25519 keys so the type system prevents the
- * most common foot-gun: passing a private-key seed where a public key is
- * expected (or vice versa). Both are 32-byte Uint8Array; without branding
- * they are interchangeable.
+ * 为 Ed25519 密钥定义*品牌化（branded）*类型，使类型系统能防止
+ * 最常见的“踩坑”：在期望公钥的地方传入了私钥种子（或反之）。
+ * 二者都是 32 字节的 Uint8Array；没有品牌化时它们可以互换。
  */
 
 declare const PRIVATE_KEY_BRAND: unique symbol;
@@ -14,8 +13,9 @@ export type Ed25519PrivateSeed = Uint8Array & { readonly [PRIVATE_KEY_BRAND]: tr
 export type Ed25519PublicPoint = Uint8Array & { readonly [PUBLIC_KEY_BRAND]: true };
 
 /**
- * Mint a PrivateSeed from any 32-byte array.
- * Throws if the input is not exactly 32 bytes (a real safety, not a typesystem one).
+ * 从任意 32 字节数组铸造 PrivateSeed。
+ * 若输入不是恰好 32 字节则抛出异常（这是真正的运行时安全，
+ * 而非仅类型系统层面的检查）。
  */
 export function asPrivateSeed(b: Uint8Array): Ed25519PrivateSeed {
   if (b.length !== 32) throw new Error('Ed25519 seed must be 32 bytes');
@@ -28,9 +28,8 @@ export function asPublicPoint(b: Uint8Array): Ed25519PublicPoint {
 }
 
 /**
- * Sign-and-verify operations are now type-safe at the boundary.
- * @comptime This compile-time-evidenced function cannot be called with
- *   arguments of the wrong brand.
+ * 签名与验签操作现在在边界处具有类型安全保证。
+ * @comptime 该函数在编译期得到保证：不能传入错误品牌的参数。
  */
 export interface TypedSignatureScheme {
   sign(sk: Ed25519PrivateSeed, message: Uint8Array): Uint8Array;

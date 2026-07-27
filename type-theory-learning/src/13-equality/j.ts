@@ -1,13 +1,13 @@
-// Martin-Löf identity type as a deep runtime check.
+// Martin-Löf 同一性类型，以深层运行时检查的形式实现。
 //
-// We do not have access to a real prover; this chapter demonstrates the
-// *interface* of the J eliminator and `transport`.
+// 我们没有真正的证明器可用；本章展示的是 J 消去子和 `transport`
+// 的*接口*。
 
 export interface Eq<A, B> {
   readonly _eq: true;
   readonly _self: A;
   readonly _target: B;
-  /** A proof witness. For us: a structural equality holds when `equal` says so. */
+  /** 证明见证。在我们的实现里：当 `equal` 成立时即视为结构相等。 */
   readonly witness: (a: A, b: B) => boolean;
 }
 
@@ -21,8 +21,8 @@ export const refl = <A>(a: A): Eq<A, A> => ({
 /**
  * `j : (A : Type)(x : A)(P : (y : A) → Eq<A,A> → Type) → P(x, refl(x)) → (y : A)(eq : Eq<A,A>) → P(y, eq)`
  *
- * We approximate it with a TypeScript runtime that accepts the motive `P`
- * and a base case for `refl(x)`, and applies it whenever an equality holds.
+ * 我们用一个 TypeScript 运行时来近似：接受动机 `P` 与 `refl(x)` 的基例，
+ * 并在等式成立时应用之。
  */
 export const j =
   <A, B>(a: A, base: (x: A) => unknown) =>
@@ -31,7 +31,7 @@ export const j =
     throw new Error('J: not equal');
   };
 
-/** `transport : Eq<A, B> → F<A> → F<B>` — runtime: identity through a function. */
+/** `transport : Eq<A, B> → F<A> → F<B>` — 运行时：通过一个函数实现同一性。 */
 export const transport = <A, B, F>(eq: Eq<A, B>, fa: (a: A) => F, b: B): F => {
   if (eq.witness(eq._self, b)) return fa(eq._self);
   throw new Error('transport: cannot transport through non-equality');

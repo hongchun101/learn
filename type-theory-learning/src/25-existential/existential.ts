@@ -1,4 +1,4 @@
-// Existential types modelled as a data-class hiding the hidden type.
+// 存在类型，模拟为隐藏内部类型的数据类。
 
 export interface Exists<P extends ReadonlyArray<unknown>, R> {
   readonly project: (...args: P) => R;

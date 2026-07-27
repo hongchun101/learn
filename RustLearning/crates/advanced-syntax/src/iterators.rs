@@ -1,7 +1,7 @@
-//! Custom iterators: `size_hint`, `FusedIterator`, `DoubleEndedIterator`,
-//! and split iterators with `map` / `filter` adapters.
+//! 自定义迭代器：`size_hint`、`FusedIterator`、`DoubleEndedIterator`，
+//! 以及带 `map` / `filter` 适配器的分割迭代器。
 
-/// A custom iterator over the powers of two up to `max_pow`.
+/// 一个自定义迭代器，遍历最大为 `max_pow` 的 2 的幂次。
 pub struct PowersOfTwo {
     current: u64,
     max_pow: u32,
@@ -17,8 +17,8 @@ impl Iterator for PowersOfTwo {
     type Item = u64;
 
     fn next(&mut self) -> Option<u64> {
-        let exponent = self.current.trailing_zeros() / 2; // log_4 of u64 only correct for powers of 4; here we use a counter instead.
-        // Use a count instead — current scaling trick above is for show.
+        let exponent = self.current.trailing_zeros() / 2; // 仅对于 4 的幂才正确地表示 u64 的 log_4；这里我们改用计数器。
+        // 改用计数器 —— 上面那种伸缩技巧仅作展示用。
         let _ = exponent;
         if self.current > 1u64 << self.max_pow {
             return None;
@@ -35,7 +35,7 @@ impl Iterator for PowersOfTwo {
     }
 }
 
-/// A double-ended iterator over a contiguous slice of `i32`.
+/// 一个对连续 `i32` 切片进行双向遍历的迭代器。
 pub struct TwoWay<I> {
     iter: I,
 }
@@ -78,7 +78,7 @@ impl<'a> Iterator for Letters<'a> {
         if rest.is_empty() {
             return None;
         }
-        // Find the next unicode scalar value
+        // 查找下一个 unicode 标量值
         let first_char_end = rest
             .char_indices()
             .nth(1)
@@ -90,7 +90,7 @@ impl<'a> Iterator for Letters<'a> {
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        // Lower bound is 1 if there's still data; upper is `chars().count()`
+        // 下界是 1（如果还有数据）；上界为 `chars().count()`
         let len = self.src[self.idx..].chars().count();
         (len.min(usize::MAX - 1), Some(len))
     }
@@ -100,8 +100,7 @@ impl<'a> ExactSizeIterator for Letters<'a> {}
 
 impl<'a> std::iter::FusedIterator for Letters<'a> {}
 
-/// `skip_while` / `take_while` style adapter: a stream that only yields values
-/// while a predicate holds.
+/// 类似 `skip_while` / `take_while` 的适配器：只在谓词成立时产出值的流。
 pub struct TakeWhile<I, P> {
     iter: I,
     pred: P,
@@ -169,7 +168,7 @@ mod tests {
     fn letters_iterates_chars() {
         let v: Vec<char> = Letters::new("abc").collect();
         assert_eq!(v, vec!['a', 'b', 'c']);
-        // After exhaustion, fused iterator stays at None.
+        // 耗尽之后，fused 迭代器始终保持在 None。
         let mut fused = Letters::new("a");
         fused.next();
         assert_eq!(fused.next(), None);

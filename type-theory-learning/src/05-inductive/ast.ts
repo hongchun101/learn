@@ -1,10 +1,10 @@
-// Recursive / coinductive types.
+// 递归 / 余递归类型。
 //
-//   μ α. τ            (least fixed-point — inductive)
-//   ν α. τ            (greatest fixed-point — coinductive)
+//   μ α. τ            （最小不动点 —— 归纳）
+//   ν α. τ            （最大不动点 —— 余归纳）
 //
-// Folding:  fold : ∀X. (F X → X) → μ α. F α → X
-// Unfolding: unfold : μ α. F α → F (μ α. F α)
+// 折叠：  fold : ∀X. (F X → X) → μ α. F α → X
+// 展开：  unfold : μ α. F α → F (μ α. F α)
 
 import type { Type, Var } from '../04-adt/ast';
 
@@ -19,7 +19,7 @@ export type RecTerm<Term> =
 export const mu = (v: Var, body: Type): RecType => ({ kind: 'mu', var: v, body });
 export const nu = (v: Var, body: Type): RecType => ({ kind: 'nu', var: v, body });
 
-/** Pretty-print a recursive type. */
+/** 美化输出一个递归类型。 */
 export function prettyRec(r: RecType): string {
   if (r.kind === 'mu') return `μ ${r.var}.${formatType(r.body)}`;
   return `ν ${r.var}.${formatType(r.body)}`;

@@ -3,7 +3,7 @@ package io.learncrypto;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 
-/** Wraps SecureRandom with a tiny checked API. */
+/** 用极简且类型安全的 API 包装 SecureRandom。 */
 public final class Csprng {
     private static final SecureRandom RNG = new SecureRandom();
 

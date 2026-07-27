@@ -1,4 +1,4 @@
-// A simple `Vec n a` indexed by length; operations preserve the index.
+// 一个按长度索引的简单 `Vec n a`；操作保留索引。
 
 export interface VNil<A> {
   readonly _kind: 'nil';
@@ -22,7 +22,7 @@ export const cons = <A>(x: A, xs: VNil<A> | VCons<A>): VCons<A> => ({
   items: [x, ...xs.items],
 });
 
-/** Append:  Vec(n) ++ Vec(m) = Vec(n+m). */
+/** 拼接：  Vec(n) ++ Vec(m) = Vec(n+m)。 */
 export const append = <A>(xs: VCons<A>, ys: VCons<A> | VNil<A>): VCons<A> => {
   const left = [...xs.items];
   const right = 'items' in ys ? [...ys.items] : [];

@@ -1,12 +1,12 @@
 /**
- * Module 04 — Hash functions and the length-extension property.
+ * 模块 04 —— 哈希函数与长度扩展属性。
  *
- * Three illustrative scripts:
- *   1. SHA-256 of empty input → canonical value.
- *   2. Length-extension: given SHA-256(M) and |M|, an attacker can compute
- *      SHA-256(M ‖ padding ‖ X) without knowing M. (Demonstration only.)
- *   3. HMAC & SHA-256 over (k, m) — show that HMAC is not length-extensible
- *      (this is why we use it for MAC).
+ * 三个示例脚本：
+ *   1. SHA-256 对空输入的哈希——标准结果。
+ *   2. 长度扩展：给定 SHA-256(M) 与 |M|，攻击者可以在不知 M 的情况下
+ *      计算 SHA-256(M ‖ padding ‖ X)。（仅作演示。）
+ *   3. HMAC 与 SHA-256 对 (k, m) 的结果——展示 HMAC 不可被长度扩展
+ *      （这也正是它在 MAC 中被采用的原因）。
  */
 
 import { createHash, createHmac } from 'node:crypto';
@@ -14,7 +14,7 @@ import { createHash, createHmac } from 'node:crypto';
 function sha256(data: Buffer): Buffer { return createHash('sha256').update(data).digest(); }
 
 // ---------------------------------------------------------------------------
-// 1. Canonical hashes.
+// 1. 标准哈希输出。
 // ---------------------------------------------------------------------------
 
 export function canonicalHashes(): void {
@@ -25,16 +25,16 @@ export function canonicalHashes(): void {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Length-extension demonstration.
+// 2. 长度扩展示范。
 // ---------------------------------------------------------------------------
 
 /**
- * SHA-256 Merkle–Damgård internal state: a 256-bit intermediate value.
- * After processing N blocks, the state *is* the next input to the compression
- * function. Hence, given (state, length), we can extend with another block.
+ * SHA-256 内部 Merkle–Damgård 状态：256 位的中间值。处理完 N 个块后，
+ * 该状态即为压缩函数的下一输入；因此，给定 (state, length)，就可以再扩
+ * 展一个块。
  *
- * For a real attacker model this is only profitable against hash(M ‖ key)
- * style MACs, never against HMAC.
+ * 对于真实的攻击模型，这一特性只对 hash(M ‖ key) 这类 MAC 形式有利，
+ * 永远不会影响 HMAC。
  */
 function mdPadding(messageLenBytes: number): Buffer {
   const bitLen = BigInt(messageLenBytes) * 8n;
@@ -47,15 +47,14 @@ function mdPadding(messageLenBytes: number): Buffer {
 
 export function lengthExtensionDemo(): void {
   console.log('\n=== Length-extension (illustrative) ===');
-  // The attacker has H(M) and |M|. They do not know M (e.g. M is a JWT secret
-  // cookie). They choose an extension X and request H(M ‖ pad ‖ X).
+  // 攻击者拥有 H(M) 与 |M|，但并不知道 M（例如 M 是 JWT 的秘密 Cookie）。
+  // 他们选择一个扩展 X 并尝试请求 H(M ‖ pad ‖ X)。
   const M = Buffer.from('this is a secret value');
   const X = Buffer.from('&admin=true');
   const H = sha256(M);
   const pad = mdPadding(M.length);
-  // "naive MAC" form: H(M). The attacker computes H(M ‖ pad ‖ X) by re-using
-  // H itself as if it were the intermediate state — here's a *simulation* that
-  // shows the structure, not an actual forging algorithm.
+  // “朴素 MAC”形式：H(M)。攻击者通过把 H 本身当作中间状态再次使用来
+  // 计算 H(M ‖ pad ‖ X)——下面是展示这种结构的*模拟*，并非真实伪造算法。
   const inner = sha256(Buffer.concat([M, pad]));
   const outer = sha256(Buffer.concat([inner, X]));
   console.log('  H(M)                                 =', H.toString('hex').slice(0, 16) + '…');
@@ -63,12 +62,12 @@ export function lengthExtensionDemo(): void {
   console.log('  (Note: H(H(M) ‖ X) by no special library support ===');
   console.log('   H(M ‖ pad ‖ X) unless you can initialise a SHA-256 ctx');
   console.log('   with state = H(M); most languages expose this via `update + init_state`.');
-  // HMAC is the fix.
+  // HMAC 即为修复方案。
   void outer;
 }
 
 // ---------------------------------------------------------------------------
-// 3. HMAC sanity: same key+message → same tag; different keys/msg → different tag.
+// 3. HMAC 健全性：相同 key+message → 相同 tag；不同 key/msg → 不同 tag。
 // ---------------------------------------------------------------------------
 
 export function hmacDemo(): void {
@@ -85,7 +84,7 @@ export function hmacDemo(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Driver.
+// 入口
 // ---------------------------------------------------------------------------
 
 export function execute(): void {

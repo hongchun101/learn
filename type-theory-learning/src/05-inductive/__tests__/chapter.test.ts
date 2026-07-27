@@ -19,7 +19,7 @@ describe('05 size-change termination', () => {
   });
 
   it('rejects apparent non-decrease', () => {
-    // len called with same arg each step would loop.
+    // len 每步都用同一个实参调用会陷入循环。
     const len: Fun = {
       name: 'len',
       param: 'xs',

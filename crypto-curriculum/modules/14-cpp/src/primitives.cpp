@@ -1,7 +1,7 @@
-// C++ reference primitives using OpenSSL 3 (libcrypto's EVP API).
+// C++ 参考原语，使用 OpenSSL 3（libcrypto 的 EVP 接口）。
 //
-// Compile with: g++ -std=c++20 -lcrypto primitives.cpp test_contract.cpp -o tests
-// Requires libcrypto / OpenSSL 3.
+// 编译命令：g++ -std=c++20 -lcrypto primitives.cpp test_contract.cpp -o tests
+// 需要 libcrypto / OpenSSL 3。
 
 #include <openssl/evp.h>
 #include <openssl/rand.h>
@@ -43,10 +43,10 @@ Bytes hkdf_sha256(const Bytes& master, std::size_t out_len,
 // SHA-256
 Bytes sha256(const Bytes& in);
 
-// Ed25519 sign/verify
+// Ed25519 签名与验签
 struct Ed25519Keypair { Bytes sk, pk; };
 Ed25519Keypair ed25519_generate();
 Bytes ed25519_sign(const Bytes& sk, const Bytes& msg);
 bool  ed25519_verify(const Bytes& pk, const Bytes& msg, const Bytes& sig);
 
-} // namespace learncrypto
+} // learncrypto 命名空间结束

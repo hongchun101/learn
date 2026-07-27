@@ -1,9 +1,9 @@
 // @ts-nocheck
-// Typed environments and ℋ / Type equality for STLC.
+// STLC 的类型化环境与类型等价（typeEq）。
 
 import type { Term, Type, Var } from './ast';
 
-/** A type environment maps variables to types. */
+/** 类型环境将变量映射到类型。 */
 export interface Env {
   bindings: Record<Var, Type>;
 }
@@ -18,7 +18,7 @@ export function lookup(env: Env, x: Var): Type | undefined {
   return env.bindings[x];
 }
 
-/** `typeEq` — structural type equality. */
+/** `typeEq` — 结构化的类型相等。 */
 export function typeEq(a: Type, b: Type): boolean {
   if (a.kind !== b.kind) return false;
   switch (a.kind) {
@@ -30,7 +30,7 @@ export function typeEq(a: Type, b: Type): boolean {
   }
 }
 
-/** Free variables of a term. */
+/** 项的自由变量。 */
 export function free(t: Term): Set<Var> {
   const out = new Set<Var>();
   go(t);

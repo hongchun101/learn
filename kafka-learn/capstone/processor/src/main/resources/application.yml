@@ -1,0 +1,22 @@
+server:
+  port: 8082
+  shutdown: graceful
+
+spring:
+  application:
+    name: capstone-processor
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:19092,localhost:29092,localhost:39092}
+
+capstone:
+  topic:
+    clicks: clicks.raw
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}

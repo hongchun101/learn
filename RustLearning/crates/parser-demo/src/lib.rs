@@ -1,1 +1,1 @@
-//! Parser demo placeholder.
+//! 解析器示例占位符。

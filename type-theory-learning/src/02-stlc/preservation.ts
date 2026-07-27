@@ -1,12 +1,11 @@
-// Preservation + Progress sanity checks for STLC.
+// STLC 的 Preservation + Progress 健全性检查。
 //
-// We test the rule:
+// 我们测试如下规则：
 //
-//   "if type inference succeeds on `t`, then `evalT(t)` produces a value."
+//   "若类型推断对 `t` 成功，则 `evalT(t)` 产生一个值。"
 //
-// This is a property-based-style check (not a proof), but for the well-typed
-// closure of our generated terms it is strong enough to catch most bug classes:
-// type mistakes, untyped evaluation, β-substitution errors.
+// 这是一种基于性质的检查（而非证明），但对我们生成项的良类型闭包
+// 而言已足以捕获大多数 bug 类别：类型错误、未类型化求值、β-替换错误。
 
 import type { Term, Type } from './ast';
 import { app, fun, iszero, lam, num, succ as mkSucc, v } from './ast';
@@ -16,11 +15,11 @@ import { evalT } from './evaluator';
 
 const empty: Env = { bindings: {} };
 
-/** Run a unit test in plain TS — reused by the vitest spec. */
+/** 用普通 TS 跑一个单元测试 —— 被 vitest 测试套件复用。 */
 export function runPreservation(name: string, t: Term): void {
   const τ = infer(empty, t);
   const got = evalT(t);
-  // The value MUST be one of: lambda, bool, nat. No throws expected.
+// 所得值必须是 lambda、bool 或 nat 之一；不应抛错。
   if (
     got.kind !== 'lam' &&
     got.kind !== 'true' &&
@@ -32,7 +31,7 @@ export function runPreservation(name: string, t: Term): void {
   void τ;
 }
 
-/** Sourced programs that the demo and tests run. */
+/** 供 demo 和测试运行的示例程序。 */
 export function programs(): ReadonlyArray<readonly [string, Term]> {
   const idBool = lam('x', { kind: 'bool' }, v('x'));
   const idNat = lam('x', { kind: 'nat' }, v('x'));

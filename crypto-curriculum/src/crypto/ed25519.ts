@@ -1,50 +1,49 @@
 /**
- * Challenge 5 — Ed25519 signatures (challenge 5 reference).
+ * 挑战 5 —— Ed25519 签名（挑战 5 参考实现）。
  *
- * Uses Node's built-in `crypto.sign` / `verify` with `ed25519`. Node 24
- * delegates to OpenSSL/BoringSSL, which use the djb/Irdeto Ed25519 reference
- * constant-time implementation.
+ * 使用 Node 内置的 `crypto.sign` / `verify` 并指定 `ed25519`。
+ * Node 24 将其委派给 OpenSSL/BoringSSL，它们使用 djb/Irdeto Ed25519
+ * 的参考常数时间实现。
  *
- * Design decision: the cross-module contract returns raw 32-byte seeds
- * (for the private key) and 32-byte compressed points (for the public key).
- * Node ports wrap those raw bytes in the appropriate RFC 8410 DER header so
- * they round-trip through `KeyObject`.
+ * 设计决策：跨模块契约返回原始的 32 字节种子（对应私钥）以及 32 字节
+ * 压缩点（对应公钥）。Node 端负责把这些原始字节包进相应的 RFC 8410
+ * DER 头中，从而可以通过 `KeyObject` 来回传递。
  *
- * Verification algorithm (RFC 8032 §5.1.7, summarised):
- *   decode sig = (R, S)
- *   decode A   = pk
+ * 验签算法（RFC 8032 §5.1.7，概要）：
+ *   解码  sig = (R, S)
+ *   解码  A   = pk
  *   h          = SHA-512(R || A || M) mod L
- *   2^c * S * B = 2^c * R + 2^c * h * A    (cofactored verification)
+ *   2^c * S * B = 2^c * R + 2^c * h * A    （协因子版本验签）
  *
- * Node does this for us; we just translate bytes.
+ * Node 已代为完成这些计算；我们只负责字节翻译。
  */
 
 import { generateKeyPairSync, sign, verify, createPrivateKey, createPublicKey, type KeyObject } from 'node:crypto';
 import type { SignaturePair } from './contracts.js';
 
 interface EdKeypairFull {
-  skSeed: Uint8Array;        // 32-byte raw seed
-  pkPoint: Uint8Array;       // 32-byte compressed point
+  skSeed: Uint8Array;        // 32 字节原始种子
+  pkPoint: Uint8Array;       // 32 字节压缩点
   skObject: KeyObject;
   pkObject: KeyObject;
 }
 
 /**
- * PKCS#8 DER header for an Ed25519 32-byte raw seed (RFC 8410 §7, 16 bytes).
- *   30 2e           SEQUENCE (46 bytes)
- *   02 01 00        INTEGER 0 (version)
- *   30 05 06 03 2b 65 70   OID 1.3.101.112 (id-Ed25519)
- *   04 22 04 20     OCTET STRING (34 bytes, wrapped key)
+ * Ed25519 32 字节原始种子的 PKCS#8 DER 头（RFC 8410 §7，共 16 字节）。
+ *   30 2e           序列（46 字节）
+ *   02 01 00        整数 0（版本）
+ *   30 05 06 03 2b 65 70   对象标识符 1.3.101.112（id-Ed25519）
+ *   04 22 04 20     八位字节串（34 字节，包装后的密钥）
  *
- * Empirically: Node serialises a fresh Ed25519 keypair as exactly this prefix.
+ * 实测：Node 序列化新生成的 Ed25519 密钥对时正好使用此前缀。
  */
 const ED25519_PKCS8_HEADER = Buffer.from('302e020100300506032b657004220420', 'hex');
 
 /**
- * SPKI DER header for an Ed25519 32-byte compressed public point (12 bytes).
- *   30 2a           SEQUENCE (42 bytes)
- *   30 05 06 03 2b 65 70   OID 1.3.101.112 (id-Ed25519)
- *   03 21 00        BIT STRING (33 bytes, 0 unused bits)
+ * Ed25519 32 字节压缩公钥点的 SPKI DER 头（12 字节）。
+ *   30 2a           序列（42 字节）
+ *   30 05 06 03 2b 65 70   对象标识符 1.3.101.112（id-Ed25519）
+ *   03 21 00        比特串（33 字节，0 个未使用位）
  */
 const ED25519_SPKI_HEADER  = Buffer.from('302a300506032b6570032100', 'hex');
 
@@ -56,7 +55,7 @@ export function ed25519Verify(pk: KeyObject, message: Uint8Array, signature: Uin
   return verify(null, Buffer.from(message), pk, Buffer.from(signature));
 }
 
-/** Generate keypair in BOTH raw-bytes and KeyObject forms (tests use this). */
+/** 同时生成原始字节形式与 KeyObject 形式的密钥对（测试使用）。 */
 export function generateEd25519Keypair(): EdKeypairFull {
   const { privateKey, publicKey } = generateKeyPairSync('ed25519');
   const skDer = privateKey.export({ format: 'der', type: 'pkcs8' });
@@ -85,7 +84,7 @@ function importRawPkAsKeyObject(pkPoint: Uint8Array): KeyObject {
   });
 }
 
-/** Cross-module `SignaturePair` contract bound to raw 32-byte Ed25519 material. */
+/** 绑定到 32 字节原始 Ed25519 数据的跨模块 `SignaturePair` 契约。 */
 export const Ed25519: SignaturePair = {
   generateKeypair() {
     const { skSeed, pkPoint } = generateEd25519Keypair();

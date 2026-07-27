@@ -1,4 +1,4 @@
-// Vitest spec for Chapter 02 — STLC.
+// 第 02 章 STLC 的 Vitest 测试。
 
 import { describe, it, expect } from 'vitest';
 import { app, fun, iszero, lam, num, succ, v } from '../ast';
@@ -15,13 +15,13 @@ describe('02 AST and types', () => {
     expect(fun({ kind: 'bool' }, { kind: 'nat' }).kind).toBe('fun');
   });
   it('renaming and free variables', () => {
-    // duplicates the env tests
+    // 与 env 的测试重复
   });
 });
 
 describe('02 checker', () => {
   it('rejects untyped identity on a Nat when expected Bool', () => {
-    // id : Nat → Nat  applied to Bool should fail.
+    // id : Nat → Nat 应用于 Bool 时应失败。
     const idNat = lam('x', { kind: 'nat' }, v('x'));
     expect(() => check(E, app(idNat, { kind: 'true' }), { kind: 'bool' })).toThrow(TypeError);
   });

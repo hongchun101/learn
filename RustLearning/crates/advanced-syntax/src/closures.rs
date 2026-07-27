@@ -1,21 +1,21 @@
-//! Closures and the three closure traits: `Fn`, `FnMut`, `FnOnce`.
+//! 闭包与三种闭包 trait：`Fn`、`FnMut`、`FnOnce`。
 //!
-//! Exercises:
-//! - Higher-order functions with closure parameters.
-//! - `FnMut` requiring `&mut` on the captured state.
-//! - `FnOnce` only callable once.
-//! - A "state machine" via captured mutables.
+//! 练习内容：
+//! - 使用闭包参数的高阶函数。
+//! - `FnMut` 要求对捕获状态使用 `&mut`。
+//! - `FnOnce` 只能被调用一次。
+//! - 通过捕获可变变量实现“状态机”。
 
 use std::sync::Mutex;
 
-/// A function taking `impl Fn`, generic over the closure type.
+/// 一个接受 `impl Fn` 的函数，针对闭包类型泛型化。
 pub fn apply<F>(s: &mut String, mut f: F)
 where
     F: FnMut(&str) -> String,
 {
     let mut buf = String::new();
     while let Some(_) = Some(()) {
-        // Pull pieces off the caller by reference.
+        // 按引用从调用者那里取出片段。
         if s.is_empty() {
             break;
         }
@@ -30,7 +30,7 @@ where
     *s = buf;
 }
 
-/// A function taking `FnMut` (which can also be `Fn`).
+/// 一个接受 `FnMut` 的函数（同时也满足 `Fn`）。
 pub fn double_each<F>(items: Vec<i32>, mut f: F) -> Vec<i32>
 where
     F: FnMut(i32) -> i32,
@@ -38,7 +38,7 @@ where
     items.into_iter().map(|v| f(v)).collect()
 }
 
-/// A function taking `FnOnce`, callable at most once.
+/// 一个接受 `FnOnce` 的函数，最多只能被调用一次。
 pub fn with_owned<F, T>(f: F) -> T
 where
     F: FnOnce() -> T,
@@ -46,8 +46,7 @@ where
     f()
 }
 
-/// A small state machine implemented with `FnMut`: each call to `step`
-/// advances one state.
+/// 一个使用 `FnMut` 实现的小型状态机：每次调用 `step` 都会推进一个状态。
 pub struct StateMachine<F>
 where
     F: FnMut(i32) -> i32,
@@ -78,13 +77,12 @@ where
     }
 }
 
-/// Returning a closure from a function uses an opaque `impl Fn` return type.
+/// 从函数返回闭包需要使用不透明的 `impl Fn` 返回类型。
 pub fn make_adder(by: i32) -> impl Fn(i32) -> i32 {
     move |x| x + by
 }
 
-/// A closure that mutates captured state to count how many times it has been
-/// invoked.
+/// 一个会修改其捕获状态的闭包，用于统计它被调用的次数。
 pub fn counting_closre() -> impl FnMut() -> usize {
     let mut count = 0usize;
     move || {
@@ -94,7 +92,7 @@ pub fn counting_closre() -> impl FnMut() -> usize {
     }
 }
 
-/// A `FnOnce` closure that consumes its capture.
+/// 一个 `FnOnce` 闭包，会消费它所捕获的值。
 pub fn once_only_callback<F>(cb: F)
 where
     F: FnOnce(String),
@@ -102,8 +100,7 @@ where
     cb(String::from("fired"));
 }
 
-/// Captured `Mutex` to demonstrate that closures can interact with shared
-/// state safely.
+/// 通过捕获 `Mutex` 演示闭包可以安全地与共享状态交互。
 pub fn run_with_mutex<F>(slot: &Mutex<i32>, mut f: F) -> i32
 where
     F: FnMut(&mut i32),
@@ -121,9 +118,8 @@ mod tests {
     fn apply_uses_fn_mut() {
         let mut s = String::from("hello");
         apply(&mut s, |piece| format!("[{piece}]"));
-        // We don't make strong assertions about the precise mutation order
-        // (the helper above is intentionally a teach-by-walkthrough about
-        // closure-type ergonomics) — verify the type only compiles and runs.
+        // 我们不对具体的变更顺序做强断言（上面的辅助函数旨在以示例方式
+        // 讲解闭包类型的使用），只需验证类型可编译并能运行即可。
         assert!(!s.is_empty());
     }
 

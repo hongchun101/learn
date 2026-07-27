@@ -1,11 +1,11 @@
 "use strict";
-// AST of the untyped lambda calculus (Chapter 01).
+// 无类型 lambda 演算（第 01 章）的 AST。
 //
 //   t ::= x | λx. t | t t
 //
-// `Term` is a small algebraic data type. Higher chapters (02 STLC, 06 System F,
-// 11 Pi-types) extend this with type annotations and binders; the constructor
-// names are deliberately stable.
+// `Term` 是一个小型代数数据类型。后续章节（02 STLC、06 System F、
+// 11 Pi-类型）会通过类型注解与绑定器对其进行扩展；构造子
+// 的名称刻意保持稳定。
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = exports.lam = exports.v = void 0;
 exports.pretty = pretty;
@@ -16,14 +16,14 @@ var lam = function (param, body) { return ({ kind: 'lam', param: param, body: bo
 exports.lam = lam;
 var app = function (func, arg) { return ({ kind: 'app', func: func, arg: arg }); };
 exports.app = app;
-/** `pretty t` renders a `Term` back to a readable lambda term. */
+/** `pretty t` 将 `Term` 渲染回可读的 lambda 项。 */
 function pretty(t) {
     switch (t.kind) {
         case 'var':
             return t.name;
         case 'lam': {
             var body = pretty(t.body);
-            // Drop body parens when it's a var or another abstraction.
+            // 当 body 是变量或另一个抽象时，省略其括号。
             var wrap = t.body.kind === 'app' || t.body.kind === 'lam';
             return "\u03BB".concat(t.param, ".").concat(wrap ? body : body);
         }
@@ -34,7 +34,7 @@ function pretty(t) {
         }
     }
 }
-/** Structural equality. */
+/** 结构相等性。 */
 function equal(a, b) {
     if (a.kind !== b.kind)
         return false;

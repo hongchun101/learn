@@ -1,14 +1,14 @@
 /**
- * Print the curriculum table — what each module teaches, with running status.
+ * 打印课程总表——展示每个模块的教学内容及其运行状态。
  */
 
 import { readdirSync, statSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-// On Windows, `import.meta.url` is "file:///D:/work/…" → fileURLToPath yields
-// "D:/work/…". When we then `..`, we want "D:/work/…/…".  `new URL('..', import.meta.url)`
-// inserts the leading slash, so `pathname` is "/D:/work/…".  Strip the
-// leading slash when it precedes a drive letter so the result is portable.
+// 在 Windows 上，`import.meta.url` 是 "file:///D:/work/…"，经 fileURLToPath
+// 得到 "D:/work/…"；随后做 `..` 时我们想要 "D:/work/…/…"。而
+// `new URL('..', import.meta.url)` 会插入前导斜杠，使得 `pathname`
+// 变成 "/D:/work/…"，所以当斜杠在盘符之前时要去掉，从而保证结果可移植。
 function moduleRoot(): string {
   const u = new URL(import.meta.url);
   let p = u.pathname;

@@ -10,10 +10,10 @@ applications (Node, Deno, Bun, browser, Workers). It also has the cleanest
 type model for expressing things like:
 
 ```typescript
-// type-level guarantee that a public key is what you think
+// 在类型层面保证公钥是你所期望的类型
 type PublicKeyOf<Sig extends SignaturePair> = ReturnType<Sig['generateKeypair']>['pk'];
 
-// type-level guarantee that signing takes the right message-type for the key
+// 在类型层面保证签名函数对消息类型与密钥类型匹配
 function sign<S extends SignaturePair>(sig: S, sk: S extends SignaturePair ? Uint8Array : never,
                                        m: Uint8Array): Uint8Array { /*…*/ }
 ```

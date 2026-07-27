@@ -1,13 +1,13 @@
-// AST of the Simply Typed Lambda Calculus.
+// 简单类型 lambda 演算（STLC）的 AST。
 //
 //   τ ::= Bool | Nat | τ → τ
 //   t ::= x | λx:τ. t | t t
 //       | true | false
-//       | nat(n)          ; literal natural number
+//       | nat(n)          ; 自然数字面量
 //       | succ t | iszero t
 //
-// Later chapters (03, 04, 05, ...) extend `Term`/`Type` with pairs, sums,
-// records, induction, etc. Constructor names are kept stable.
+// 后续章节（03、04、05……）会用有序对、和、记录、归纳等扩展
+// `Term`/`Type`；构造子的名称保持稳定。
 
 export type Var = string;
 
@@ -26,8 +26,8 @@ export type Term =
   | { kind: 'succ'; expr: Term }
   | { kind: 'iszero'; expr: Term };
 
-// Constructor helpers (kept small and not exported to comply with "no tiny
-// functions" unless they name a concept or are widely used).
+// 构造子辅助函数（保持精简，且除非命名概念或广泛使用否则不导出，
+// 以遵守"避免琐碎函数"的约定）。
 export const bool: Type = { kind: 'bool' };
 export const nat: Type = { kind: 'nat' };
 export const fun = (param: Type, body: Type): Type => ({ kind: 'fun', param, body });
@@ -45,7 +45,7 @@ export const num = (value: number): Term => ({ kind: 'nat', value });
 export const succ = (expr: Term): Term => ({ kind: 'succ', expr });
 export const iszero = (expr: Term): Term => ({ kind: 'iszero', expr });
 
-/** `prettyTy τ` — surface rendering of a type. */
+/** `prettyTy τ` — 类型的表面渲染。 */
 export function prettyTy(τ: Type): string {
   switch (τ.kind) {
     case 'bool':
@@ -59,7 +59,7 @@ export function prettyTy(τ: Type): string {
   }
 }
 
-/** `pretty t` — surface rendering of a term. */
+/** `pretty t` — 项的表面渲染。 */
 export function pretty(t: Term): string {
   switch (t.kind) {
     case 'var':

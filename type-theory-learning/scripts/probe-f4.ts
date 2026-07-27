@@ -1,7 +1,7 @@
 import { app, lam, tlam, tapp, v, tru, tv } from '../src/06-system-f/ast';
 import { infer, emptyEnv } from '../src/06-system-f/checker';
 
-// Build same way as test
+// 与测试用例相同的构建方式
 const id = tlam('α', lam('x', tv('α'), v('x')));
 const t1 = infer(emptyEnv, id);
 console.log('id type:', JSON.stringify(t1));

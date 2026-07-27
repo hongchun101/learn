@@ -1,12 +1,12 @@
--- | Test entrypoint. Run with `stack test` or `cabal v2-test`.
+-- | 测试入口。通过 `stack test` 或 `cabal v2-test` 运行。
 --
--- We keep this minimal: the richest property-based tests are
--- shipped in `src/Testing.hs` (Chapter 11) since that module
--- exists *because* of the testing techniques.
+-- 我们保持这里最小：最丰富的基于属性的测试放在
+-- `src/Testing.hs`（第 11 章）中，因为该模块的存在
+-- *正是*为了演示各种测试技术。
 --
--- Other chapters are exercised through the demo executable in
--- `src/Main.hs`. Add a property here only when a particular
--- invariant from a chapter is worth pinning down.
+-- 其它章节通过 `src/Main.hs` 中的演示可执行文件
+-- 进行演练。只有当某章的某个不变式
+-- 值得钉死时，才在此处添加一个属性。
 module Main where
 
 import           Test.Tasty

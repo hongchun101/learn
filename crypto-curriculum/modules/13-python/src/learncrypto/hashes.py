@@ -1,4 +1,4 @@
-"""SHA-256, HMAC-SHA-256, HKDF-SHA-256 in pure stdlib."""
+"""纯标准库实现的 SHA-256、HMAC-SHA-256、HKDF-SHA-256。"""
 
 from __future__ import annotations
 
@@ -20,10 +20,9 @@ def hmac_sha256_verify(key: bytes, message: bytes, tag: bytes) -> bool:
 
 
 def hkdf_sha256(master: bytes, out_len: int, salt: bytes = b"", info: bytes = b"") -> bytes:
-    """RFC 5869 reference HKDF-SHA-256.
+    """RFC 5869 参考实现 HKDF-SHA-256。
 
-    `salt=None` is replaced with a string of 32 zero bytes; `info` is
-    domain-separation data.
+    `salt=None` 会被替换为 32 个零字节字符串；`info` 是域分隔数据。
     """
     if out_len <= 0:
         raise ValueError("outLen must be positive")

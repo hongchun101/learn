@@ -15,9 +15,9 @@ getrandom = "0.2"
 hex = "0.4"
 
 [dev-dependencies]
-# Uses Rust's built-in test framework; no external test deps required.
+# 使用 Rust 内置的测试框架；无需额外的测试依赖。
 
 [features]
-# Optional AES-GCM support; toggle with `cargo test --features aes`.
+# 可选的 AES-GCM 支持；通过 `cargo test --features aes` 启用。
 default = []
 aes = []

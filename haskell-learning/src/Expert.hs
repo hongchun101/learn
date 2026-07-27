@@ -1,42 +1,39 @@
 -- |
--- = Chapter 13 — ST, FFI sketch, TemplateHaskell sketch
+-- = 第十三章 — ST、FFI 速记与 TemplateHaskell 速记 =
 --
--- Three "expert" topics:
+-- 三个“专家级”主题：
 --
--- 1. ST monad: in-place, *purely visible* algorithms. `runST`
---    leverages parametricity to guarantee the state stays local.
+-- 1. ST Monad：原地修改、外部表现仍为纯的算法。`runST`
+--    利用参数化性保证状态始终局限于内部。
 --
--- 2. FFI: how `foreign import` lines look. We show a *sketch*
---    because actually calling libc from a learning repo complicates
---    the build.
+-- 2. FFI：`foreign import` 行的写法。这里仅展示一个“速记”，
+--    因为在学习项目中实际调用 libc 会让构建复杂化。
 --
--- 3. TemplateHaskell: staged meta-programming. We do **not** enable
---    TH by default in the library (so the build doesn't need the
---    `template-haskell` package). Uncomment the LANGUAGE pragma
---    block below locally to experiment.
+-- 3. TemplateHaskell：分阶段元编程。库中默认**不**启用
+--    TH（这样构建就不需要 `template-haskell` 包）。可在本地
+--    取消下方 LANGUAGE pragma 块的注释进行试验。
 --
--- `runST` is the canonical "ST is a strictly-scoped version of
--- `STRef`". Its return type:
+-- `runST` 是“ST 是严格限定作用域的 `STRef` 版本”的经典范例。
+-- 它的返回类型：
 --
 --     runST :: (forall s. ST s a) -> a
 --
 import           Data.Array.ST                (STArray, newListArray, readArray, writeArray, getElems)
-  -- Foreign syntax is shown inline, no actual import needed for the
-  -- sketch.
+  -- Foreign 语法以内联方式展示，速记无需实际导入。
 import qualified Data.ByteString              as B
 import qualified Data.ByteString.Char8        as BC
 
--- * ST-based in-place.
+-- * 基于 ST 的原地修改。
 
--- | Sum a list by mutation under the hood; result is pure.
+-- | 底层通过变更来求列表之和；结果是纯的。
 sumArrayPure :: [Int] -> Int
 sumArrayPure xs = runST $ do
   ref <- newSTRef 0
   mapM_ (\x -> modifySTRef' ref (+ x)) xs
   readSTRef ref
 
--- | Run an in-place `STArray` mutation and read back the contents.
---   Demonstrates `runST` makes the mutation invisible.
+-- | 运行一次原地 `STArray` 变更并读回内容。
+--   演示 `runST` 如何隐藏变更。
 reverseInPlace :: [Int] -> [Int]
 reverseInPlace xs = runST $ do
   arr <- newListArray (0 :: Int, length xs - 1) xs
@@ -58,42 +55,41 @@ reverseInPlace xs = runST $ do
           writeArray arr j a
           walk arr (i + 1) mid n
 
--- * FFI sketch.
+-- * FFI 速记。
 
--- | We do NOT import `foreign import ccall` here in a way that
--- links to libc. Instead, just show the syntax with a *fictional*
--- symbol so the build is portable. To actually link, add
--- `template-haskell` etc. and uncomment:
+-- | 这里**不**以链接到 libc 的方式导入 `foreign import ccall`，
+-- 取而代之，只用一个“虚构的”符号展示语法，以保证构建可移植。
+-- 若要实际链接，请添加 `template-haskell` 等并取消以下注释：
 --
 --   foreign import ccall unsafe "my_c_getpid"
 --     c_getpid :: CInt -> CInt
 --
--- Run `stack ghci Expert.hs` to load and inspect types.
+-- 运行 `stack ghci Expert.hs` 以加载并检查类型。
 
--- | A Type-shaped sketch of the FFI signature.
+-- | FFI 类型签名的 Type 形态速记。
 ffiSketchType :: String
 ffiSketchType = "foreign import ccall unsafe \"...\" :: CInt -> CInt"
 
--- * TemplateHaskell — disabled by default. When enabled, you'd write:
+-- * TemplateHaskell — 默认禁用。启用后可以这样写：
 --
 --   {-# LANGUAGE TemplateHaskell #-}
 --   import Language.Haskell.TH
---   -- $(someTH) splices a generated AST.
+--   -- $(someTH) 会拼接一个生成的 AST。
 --
--- The build keeps `Expert` TH-free so `stack build` never needs
--- the `template-haskell` package. Re-enable locally to explore.
+-- 构建保持 `Expert` 不含 TH，因此 `stack build` 永远不需要
+-- `template-haskell` 包。可在本地重新启用以进行探索。
 
--- * ByteString internals.
+-- * ByteString 内部机制。
 
--- | Cheap length count (illustrative, identical to `B.length`).
+-- | 低成本的长度计数（用于说明，与 `B.length` 相同）。
 bsLen :: B.ByteString -> Int
 bsLen = B.length
 
--- | First N bytes of a ByteString as a String.
+-- | ByteString 前 N 个字节，以 String 返回。
 bsPrefix :: B.ByteString -> String
 bsPrefix = BC.unpack . BC.take 4
 
--- * The exported demo.
+-- * 导出的演示。
 
 expert :: IO ()
 expert = do

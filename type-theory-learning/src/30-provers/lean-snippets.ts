@@ -1,6 +1,6 @@
-// Reference snippets of STLC and System F in Lean 4 / Coq. (These strings are
-// embedded in the project so the reader can copy them into a Lean file or
-// reference them when implementing the prover from Chapter 03.)
+// STLC 与 System F 在 Lean 4 / Coq 中的参考片段。（这些字符串嵌入
+// 在项目中，方便读者直接拷贝到 Lean 文件里，或者在实现
+// 第 03 章的 prover 时参考。）
 
 export const stlcLean = `
 inductive Ty : Type

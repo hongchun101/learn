@@ -8,8 +8,8 @@ import {
 } from '../src/rsa-textbook.js';
 import { gcd, modInv, modPow } from '../src/mod-math.js';
 
-// 256-bit keys with a small public exponent so the property tests complete
-// quickly. The RSA algorithms are identical regardless of e.
+// 使用 256 位密钥和小公钥指数，以便属性测试能快速完成。
+// RSA 算法本身与 e 的大小无关。
 const KEY_BITS = 256;
 const E = 17n;
 

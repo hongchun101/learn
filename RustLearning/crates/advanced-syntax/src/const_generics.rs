@@ -1,9 +1,9 @@
-//! Const generics: compile-time type parameterization by `const` values.
+//! 常量泛型：编译期通过 `const` 值进行类型参数化。
 
 #![allow(unsafe_code)]
 use std::mem::MaybeUninit;
 
-/// A stack-allocated fixed-capacity stack. The capacity is part of the type.
+/// 一个栈上分配的、容量固定的栈。容量属于类型的一部分。
 pub struct ConstStack<T: Copy, const N: usize> {
     items: [MaybeUninit<T>; N],
     len: usize,
@@ -43,7 +43,7 @@ impl<T: Copy, const N: usize> ConstStack<T, N> {
             return None;
         }
         self.len -= 1;
-        // SAFETY: `len` was > 0 before decrement, so the slot is initialized.
+        // SAFETY：先前 `len` 大于 0，因此该槽位已被初始化。
         let slot = std::mem::replace(&mut self.items[self.len], MaybeUninit::uninit());
         Some(unsafe { slot.assume_init() })
     }
@@ -51,7 +51,7 @@ impl<T: Copy, const N: usize> ConstStack<T, N> {
     pub fn as_slice(&self) -> Vec<T> {
         let mut out = Vec::with_capacity(self.len);
         for i in 0..self.len {
-            // SAFETY: every slot below `len` is initialized.
+            // SAFETY：低于 `len` 的每个槽位都已初始化。
             let val = unsafe { self.items[i].assume_init_ref() };
             out.push(*val);
         }
@@ -65,7 +65,7 @@ impl<T: Copy, const N: usize> Default for ConstStack<T, N> {
     }
 }
 
-/// A `const fn` that computes a value at compile time.
+/// 一个在编译期求值的 `const fn`。
 pub const fn next_power_of_two(n: u32) -> u32 {
     let mut p = 1u32;
     while p < n {
@@ -76,7 +76,7 @@ pub const fn next_power_of_two(n: u32) -> u32 {
 
 pub const BUFFER_SIZE: usize = next_power_of_two(8) as usize;
 
-/// Use the const-generic parameter to size a fixed array without runtime alloc.
+/// 使用常量泛型参数来设定固定数组的大小，无需运行时分配。
 pub fn fill_with<T: Copy, const N: usize>(value: T) -> [T; N] {
     [value; N]
 }

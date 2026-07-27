@@ -1,15 +1,15 @@
-// Capture-avoiding substitution and free-variable machinery for lambda calculus.
+// lambda 演算的避免捕获替换与自由变量工具。
 //
-//   [x ↦ s] t       (substitution)
-//   FV(t)           (free variables)
+//   [x ↦ s] t       （替换）
+//   FV(t)           （自由变量）
 //
-// We rename binders on substitution to keep α-equivalence implicit and prevent
-// shadowing bugs.
+// 在替换时重命名绑定器，以隐式保持 α-等价性并避免
+// 阴影（shadowing）错误。
 
 import type { Term, Var } from './ast';
 import { lam, v } from './ast';
 
-/** Rename a variable `name` to `fresh` everywhere it appears in `t`. */
+/** 将变量 `name` 在 `t` 中全部重命名为 `fresh`。 */
 function rename(name: Var, fresh: Var, t: Term): Term {
   switch (t.kind) {
     case 'var':
@@ -25,7 +25,7 @@ function rename(name: Var, fresh: Var, t: Term): Term {
   }
 }
 
-/** `free(t)` returns the set of free variables in `t`. */
+/** `free(t)` 返回 `t` 中自由变量的集合。 */
 export function free(t: Term): Set<Var> {
   switch (t.kind) {
     case 'var':
@@ -43,7 +43,7 @@ export function free(t: Term): Set<Var> {
   }
 }
 
-/** Generate a name not in `avoid` by suffixing digits. */
+/** 通过追加数字后缀，生成一个不在 `avoid` 集合中的名字。 */
 export function freshName(base: Var, avoid: ReadonlySet<Var>): Var {
   let n = 0;
   let candidate = base;
@@ -54,10 +54,10 @@ export function freshName(base: Var, avoid: ReadonlySet<Var>): Var {
 }
 
 /**
- * `subst(x, s, t)` is the capture-avoiding substitution `[x ↦ s] t`.
+ * `subst(x, s, t)` 是避免捕获的替换 `[x ↦ s] t`。
  *
- * We rename the binder when needed: if a binder in `t` clashes with a free
- * variable of `s`, the fresh binder is reused inside `t`'s body.
+ * 必要时对绑定器进行重命名：若 `t` 中的某个绑定器与 `s` 的某个
+ * 自由变量同名，则为 `t` 的函数体重新生成一个不冲突的绑定器。
  */
 export function subst(x: Var, s: Term, t: Term): Term {
   switch (t.kind) {
@@ -85,9 +85,9 @@ export function subst(x: Var, s: Term, t: Term): Term {
 }
 
 /**
- * `alphaEq(a, b)` ≡ a ≡_α b. Compares two terms up to binder renaming.
- * At every binder pair we choose a fresh name not yet used and bind both
- * variables to it; the comparison then runs through children using a map.
+ * `alphaEq(a, b)` ≡ a ≡_α b。比较两个项在绑定器重命名下的相等性。
+ * 在每一对绑定器处，都挑选一个尚未使用的新名字，并将两边
+ * 变量都绑定到该名字；随后通过映射递归比较子项。
  */
 export function alphaEq(a: Term, b: Term): boolean {
   const leftToFresh = new Map<Var, Var>();

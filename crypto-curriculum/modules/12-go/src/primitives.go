@@ -1,14 +1,12 @@
-// Package primitives implements the six contract properties in Go.
+// Package primitives 用 Go 实现了六项契约属性。
 //
-// Tested with:
+// 测试命令：
 //
 //   go test -race ./...
 //
-// The module is intentionally a single file; in production these would be in
-// separate packages per primitive. This file shows the canonical, idiomatic
-// use of crypto/aes, crypto/cipher, crypto/sha256, crypto/hmac, crypto/ed25519,
-// crypto/hkdf, and crypto/rand.
-package primitives
+// 该模块刻意只用一个文件；生产环境中应当按原语拆分为独立的包。
+// 本文件展示了 crypto/aes、crypto/cipher、crypto/sha256、crypto/hmac、
+// crypto/ed25519、crypto/hkdf 和 crypto/rand 的规范、惯用用法。
 
 import (
 	"crypto/aes"
@@ -67,7 +65,7 @@ type GcmEnv struct {
 	Tag    []byte
 }
 
-// AESGCMEncrypt encrypts with AES-256-GCM and returns the split (ct, nonce, tag).
+// AESGCMEncrypt 使用 AES-256-GCM 加密，并返回拆分后的 (ct, nonce, tag)。
 func AESGCMEncrypt(key, plaintext, aad []byte) (GcmEnv, error) {
 	if len(key) != 32 {
 		return GcmEnv{}, fmt.Errorf("key must be 32 bytes")
@@ -81,7 +79,7 @@ func AESGCMEncrypt(key, plaintext, aad []byte) (GcmEnv, error) {
 		return GcmEnv{}, err
 	}
 	nonce := RandomBytes(12)
-	// Seal concatenates ciphertext and tag.
+	// Seal 将密文与认证标签拼接在一起。
 	sealed := aead.Seal(nil, nonce, plaintext, aad)
 	ct := sealed[:len(sealed)-16]
 	tag := sealed[len(sealed)-16:]
@@ -108,8 +106,7 @@ func AESGCMDecrypt(key []byte, env GcmEnv, aad []byte) ([]byte, error) {
 	return pt, nil
 }
 
-// Ed25519 primitives — `ed25519.PublicKey` and `PrivateKey` are the canonical
-// types.
+// Ed25519 原语——`ed25519.PublicKey` 与 `PrivateKey` 即为规范类型。
 func Ed25519Generate() (ed25519.PrivateKey, ed25519.PublicKey) {
 	pub, priv, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {

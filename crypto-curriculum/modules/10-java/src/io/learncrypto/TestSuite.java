@@ -3,11 +3,11 @@ package io.learncrypto;
 import java.util.HashSet;
 import java.util.Set;
 
-/** Runs the six contract checks as `assert` statements; main returns the
- *  count of assertions that fired. With `-ea`, an assertion failure prints
- *  the location and exits non-zero. Without `-ea`, asserts are no-ops, so
- *  this `main` returns 1 always and is intended to be run as
- *  `java -ea -cp target io.learncrypto.TestSuite`.
+/** 以 `assert` 语句的形式运行六项契约检查；main 返回触发的断言数量。
+ *  使用 `-ea` 时，断言失败会打印位置并以非零状态退出。
+ *  不使用 `-ea` 时，assert 不做任何事，因此该 `main` 总是返回 1，
+ *  预期运行方式为
+ *  `java -ea -cp target io.learncrypto.TestSuite`。
  */
 public final class TestSuite {
 
@@ -27,7 +27,7 @@ public final class TestSuite {
         int passed = 0;
         int total = 0;
 
-        // ---- 1. AES-256-GCM round-trip ----
+        // ---- 1. AES-256-GCM 往返 ----
         try {
             byte[] key = Csprng.randomBytes(32);
             byte[] pt  = Csprng.randomBytes(57);
@@ -36,7 +36,7 @@ public final class TestSuite {
             total++;
             assert hex(pt2).equals(hex(pt)) : "AES-GCM round-trip failed";
             passed++;
-            // tag-flip rejected
+            // tag 位翻转应被拒绝
             try {
                 total++;
                 Ciphers.aesGcmDecrypt(key, new Ciphers.GcmEnv(env.ct, env.nonce,
@@ -61,7 +61,7 @@ public final class TestSuite {
         assert !Macs.hmacSha256Verify(k, m, flipBit(tag, 7, 0x10)) : "HMAC verify forged";
         passed++;
 
-        // ---- 3. SHA-256 (challenge 3) ----
+        // ---- 3. SHA-256（第 3 题）----
         byte[] empty = Hashes.sha256(new byte[0]);
         total++;
         assert hex(empty).equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855") : "SHA-256 empty";
@@ -71,7 +71,7 @@ public final class TestSuite {
         assert hex(abc).equals("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad") : "SHA-256 abc";
         passed++;
 
-        // ---- 4. HKDF-SHA-256 (RFC 5869 TC1) ----
+        // ---- 4. HKDF-SHA-256（RFC 5869 TC1）----
         byte[] ikm  = new byte[22]; java.util.Arrays.fill(ikm, (byte) 0x0b);
         byte[] salt = new byte[]{0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc};
         byte[] info = new byte[]{(byte)0xf0,(byte)0xf1,(byte)0xf2,(byte)0xf3,(byte)0xf4,
@@ -81,7 +81,7 @@ public final class TestSuite {
         assert hex(okm).equals("3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865") : "HKDF TC1";
         passed++;
 
-        // ---- 5. ECDSA-P256 (challenge 5 — JDK 8 has no Ed25519, so we use ECDSA) ----
+        // ---- 5. ECDSA-P256（第 5 题 —— JDK 8 没有 Ed25519，因此使用 ECDSA）----
         java.security.KeyPair kp = Signatures.freshEcdsa();
         byte[] mm = Csprng.randomBytes(64);
         byte[] s = Signatures.signEcdsa(kp.getPrivate(), mm);

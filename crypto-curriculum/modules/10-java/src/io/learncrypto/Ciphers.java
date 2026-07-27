@@ -8,7 +8,7 @@ import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-/** AES-256-GCM encrypt/decrypt with 12-byte IV. */
+/** 使用 12 字节 IV 的 AES-256-GCM 加解密。 */
 public final class Ciphers {
     public static final int TAG_BITS = 128;
     private static final SecureRandom RNG = new SecureRandom();
@@ -32,8 +32,8 @@ public final class Ciphers {
         c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"),
                 new GCMParameterSpec(TAG_BITS, nonce));
         if (aad != null && aad.length > 0) c.updateAAD(aad);
-        byte[] ct = c.doFinal(pt); // appends 16-byte tag
-        // Split ct and tag.
+        byte[] ct = c.doFinal(pt); // 追加 16 字节的 tag
+        // 拆分 ct 与 tag。
         byte[] ctOnly = Arrays.copyOf(ct, ct.length - 16);
         byte[] tag    = Arrays.copyOfRange(ct, ct.length - 16, ct.length);
         return new GcmEnv(ctOnly, nonce, tag);
@@ -45,7 +45,7 @@ public final class Ciphers {
         c.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"),
                 new GCMParameterSpec(TAG_BITS, env.nonce));
         if (aad != null && aad.length > 0) c.updateAAD(aad);
-        // Recompose ct||tag as cipher.doFinal wants the combined ciphertext.
+        // 重新组合 ct||tag，因为 cipher.doFinal 需要传入合并后的密文。
         ByteBuffer buf = ByteBuffer.allocate(env.ct.length + env.tag.length);
         buf.put(env.ct); buf.put(env.tag);
         return c.doFinal(buf.array());

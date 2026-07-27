@@ -26,10 +26,10 @@ The protocol transcript:
 Init → Response                                  │
    Prologue: "my-application/0"                   │
                                                   │
-e   = E_25519(responder_pub, ephemeral_init)     # 32 bytes, encrypt chain →
-s   = SIGN(sk_init, e || rs)                      # 64 bytes, signs ephemeral
-es  = E_25519(responder_pub, e)                  # 32 bytes
-ee  = E_25519(e, rs)                              # 32 bytes
+e   = E_25519(responder_pub, ephemeral_init)     # 32 字节，加密链 →
+s   = SIGN(sk_init, e || rs)                      # 64 字节，对临时公钥签名
+es  = E_25519(responder_pub, e)                  # 32 字节
+ee  = E_25519(e, rs)                              # 32 字节
                                                   │
 payload_1 = ENC(encrypt_key, "auth-string-1" + msg_1)
                                                   │
@@ -83,10 +83,10 @@ tests/
 
 ```bash
 cd modules/18-capstone
-npx vitest run                         # 12+ tests
-npm run capstone                      # interactive demo
-npm run capstone:naive                # shows MITM works
-npm run capstone:signed               # shows MITM fails
+npx vitest run                         # 12+ 个测试
+npm run capstone                      # 交互式演示
+npm run capstone:naive                # 演示中间人攻击生效
+npm run capstone:signed               # 演示中间人攻击失败
 ```
 
 ## The expected outcome

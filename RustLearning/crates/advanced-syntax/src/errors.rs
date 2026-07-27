@@ -1,9 +1,9 @@
-//! Error handling: `thiserror` library errors and `anyhow` application-layer
-//! error wrappers. Layered errors using `From` impls.
+//! 错误处理：`thiserror` 库错误与 `anyhow` 应用层错误包装。
+//! 使用 `From` impl 进行分层错误处理。
 
 use thiserror::Error;
 
-/// Domain errors. These describe "what went wrong" in the library layer.
+/// 领域错误。这些用于描述库层“哪里出了错”。
 #[derive(Debug, Error)]
 pub enum DomainError {
     #[error("invalid input: {0}")]
@@ -31,8 +31,7 @@ impl From<String> for DomainError {
     }
 }
 
-/// Application error wrapper that adds context (the operation in progress)
-/// while keeping the typed domain error reachable.
+/// 应用层错误包装：在保留类型化领域错误的同时，添加上下文（当前正在进行的操作）。
 #[derive(Debug, Error)]
 pub enum AppError {
     #[error("during {op}: {source}")]

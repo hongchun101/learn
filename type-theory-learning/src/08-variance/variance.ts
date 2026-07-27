@@ -1,10 +1,10 @@
-// Variance demo.
+// 变型性示例。
 //
-// A type constructor `F` is:
-//   - covariant    if  Sub(τ, σ)  implies  Sub(F<τ>, F<σ>)
-//   - contravariant if  Sub(τ, σ)  implies  Sub(F<σ>, F<τ>)
-//   - invariant    if  both directions hold
-// Functions are contravariant in arguments, covariant in results.
+// 类型构造子 `F` 称为：
+//   - 协变    若  Sub(τ, σ)  蕴含  Sub(F<τ>, F<σ>)
+//   - 逆变    若  Sub(τ, σ)  蕴含  Sub(F<σ>, F<τ>)
+//   - 不变    若 上述两个方向都成立
+// 函数在参数上是逆变、在返回值上是协变。
 
 export type Var = string;
 export type Type = { kind: 'var'; name: Var } | { kind: 'fun'; param: Type; body: Type };
@@ -16,18 +16,18 @@ export interface FunInfo {
   bodyVar: SubKind;
 }
 
-/** `variance(op, type)` walks a type with respect to a chosen type-position. */
+/** `variance(op, type)` 相对于所选类型位置遍历一个类型。 */
 export function varianceAtPosition(op: 'funParam' | 'funBody', τ: Type): SubKind {
   if (τ.kind === 'var') return 'covariant';
   if (op === 'funParam') {
-    // Position of funParam is contravariant because it's a producer of inputs.
+    // funParam 处于逆变位置，因为它产出输入。
     const bodyV = varianceAtPosition('funBody', τ.body);
-    return bodyV; // the param position itself is contravariant to whatever it sees
+    return bodyV; // 参数位置本身对所看到的内容是逆变的
   }
   return varianceAtPosition('funParam', τ.param);
 }
 
-/** Phantom types: a type variable never seen at the term level. */
+/** 幻影类型：在项层完全看不到的类型变量。 */
 export interface Box<T, Phantom extends string = 'none'> {
   value: T;
   readonly __phantom?: Phantom;

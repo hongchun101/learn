@@ -1,4 +1,4 @@
-// Higher-kinded type notation (modelled at the value level for the docs / tests).
+// 高阶 kind 类型记法（在值层面为文档 / 测试建模）。
 
 export type Kind = 'star' | { arrow: ReadonlyArray<Kind> };
 

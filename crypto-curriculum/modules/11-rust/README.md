@@ -34,10 +34,10 @@ crate-host-independent).
 
 ```bash
 cd modules/11-rust
-# If crates.io is reachable:
+# 如果 crates.io 可访问：
 cargo test
 
-# If not (host may throttle):
+# 如果不可达（主机可能限流）：
 RUST=1 RUSTFLAGS='--offline' cargo test --offline || cargo build --offline
 ```
 
@@ -59,7 +59,7 @@ There is no way to "drop" the secret key *after* it's been overwritten —
 ```rust
 use zeroize::Zeroize;
 let mut key = getrandom::getrandom::<32>().unwrap();
-key.zeroize();  // never appears in heap dumps.
+key.zeroize();  // 不会出现在堆转储中。
 ```
 
 ## Why constant-time eq is enforced
@@ -68,7 +68,7 @@ key.zeroize();  // never appears in heap dumps.
 use subtle::ConstantTimeEq;
 let a: [u8; 32] = …;
 let b: [u8; 32] = …;
-a.ct_eq(&b).into()  // returns Choice, not bool — no early-exit.
+a.ct_eq(&b).into()  // 返回 Choice 而非 bool——不会提前退出。
 ```
 
 The `Choice` is a single bit that *must* be converted at the end; it cannot

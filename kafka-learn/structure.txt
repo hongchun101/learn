@@ -1,0 +1,5 @@
+kafka-learn/
+  README.md
+  docker-compose.yml
+  pom.xml
+  common/   infra/   modules/   capstone/   docs/   scripts/   .gitignore

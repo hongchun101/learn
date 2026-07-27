@@ -1,10 +1,9 @@
-// Size-change termination checker for a tiny first-order DSL.
+// 一个微型一阶 DSL 上的 size-change 终止性检查器。
 //
-// Jones-Boehm-inspired. A program is a list of functions each over a single
-// parameter. The `go` walker records an edge per recursive call. An edge is
-// `less` if the argument at the call site is **not** the same name as the
-// current parameter (we conservatively assume structural decrease happens at
-// the recursive call site). Same-named arg means no decrease — non-termination.
+// 灵感来自 Jones-Boehm。一个程序是一组函数，每个函数作用于一个参数。
+// `go` 遍历器会为每次递归调用记录一条边。若调用点的实参
+// 名字与当前形参**不同**，则记为 `less`（保守地假设调用点
+// 发生了结构上的缩减）。同名实参意味着没有缩减 —— 不会终止。
 
 export interface Fun {
   name: string;
@@ -27,7 +26,7 @@ export interface Edge {
   relation: 'same' | 'less';
 }
 
-/** Walks each body, returning the SCG edges from each function parameter. */
+/** 遍历每个函数体，返回从各函数形参出发的 SCG 边。 */
 export function buildSCG(prog: ReadonlyArray<Fun>): Edge[] {
   const edges: Edge[] = [];
   for (const f of prog) {
@@ -51,7 +50,7 @@ function go(c: Call, cur: ArgRef, edges: Edge[]): void {
   }
 }
 
-/** Conservative termination test: every recursive call must have a `less` edge. */
+/** 保守的终止性测试：每次递归调用必须存在一条 `less` 边。 */
 export function decidesTermination(prog: ReadonlyArray<Fun>): boolean {
   const scg = buildSCG(prog);
   for (const f of prog) {

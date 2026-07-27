@@ -1,5 +1,5 @@
 // @ts-nocheck
-// Type families — compile-time "functions" on types.
+// 类型族 —— 在类型上的"编译期函数"。
 
 export type Family<A, B> = {
   readonly f: (a: A, b: B) => A;

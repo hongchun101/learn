@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# In a real cluster you'd expose JMX via the JMX exporter sidecar and
+# scrape node:7071, etc.  The Kafka image we use doesn't ship the
+# exporter, so this file documents the scrape targets.  Once you
+# deploy the kafka-jmx-exporter sidecar (see docs/06-l6-operations.md),
+# uncomment the lines below.
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: kafka-jmx
+    static_configs:
+      # Replace with your exporter endpoints
+      # - targets: ["kafka-1:7071", "kafka-2:7071", "kafka-3:7071"]
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: kafka_server.*
+        action: keep
+
+  - job_name: kafka-connect
+    static_configs:
+      - targets: ["connect:8083"]
+    metrics_path: /metrics
+
+  - job_name: schema-registry
+    static_configs:
+      - targets: ["schema-registry:8081"]
+    metrics_path: /metrics

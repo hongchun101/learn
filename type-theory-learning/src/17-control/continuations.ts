@@ -1,6 +1,6 @@
 // @ts-nocheck
-// Lightweight call/cc + reset/shift via direct CPS-style runtimes.
-// (Real engine integration would require first-class continuations.)
+// 轻量级的 call/cc + reset/shift，借助 CPS 风格的运行时直接实现。
+// （要真正接入引擎，需要一等续延。）
 
 export type Cc<A> = (k: (a: A) => void) => void;
 

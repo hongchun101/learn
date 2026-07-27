@@ -1,18 +1,18 @@
-// Tiny BNF DSL.
+// 一个微型 BNF DSL。
 //
-// We represent a grammar as:
+// 我们将文法表示为：
 //
 //   { start: 'Expr', rules: [['E', [['L','E','E']], ['x']] ], ... }
 //
-// We don't ship a full parser-generator; this chapter just shows the shape
-// and renders the BNF back to a readable string.
+// 我们不附带完整的解析器生成器；本章仅展示其形态，
+// 并把 BNF 反向渲染为可读的字符串。
 
 export type NonTerminal = string;
 export type Terminal = string;
 
 export interface Rule {
   lhs: NonTerminal;
-  /** Each alternative is a list of symbols. */
+  /** 每个候选式是一个符号列表。 */
   rhs: ReadonlyArray<ReadonlyArray<string>>;
 }
 
@@ -21,7 +21,7 @@ export interface Grammar {
   rules: ReadonlyArray<Rule>;
 }
 
-/** `render(g)` renders BNF in textbook style: `A ::= B C | D | ε`. */
+/** `render(g)` 以教材风格渲染 BNF：`A ::= B C | D | ε`。 */
 export function render(g: Grammar): string {
   return g.rules
     .map(
@@ -31,14 +31,14 @@ export function render(g: Grammar): string {
     .join('\n');
 }
 
-/** `derive(g, symbol)` — direct productions for `symbol`. */
+/** `derive(g, symbol)` — `symbol` 的直接产生式。 */
 export function derive(g: Grammar, symbol: NonTerminal): ReadonlyArray<ReadonlyArray<string>> {
   const r = g.rules.find((rr) => rr.lhs === symbol);
   if (!r) throw new Error(`no rule for ${symbol}`);
   return r.rhs;
 }
 
-/** Worked example: arithmetic expressions. */
+/** 算术表达式的示例文法。 */
 export const arithmeticGrammar: Grammar = {
   start: 'E',
   rules: [

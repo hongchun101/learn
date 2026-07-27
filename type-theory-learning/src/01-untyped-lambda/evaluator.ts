@@ -1,15 +1,15 @@
 // @ts-nocheck
-// Small-step β-reducer and normal-order / call-by-value evaluators.
+// 小步 β-归约器，以及正序 / 按值调用的求值器。
 //
 //   (λx. t1) t2   ──β→   [x ↦ t2] t1
 //
-// `evalNormalOrder` does head-spine β-reduction: it descends into the
-// function-of-app to look for the leftmost-outermost β-redex, then fires.
-// Terminates on simply-typed terms and on Church encodings (which are typed
-// inside the encoding). Loops forever on Ω; `fuel` detects that.
+// `evalNormalOrder` 执行 head-spine β-归约：它深入函数-应用结构
+// 以寻找最左最外的 β-可约式，然后触发归约。
+// 对于简单类型的项以及 Church 编码（其内部已包含类型）都能终止。
+// 对 Ω 则会无限循环；`fuel` 用于检测这一情况。
 //
-// `evalCBV` does call-by-value single-step recursion (used in Ch17, and in
-// later chapters for ML-style semantics).
+// `evalCBV` 按值调用进行小步递归求值（在第 17 章以及后续
+// 各章的 ML 风格语义中使用）。
 
 import type { Term } from './ast';
 import { lam } from './ast';
@@ -22,17 +22,17 @@ export class NonNormalizable extends Error {
   }
 }
 
-/** `isValue t` — in pure λ-calculus values are exactly abstractions. */
+/** `isValue t` — 在纯 λ 演算中，值恰好就是抽象。 */
 export function isValue(t: Term): boolean {
   return t.kind === 'lam';
 }
 
-/** `isRedex(t)` — is `t` a β-redex `app(lam, _)` ? */
+/** `isRedex(t)` — `t` 是否为 β-可约式 `app(lam, _)`？ */
 export function isRedex(t: Term): boolean {
   return t.kind === 'app' && t.func.kind === 'lam';
 }
 
-/** Single leftmost-outermost β step. Returns the term unchanged if irreducible. */
+/** 单步最左最外 β 归约。若已不可约则原样返回项。 */
 function stepOnce(t: Term): Term {
   switch (t.kind) {
     case 'var':
@@ -52,7 +52,7 @@ function stepOnce(t: Term): Term {
   }
 }
 
-/** Normal-order evaluator. Throws `NonNormalizable` if fuel exhausted. */
+/** 正序求值器。若耗尽 fuel 则抛出 `NonNormalizable`。 */
 export function evalNormalOrder(t: Term, fuel = 1000): Term {
   let cur = t;
   for (let i = 0; i < fuel; i++) {
@@ -63,26 +63,26 @@ export function evalNormalOrder(t: Term, fuel = 1000): Term {
   throw new NonNormalizable();
 }
 
-/** Public `step` — exposed for tests. */
+/** 公开的 `step` — 供测试使用。 */
 export function step(t: Term): Term {
   return stepOnce(t);
 }
 
-/** Single CBV step: reduce args before functions, never step under λ. */
+/** 单步 CBV：先化简实参再化简函数，绝不进入 λ 之下。 */
 export function stepCBV(t: Term): Term {
   if (t.kind !== 'app') return t;
-  // If the function isn't yet a value, reduce it.
+  // 若函数还不是值，则先化简函数。
   if (!isValue(t.func)) {
     return { kind: 'app', func: stepCBV(t.func), arg: t.arg };
   }
-  // If the argument isn't yet a value (and not a bare variable), reduce it.
+  // 若实参还不是值（且不是裸变量），则化简实参。
   if (t.arg.kind !== 'var' && !isValue(t.arg)) {
     return { kind: 'app', func: t.func, arg: stepCBV(t.arg) };
   }
   return subst(t.func.param, t.arg, t.func.body);
 }
 
-/** `evalCBV` reduces `t` to a value in call-by-value order. */
+/** `evalCBV` 按值调用顺序将 `t` 化简为值。 */
 export function evalCBV(t: Term, fuel = 1000): Term {
   let cur = t;
   for (let i = 0; i < fuel; i++) {
@@ -96,5 +96,5 @@ export function evalCBV(t: Term, fuel = 1000): Term {
   throw new NonNormalizable();
 }
 
-/** `freeVars` re-export. */
+/** `freeVars` 的再导出。 */
 export const freeVars = free;

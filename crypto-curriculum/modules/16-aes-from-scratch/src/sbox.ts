@@ -1,11 +1,10 @@
 /**
- * AES S-box and inverse S-box.
+ * AES S-box 与逆 S-box。
  *
- * The S-box is the canonical FIPS-197 256-byte table; we don't derive it
- * here because the derivation (GF(2⁸) inversion + affine transform) is a
- * 50-line exercise left to the reader. The exact bytes are *defined* in the
- * standard; deriving them yourself is a one-line check of correctness on
- * `sbox[0x00] = 0x63`.
+ * 这个 S-box 是 FIPS-197 中标准的 256 字节查找表；此处不推导它，
+ * 因为推导过程（GF(2⁸) 求逆 + 仿射变换）是一个留作练习的 50 行
+ * 推导过程。准确的字节是标准中 *定义* 的内容；自行推导可基于
+ * `sbox[0x00] = 0x63` 做一行正确性检查。
  */
 
 export const SBOX: Uint8Array = new Uint8Array([
@@ -30,7 +29,7 @@ export const SBOX: Uint8Array = new Uint8Array([
 export const ISBOX: Uint8Array = new Uint8Array(256);
 for (let i = 0; i < 256; i++) ISBOX[SBOX[i] ?? 0] = i;
 
-/** Rcon — round constants used in the key schedule (FIPS 197 §5.1.1). */
+/** Rcon — 密钥调度中使用的轮常量（FIPS 197 §5.1.1）。 */
 export const RCON: Uint8Array = new Uint8Array([
   0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36,
 ]);

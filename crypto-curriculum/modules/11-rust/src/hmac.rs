@@ -1,4 +1,4 @@
-//! HMAC-SHA-256 wrapper around `hmac::Hmac<sha2::Sha256>`.
+//! `hmac::Hmac<sha2::Sha256>` 的 HMAC-SHA-256 包装。
 
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
@@ -17,7 +17,7 @@ impl HmacSha256 {
 
     pub fn verify(key: &[u8], message: &[u8], tag: &[u8]) -> bool {
         let expected = Self::sign(key, message);
-        // Constant-time compare via byte-wise XOR-fold.
+        // 使用按字节异或折叠做常时比较。
         if expected.len() != tag.len() {
             return false;
         }

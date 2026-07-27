@@ -1,8 +1,8 @@
 // @ts-nocheck
-// Algebraic effects as a tiny free-monad with handler interpreters.
+// 代数效应，以一个微型的自由单子配合 handler 解释器实现。
 //
-// We expose only the data shapes — Run / Interp skeletons — to keep typecheck
-// happy across both the educational interpreter and the deep/shallow handlers.
+// 我们仅暴露数据结构形态 —— Run / Interp 的骨架 —— 以便
+// 在教学解释器与 deep/shallow handler 两侧都让类型检查通过。
 
 export interface Op<X> {
   readonly _op: X;

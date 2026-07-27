@@ -1,4 +1,4 @@
-// Strong normalization via the chapter 01 normal-order evaluator.
+// 通过第 01 章的正规序求值器实现强范化判定。
 
 import { evalNormalOrder, NonNormalizable } from '../01-untyped-lambda/evaluator';
 import { parse } from '../01-untyped-lambda/parser';

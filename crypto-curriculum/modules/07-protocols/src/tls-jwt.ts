@@ -1,25 +1,25 @@
 /**
- * Module 07 — Protocols: TLS, JWT, Secret-Sharing.
+ * 模块 07 —— 协议：TLS、JWT、秘密共享。
  *
- * Demos:
- *   1. Make a real TLS 1.3 connection to www.example.com:443.
- *   2. HMAC-based JWT with algorithm pinning.
- *   3. Shamir Secret Sharing over GF(256).
+ * 演示：
+ *   1. 向 www.example.com:443 发起真实的 TLS 1.3 连接。
+ *   2. 基于 HMAC 的 JWT，并使用算法白名单（algorithm pinning）。
+ *   3. 在 GF(256) 上的 Shamir 秘密共享。
  */
 
 import { connect as tlsConnect, type PeerCertificate, type TLSSocket } from 'node:tls';
 import { createHmac, randomBytes } from 'node:crypto';
 
-/** TLSSocket has getCipher() / getProtocol() / getPeerCertificate() in Node 24;
- *  the public type only exposes some of these on some platforms. Declare the
- *  surface we actually use; cast once, in one place, with a reason. */
+/** TLSSocket 在 Node 24 中有 getCipher() / getProtocol() / getPeerCertificate()；
+ *  公开类型在某些平台上只暴露其中一部分。这里声明我们实际使用的接口面；
+ *  在一处集中做类型转换，并附上原因。 */
 interface TlsInternals {
   getCipher?: () => { name: string; version: string };
   getProtocol?: () => string | null;
 }
 
 // ---------------------------------------------------------------------------
-// 1. TLS inspection.
+// 1. TLS 检查。
 // ---------------------------------------------------------------------------
 
 export async function tlsInspect(host = 'www.example.com', port = 443): Promise<void> {
@@ -37,8 +37,8 @@ export async function tlsInspect(host = 'www.example.com', port = 443): Promise<
   const internals = sock as unknown as TlsInternals;
   const cipher = internals.getCipher?.();
   const proto  = internals.getProtocol?.();
-  console.log('  protocol       :', proto);   // e.g. 'TLSv1.3'
-  console.log('  cipher name    :', cipher?.name); // e.g. 'TLS_AES_128_GCM_SHA256'
+  console.log('  protocol       :', proto);   // 例如 'TLSv1.3'
+  console.log('  cipher name    :', cipher?.name); // 例如 'TLS_AES_128_GCM_SHA256'
   console.log('  cipher version :', cipher?.version);
 
   const leaf: PeerCertificate = sock.getPeerCertificate();
@@ -55,7 +55,7 @@ export async function tlsInspect(host = 'www.example.com', port = 443): Promise<
 }
 
 // ---------------------------------------------------------------------------
-// 2. JWT (HS256) with algorithm pinning.
+// 2. JWT（HS256），使用算法白名单。
 // ---------------------------------------------------------------------------
 
 function b64uEncode(b: Buffer): string {
@@ -105,14 +105,14 @@ export function jwtAllowListDemo(): void {
   console.log('  allow-list HS256:', jwtVerifyAllowList(tok, key, new Set(['HS256'])).ok);
   console.log('  allow-list RS256:', jwtVerifyAllowList(tok, key, new Set(['RS256'])).ok);
 
-  // Forge `alg: none` (no signature) — should always fail.
+  // 伪造 `alg: none`（无签名）—— 应始终被拒绝。
   const payloadB64 = tok.split('.')[1] ?? '';
   const forged = `${b64uEncode(Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })))}.${payloadB64}.`;
   console.log('  alg:none rejected:', !jwtVerifyAllowList(forged, key, new Set(['HS256'])).ok);
 }
 
 // ---------------------------------------------------------------------------
-// 3. Shamir Secret Sharing over GF(256).
+// 3. 在 GF(256) 上的 Shamir 秘密共享。
 // ---------------------------------------------------------------------------
 
 function gfAdd(a: number, b: number): number { return a ^ b; }
@@ -187,7 +187,7 @@ export function shamirDemo(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Driver.
+// 驱动入口。
 // ---------------------------------------------------------------------------
 
 export async function execute(): Promise<void> {

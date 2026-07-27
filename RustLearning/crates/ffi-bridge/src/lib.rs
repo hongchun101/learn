@@ -1,2 +1,2 @@
-//! FFI bridge.
-//! (populated below)
+//! FFI 桥接。
+//! （待补充）

@@ -1,9 +1,9 @@
 /**
- * Module 15 — WebCrypto / SubtleCrypto contract tests.
+ * 模块 15 — WebCrypto / SubtleCrypto 契约测试。
  *
- * The cross-module harness in `crypto-curriculum/tests/crypto.test.ts` already
- * exercises the synchronous `crypto.*` Node API. This module additionally
- * tests the async SubtleCrypto path so the same properties hold in browsers.
+ * `crypto-curriculum/tests/crypto.test.ts` 中的跨模块测试套件已经
+ * 覆盖了同步的 Node `crypto.*` API。本模块额外测试异步的 SubtleCrypto
+ * 路径，以确保同样的性质在浏览器中也成立。
  */
 
 import { describe, it, expect } from 'vitest';

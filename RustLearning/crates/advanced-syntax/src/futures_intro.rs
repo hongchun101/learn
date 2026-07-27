@@ -1,17 +1,16 @@
-//! Async foundations: `Pin`, `Future`, `Waker`, hand-polled futures.
+//! 异步基础：`Pin`、`Future`、`Waker`、手写轮询的 Future。
 //!
-//! Running futures by hand is the most direct way to understand how
-//! `Pin<&mut F>` interacts with self-referential futures.
+//! 通过手工方式运行 Future 是理解 `Pin<&mut F>` 如何与自引用 Future
+//! 交互的最直接方式。
 //!
-//! All functions in this module carry an explicit `Future` import so the
-//! snippets stay portable across editions.
+//! 本模块中所有函数都显式导入 `Future`，以使代码片段在不同 edition 之间保持可移植。
 
 #![allow(unsafe_code)]
 
 use std::sync::Arc;
 use std::task::{Wake, Waker};
 
-/// A trivial `Waker` that counts how many times `wake` was invoked.
+/// 一个简单的 `Waker`，用于统计 `wake` 被调用的次数。
 pub struct CountingWaker {
     pub wake_count: Arc<std::sync::atomic::AtomicUsize>,
 }
@@ -36,13 +35,13 @@ pub fn counting_waker() -> (Arc<CountingWaker>, Waker) {
     (cw, waker)
 }
 
-/// A future that yields `T` after `polls_left` polls. Used to test that a
-/// `Waker` is properly invoked before yielding `Pending`.
+/// 一个在经过 `polls_left` 次轮询后产出 `T` 的 Future。
+/// 用于测试在返回 `Pending` 之前是否正确调用了 `Waker`。
 pub struct DelayedFuture<T> {
     polls_left: u32,
     value: Option<T>,
-    /// The same waker this future will hand back to the runtime. Captured for
-    /// self-referential testing inside `poll`.
+    /// 该 Future 稍后交还给运行时的同一个 `Waker`。在 `poll`
+    /// 内部的自引用测试中捕获。
     captured: Option<Waker>,
 }
 
@@ -64,9 +63,9 @@ impl<T> Future for DelayedFuture<T> {
     type Output = T;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<T> {
-        // SAFETY: we never move out of `self`'s pinned fields.
+        // SAFETY：我们绝不会移出 `self` 的固定字段。
         let me = unsafe { self.get_unchecked_mut() };
-        // Save the waker so the test can examine it.
+        // 保存 waker，以便测试可以检查它。
         if me.captured.is_none() {
             me.captured = Some(cx.waker().clone());
         }
@@ -79,7 +78,7 @@ impl<T> Future for DelayedFuture<T> {
     }
 }
 
-/// Drive `fut` to completion by handing it a `Waker` that records itself.
+/// 通过提供一个会记录自身的 `Waker` 来将 `fut` 驱动到完成。
 pub fn block_on<T>(fut: impl Future<Output = T>, waker: &Waker) -> T {
     let mut cx = Context::from_waker(waker);
     let mut fut = Box::pin(fut);
@@ -91,8 +90,8 @@ pub fn block_on<T>(fut: impl Future<Output = T>, waker: &Waker) -> T {
     }
 }
 
-/// A self-referential future that produces output that borrows from a slice
-/// stored inside the future. Demonstrates `Pin`.
+/// 一个自引用的 Future，其产出借用自 Future 内部存储的切片。
+/// 用以演示 `Pin`。
 pub struct SliceIndexFuture<'data> {
     data: &'data [u8],
     state: SliceState<'data>,
@@ -118,8 +117,8 @@ impl<'data> Future for SliceIndexFuture<'data> {
     type Output = Option<&'data [u8]>;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        // SAFETY: `state` only borrows from `self.data`, never references
-        // itself, and we never move fields out of the pinned struct.
+        // SAFETY：`state` 只借用自 `self.data`，从不会引用自身，
+        // 我们也绝不会将字段移出被固定的结构体。
         let me = unsafe { self.get_unchecked_mut() };
         if me.pending {
             return Poll::Pending;
@@ -144,8 +143,7 @@ mod tests {
         let fut = DelayedFuture::new(42u32, 1);
         let out = block_on(fut, &waker);
         assert_eq!(out, 42);
-        // Initial poll + the future's wake before yielding Pending => at
-        // least 2 wake-ups.
+        // 初始轮询 + Future 在返回 Pending 前的 wake => 至少 2 次唤醒。
         assert!(cw.wake_count.load(Ordering::SeqCst) >= 1);
     }
 

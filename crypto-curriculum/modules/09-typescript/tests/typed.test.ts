@@ -15,10 +15,10 @@ describe('module 09: typed Ed25519', () => {
     const s = ed25519Sign(kp.skObject, new TextEncoder().encode('hello'));
     expect(ed25519Verify(kp.pkObject, new TextEncoder().encode('hello'), s)).toBe(true);
     expect(s.length).toBe(64);
-    // `useEd25519` is a tiny adapter; we just verify it round-trips.
+    // `useEd25519` 只是一个轻量适配器；这里仅验证其能往返。
     expect(useEd25519({ sign: (x) => s, verify: () => true })).toBeDefined();
-    // `sk` / `pk` are now 32-byte branded; this is the *type-level* proof.
-    // (At runtime they're just Uint8Array's.)
+    // `sk` / `pk` 现在是 32 字节的品牌化类型；这就是*类型层面*的证据。
+    // （在运行时它们只是 Uint8Array。）
     void sk; void pk;
   });
 });

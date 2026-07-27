@@ -5,7 +5,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 
-/** HMAC-SHA-256 over byte arrays. */
+/** 基于字节数组的 HMAC-SHA-256。 */
 public final class Macs {
     private Macs() {}
 
@@ -15,7 +15,7 @@ public final class Macs {
         return m.doFinal(message);
     }
 
-    /** Constant-time comparison (uses MessageDigest.isEqual since Java 7u72). */
+/** 常时比较（自 Java 7u72 起使用 MessageDigest.isEqual）。 */
     public static boolean hmacSha256Verify(byte[] key, byte[] message, byte[] tag) throws GeneralSecurityException {
         byte[] expected = hmacSha256(key, message);
         return MessageDigest.isEqual(expected, tag);

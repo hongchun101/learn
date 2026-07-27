@@ -1,7 +1,7 @@
 // @ts-nocheck
-// Tiny proof checker for STLC style rules.
+// 一个针对 STLC 风格规则的微型证明检查器。
 //
-// The rules we encode:
+// 我们所编码的规则：
 //
 //   VAR      ─────────────────────  (Γ ⊢ x : τ)   when (x:τ) ∈ Γ
 //
@@ -11,8 +11,7 @@
 //   APP      Γ ⊢ t₁ : τ₁ → τ₂     Γ ⊢ t₂ : τ₁
 //            ─────────────────────  (Γ ⊢ t₁ t₂ : τ₂)
 //
-// We check that a proof tree's conclusion equals the judgment we'd get by
-// stitching the rules.
+// 我们检查证明树的结论是否等于由这些规则拼合而得的判断式。
 
 import type { Type } from '../02-stlc/ast';
 import type { Env } from '../02-stlc/env';
@@ -49,7 +48,7 @@ function proofToEnv(pairs: ReadonlyArray<readonly [string, Type]>): Env {
   return e;
 }
 
-/** `check tree` validates the proof tree. */
+/** `check tree` 验证证明树。 */
 export function checkProof(tree: ProofTree): void {
   for (const p of tree.subProofs) checkProof(p);
   switch (tree.rule.name) {
@@ -85,7 +84,7 @@ export function checkProof(tree: ProofTree): void {
       if (!eqType(argType, expectedPremise.type)) {
         throw new ProofError('LAM: arg type mismatch');
       }
-      // The proof's sub-proof must conclude in the env extended with x:argType.
+      // 该证明的子证明必须在加入了 x:argType 的环境中得到结论。
       const sp = tree.subProofs[0];
       if (!sp) throw new ProofError('LAM: missing sub-proof');
       if (!eqType(sp.rule.conclusion.type, retType)) {

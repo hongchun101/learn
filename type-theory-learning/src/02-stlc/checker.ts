@@ -1,11 +1,11 @@
-// Bidirectional type checker for STLC.
+// STLC 的双向类型检查器。
 //
-// Two judgments:
+// 两个判断式：
 //
-//   Γ ⊢ t ⇒ τ    (synthesize:   figure out the type)
-//   Γ ⊢ t ⇐ τ    (check against: caller knows the type, returns the same type)
+//   Γ ⊢ t ⇒ τ    （synthesize：推导出类型）
+//   Γ ⊢ t ⇐ τ    （check against：调用方已知类型，返回相同类型）
 //
-// `check` returns the type (which is the expected one) so callers can chain.
+// `check` 返回类型（即所期望的类型），以便调用者链式调用。
 
 import type { Term, Type, Var } from './ast';
 import type { Env } from './env';
@@ -18,7 +18,7 @@ export class TypeError extends Error {
   }
 }
 
-/** `infer Γ t` — synthesize a type for `t`. Throws `TypeError` if it cannot. */
+/** `infer Γ t` — 为 `t` 综合（synthesize）一个类型。若无法综合则抛出 `TypeError`。 */
 export function infer(env: Env, t: Term): Type {
   switch (t.kind) {
     case 'var': {
@@ -51,7 +51,7 @@ export function infer(env: Env, t: Term): Type {
   }
 }
 
-/** `check Γ t τ` — type-check `t` against expected `τ`. Returns the type. */
+/** `check Γ t τ` — 在期望类型 `τ` 下对 `t` 进行类型检查，并返回该类型。 */
 export function check(env: Env, t: Term, τ: Type): Type {
   switch (t.kind) {
     case 'lam': {
@@ -90,12 +90,12 @@ function typeStr(τ: Type): string {
   }
 }
 
-/** Convenience: type-check + return the type. */
+/** 便捷函数：进行类型检查并返回类型。 */
 export function checkProgram(t: Term, τ: Type): Type {
   return check({ bindings: {} }, t, τ);
 }
 
-/** `inferProgram t` — top-level inference (tries to synthesise). */
+/** `inferProgram t` — 顶层类型综合（尝试推导类型）。 */
 export function inferProgram(t: Term): Type {
   return infer({ bindings: {} }, t);
 }

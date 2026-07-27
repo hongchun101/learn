@@ -1,13 +1,13 @@
 /**
- * Challenge 2 — HMAC-SHA-256 (challenge 2 reference).
+ * 挑战 2 —— HMAC-SHA-256（挑战 2 参考实现）。
  *
- * `crypto.createHmac('sha256', key)` implements RFC 2104 HMAC. The tag length
- * is fixed at 32 bytes for SHA-256. We expose both `sign` and `verify`, with
- * `verify` using `crypto.timingSafeEqual` for constant-time comparison.
+ * `crypto.createHmac('sha256', key)` 实现的是 RFC 2104 中的 HMAC。
+ * 对于 SHA-256，标签长度固定为 32 字节。我们同时暴露 `sign` 与 `verify`，
+ * 其中 `verify` 使用 `crypto.timingSafeEqual` 进行常数时间比较。
  *
- * Why constant-time: a non-constant-time `==` on the tag leaks the position
- * of the first differing byte via timing. A remote attacker has in practice
- * recovered HMAC tags byte-by-byte from network-facing endpoints this way.
+ * 为什么要常数时间：在标签上使用非常数时间的 `==` 会通过时延泄漏首个
+ * 差异字节的位置。远程攻击者已经在实际中通过这种方式逐字节地恢复
+ * 了面向网络的 HMAC 标签。
  */
 
 import { createHmac, timingSafeEqual } from 'node:crypto';

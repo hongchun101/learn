@@ -1,8 +1,8 @@
-// Big-step interpreter for STLC.
+// STLC 的大步求值解释器。
 //
 //   (λx:τ1. t2) t1   ──→   [x ↦ t1] t2
 //
-// Naive substitution (capture-avoiding) on the typed AST.
+// 在类型化 AST 上做朴素（但避免捕获）的替换。
 
 import type { Term, Var } from './ast';
 import { v } from './ast';
@@ -15,7 +15,7 @@ export class Stuck extends Error {
   }
 }
 
-/** Rename bound name `name` to `fresh` everywhere it appears in `t`. */
+/** 将绑定名 `name` 在 `t` 中所有出现处重命名为 `fresh`。 */
 function rename(name: Var, fresh: Var, t: Term): Term {
   switch (t.kind) {
     case 'var':
@@ -44,7 +44,7 @@ function rename(name: Var, fresh: Var, t: Term): Term {
   }
 }
 
-/** Substs `name ↦ s` into `t`, capture-avoiding. */
+/** 在 `t` 中替换 `name ↦ s`，避免捕获。 */
 export function subst(name: Var, s: Term, t: Term): Term {
   switch (t.kind) {
     case 'var':
@@ -80,7 +80,7 @@ function freshN(base: Var, avoid: ReadonlyArray<Var>): Var {
   return cand;
 }
 
-/** `eval t` returns `t` in canonical form (a value) under big-step semantics. */
+/** `eval t` 在大步语义下返回 `t` 的范式（一个值）。 */
 export function evalT(t: Term): Term {
   switch (t.kind) {
     case 'true':
@@ -109,7 +109,7 @@ export function evalT(t: Term): Term {
   }
 }
 
-/** `isValue` — values are abstractions, lambdas, booleans, naturals. */
+/** `isValue` — 值是抽象、lambda、布尔值或自然数。 */
 export function isValue(t: Term): boolean {
   return t.kind === 'lam' || t.kind === 'true' || t.kind === 'false' || t.kind === 'nat';
 }

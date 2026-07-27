@@ -1,16 +1,16 @@
-// Codata: streams and their operations.
+// 余数据：流及其操作。
 //
 // Stream a = ν s. { head : a, tail : Lazy s }
 //
-// Productivity means each observer (combinator) eventually observes a value;
-// we encode "Lazy" as a thunk whose evaluation we explicitly control.
+// "能产性"指每个观察者（组合子）最终都能观察到一个值；
+// 我们将 "Lazy" 编码为一个显式控制求值时机的 thunk。
 
 export type StreamOp = 'head' | 'tail' | 'empty';
 
 export interface Stream<A> {
-  /** Returns the head value of the stream. */
+  /** 返回流的头部值。 */
   head(): A;
-  /** Returns the next stream (a thunk). */
+  /** 返回下一段流（一个 thunk）。 */
   tail(): Stream<A>;
 }
 

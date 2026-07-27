@@ -14,8 +14,8 @@ extra-source-files:
   - README.md
   - docs/cangjie_for_haskellers.md
 
-# Default to LTS 22.x — stable GHC 9.6.6 with the libraries we want.
-# Bump or pin differently if your toolchain diverges.
+# 默认使用 LTS 22.x —— 稳定版 GHC 9.6.6 以及我们想要的库。
+# 如果你的工具链有差异，可以升级或另行固定。
 resolver: lts-22.43
 
 library
@@ -25,8 +25,8 @@ library
     - -Wall
     - -Wno-name-shadowing
     - -fwarn-incomplete-patterns
-  # -fwarn-incomplete-patterns catches `case` heads / `let` equations.
-  # -fno-warn-unused-do-bind for IO tutorials that stage code.
+  # -fwarn-incomplete-patterns 用于捕获 `case` 头部 / `let` 等式。
+  # -fno-warn-unused-do-bind 用于分阶段写代码的 IO 教程。
   build-depends:
     - base >= 4.14 && < 5
     - text

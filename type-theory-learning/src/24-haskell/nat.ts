@@ -1,5 +1,5 @@
 // @ts-nocheck
-// Peano naturals as types.
+// 把 Peano 自然数实现为类型。
 
 export interface Zero {
   readonly _tag: 'zero';

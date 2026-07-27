@@ -1,18 +1,18 @@
 /**
- * Module 01 — Classical ciphers & their breakable-by-construction attacks.
+ * 模块 01 —— 经典密码及其"在结构上即可破译"的攻击。
  *
- * Educational only. Never use any of these primitives for real protection.
+ * 仅作教学用途。切勿将这些原语用于任何真实的保护场景。
  *
- * Three demonstrations:
- *   1. Caesar cipher — break in ≤ 26 tries.
- *   2. Vigenère cipher — break via Index of Coincidence + Kasiski.
- *   3. Two-Time Pad — break via crib-dragging (the OTP's forbidden mistake).
+ * 三个示例：
+ *   1. Caesar 密码——至多 26 次尝试即可破解。
+ *   2. Vigenère 密码——通过重合指数与 Kasiski 检验破解。
+ *   3. Two-Time Pad——通过 crib-dragging 破译（OTP 的禁忌错误）。
  *
- * Nothing here touches the §6 cross-chapter contract; this is background work.
+ * 这里不涉及 §6 跨章契约，仅作为背景知识铺垫。
  */
 
 // ===========================================================================
-// Caesar
+// Caesar（凯撒密码）
 // ===========================================================================
 
 export function caesarEncrypt(m: string, k: number): string {
@@ -24,7 +24,7 @@ export function caesarEncrypt(m: string, k: number): string {
 }
 
 export function caesarBreak(c: string): { shift: number; plain: string } {
-  // English-letter frequency (probability of each letter).
+  // 英文字母频率（每个字母出现的概率）。
   const ENG: Record<string, number> = {
     e: 0.127, t: 0.091, a: 0.082, o: 0.075, i: 0.070,
     n: 0.067, s: 0.063, h: 0.061, r: 0.060, d: 0.043,
@@ -49,7 +49,7 @@ export function caesarBreak(c: string): { shift: number; plain: string } {
 }
 
 // ===========================================================================
-// Vigenère
+// Vigenère（维吉尼亚密码）
 // ===========================================================================
 
 export function vigenereEncrypt(m: string, key: string): string {
@@ -71,7 +71,7 @@ function vigenereTransform(m: string, key: string, dir: 1 | -1): string {
   });
 }
 
-/** Index of coincidence. English ≈ 0.0667; uniformly random ≈ 0.0385. */
+/** 重合指数（Index of Coincidence）。英文约 0.0667；均匀随机约 0.0385。 */
 export function ic(text: string): number {
   const t = text.toLowerCase().replace(/[^a-z]/g, '');
   if (t.length < 2) return 0;
@@ -82,7 +82,7 @@ export function ic(text: string): number {
   return sum / (t.length * (t.length - 1));
 }
 
-/** Estimate Vigenère key length by IC over shifted versions of the ciphertext. */
+/** 通过对密文位移后的版本计算 IC，估计 Vigenère 密钥长度。 */
 export function vigenereKeyLength(c: string, maxLen = 12): number {
   const t = c.toLowerCase().replace(/[^a-z]/g, '');
   if (t.length === 0) return 0;
@@ -99,7 +99,7 @@ export function vigenereKeyLength(c: string, maxLen = 12): number {
 export function vigenereBreak(c: string): { key: string; plain: string } {
   const L = vigenereKeyLength(c, 8);
   const t = c.toLowerCase().replace(/[^a-z]/g, '');
-  // Lowercase letters ordered by frequency in English.
+  // 按英文频率从高到低排列的小写字母。
   const ENG = 'etaoinshrdlcumwfgypbvkjxqz';
   const cols: string[][] = [];
   for (let j = 0; j < L; j++) cols.push([]);
@@ -121,7 +121,7 @@ export function vigenereBreak(c: string): { key: string; plain: string } {
 }
 
 // ===========================================================================
-// Two-Time Pad (the canonical OTP misuse)
+// Two-Time Pad（OTP 的典型误用）
 // ===========================================================================
 
 export function xorBytes(a: Uint8Array, b: Uint8Array): Uint8Array {
@@ -140,16 +140,16 @@ export function fromBytes(b: Uint8Array): string {
   return new TextDecoder('utf-8', { fatal: false }).decode(b);
 }
 
-/** When the same OTP is reused, c1 ⊕ c2 = m1 ⊕ m2 — XOR of two plaintexts,
- *  biased by natural language redundancy. Statistically recoverable. */
+/** 当同一 OTP 被复用时，c1 ⊕ c2 = m1 ⊕ m2 —— 即两段明文的异或，
+ *  其中带有自然语言冗余带来的偏差，因而可被统计分析恢复。 */
 export function twoTimePadRecover(c1: Uint8Array, c2: Uint8Array): Uint8Array {
   return xorBytes(c1, c2);
 }
 
 // ===========================================================================
-// Demoes (run via `tsx`)
+// 示例运行（通过 `tsx` 触发）
 //
-// `execute()` prints what each attack produces.
+// `execute()` 打印每种攻击的产出。
 // ===========================================================================
 
 export function execute(): void {

@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 
-/** SHA-256 and HKDF-SHA-256. RFC 5869 reference implementation. */
+/** SHA-256 与 HKDF-SHA-256。RFC 5869 参考实现。 */
 public final class Hashes {
     private Hashes() {}
 
@@ -22,9 +22,9 @@ public final class Hashes {
         if (outLen > 255 * 32) throw new IllegalArgumentException("outLen too large");
         byte[] effectiveSalt = salt != null ? salt : new byte[32];
         byte[] effectiveInfo = info != null ? info : EMPTY;
-        // Extract
+        // 抽取（Extract）
         byte[] prk = hmac(effectiveSalt, master);
-        // Expand
+        // 扩展（Expand）
         ByteArrayOutputStream okm = new ByteArrayOutputStream();
         byte[] prev = EMPTY;
         for (int counter = 1; okm.size() < outLen; counter++) {

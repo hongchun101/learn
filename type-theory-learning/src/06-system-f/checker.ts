@@ -1,5 +1,5 @@
 // @ts-nocheck
-// Kind-environment based System F checker with bidirectional modes.
+// 基于 kind 环境的 System F 检查器，含双向模式。
 
 import type { Term, Type, Var } from './ast';
 

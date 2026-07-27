@@ -1,2 +1,2 @@
-//! Idiomatic Rust patterns catalog.
-//! (populated below)
+//! Rust 惯用模式目录。
+//! （待补充）

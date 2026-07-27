@@ -1,13 +1,13 @@
-//! Generic associated types (GATs) and higher-ranked trait bounds (HRTBs).
+//! 泛型关联类型（GATs）与高阶 trait 约束（HRTBs）。
 //!
-//! GATs let a trait carry associated types that mention the trait's own
-//! generic parameters. This unlocks type families like "items with any
-//! lifetime" in iterators and arenas with self-referential data.
+//! GAT 允许 trait 携带引用了 trait 自身泛型参数的关联类型，
+//! 这解锁了诸如“具有任意生命周期的项”这样的类型族，
+//! 以及带有自引用数据的 arena。
 //!
-//! HRTBs (`for<'a>`) express bounds that must hold for *every* lifetime.
+//! HRTB（`for<'a>`）表示对 *每一个* 生命周期都必须成立的约束。
 
-/// A small lending iterator: `Item` borrows from this iterator, but the
-/// precise lifetime is captured by the GAT.
+/// 一个小型“借出”迭代器：`Item` 借用自迭代器自身，
+/// 但具体的生命周期由 GAT 捕获。
 pub trait LendingIterator {
     type Item<'a>
     where
@@ -16,7 +16,7 @@ pub trait LendingIterator {
     fn next(&mut self) -> Option<Self::Item<'_>>;
 }
 
-/// A whitespace tokenizer that borrows from a string slice.
+/// 一个借用自字符串切片的空白符号分词器。
 pub struct SplitWhitespace<'src> {
     src: &'src str,
 }
@@ -45,7 +45,7 @@ impl<'src> LendingIterator for SplitWhitespace<'src> {
     }
 }
 
-/// A higher-ranked trait bound: the callback must accept any lifetime.
+/// 高阶 trait 约束：回调必须接受任意生命周期。
 pub fn call_with_any<F>(mut f: F)
 where
     F: for<'a> FnMut(&'a str),
@@ -54,8 +54,7 @@ where
     f("second-lifetime");
 }
 
-/// Convenience helper that lets a caller transform items with a callback
-/// that has a fixed lifetime.
+/// 一个便捷辅助函数，允许调用者使用具有固定生命周期的回调来变换元素。
 pub fn map_first<I, F, T>(iter: I, mut f: F) -> Vec<T>
 where
     I: IntoIterator,

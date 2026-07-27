@@ -1,5 +1,5 @@
-//! The cross-chapter contract tests in Rust. The same six properties the
-//! other modules check; same shape, different language.
+//! Rust 中的跨章节契约测试。其他模块检验的同一组六条性质；
+//! 形式相同，只是换成另一种语言。
 
 use crypto_curriculum_rust::{HmacSha256, HkdfSha256, Sha256, random_bytes};
 

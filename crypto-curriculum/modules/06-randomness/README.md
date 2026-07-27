@@ -15,8 +15,8 @@
 ```
 lin-congruential: state = (state * a + c) mod m
 output = state
-                  → second-out bit is a deterministic function of state.
-                    Period ~ m. Predictable.
+                  → 输出的第二位比特是状态的确定函数。
+                    周期约为 m。可预测。
 ```
 
 A CSPRNG must:

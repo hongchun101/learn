@@ -1,4 +1,4 @@
-// AST for System F.
+// System F 的 AST。
 //
 //   τ ::= α | τ → τ | ∀α. τ
 //   t ::= x | λα. t | t [τ] | λx:τ. t | t t | (constants)

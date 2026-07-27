@@ -1,4 +1,4 @@
-// Tiny HM language.
+// 一个微型的 HM 语言。
 
 export type Var = string;
 
@@ -10,7 +10,7 @@ export type Term =
   | { kind: 'num'; value: number }
   | { kind: 'bool'; value: boolean };
 
-// A type is a tree of type variables and Int / Bool / → constructors.
+// 类型是由类型变量、Int / Bool 构造子和 → 构造子构成的树。
 export type Id = number;
 
 export interface TVar {

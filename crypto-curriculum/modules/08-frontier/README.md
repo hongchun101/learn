@@ -100,7 +100,7 @@ disclosing individual elements. Used heavily in advertising measurement.
 A *Verifiable Random Function*:
 
 ```
-y = VRF(sk, alpha)         # deterministic
+y = VRF(sk, alpha)         # 确定性
 pi = VRF_prove(sk, alpha)
 (VK_RSA(sk) → pk)
 verifier: VRF_verify(pk, alpha, pi, y)  → bool

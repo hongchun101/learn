@@ -1,5 +1,5 @@
-// A tiny proof-search pipeline mimicking what a tactic in Lean 4 would do.
-// We stage goals and run a couple of "tactics" against them.
+// 一个微型的证明搜索流水线，模拟 Lean 4 中 tactic 的工作方式。
+// 我们分阶段列出目标，并对它们依次运行若干 "tactic"。
 
 export interface Goal {
   id: number;

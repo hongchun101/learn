@@ -1,4 +1,4 @@
-// Demo for Chapter 02.
+// 第 02 章的 demo。
 
 import { parse } from './parser';
 import { prettyTy, pretty } from './ast';

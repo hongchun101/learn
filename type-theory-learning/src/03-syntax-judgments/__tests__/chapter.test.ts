@@ -1,4 +1,4 @@
-// Vitest spec for Chapter 03.
+// 第 03 章的 Vitest 测试。
 
 import { describe, it, expect } from 'vitest';
 import { arithmeticGrammar, render } from '../bnf';
@@ -67,7 +67,7 @@ describe('03 proof checker', () => {
   });
 
   it('accepts APP proof using two sub-proofs', () => {
-    // id : Bool → Bool, applied to true (Bool), yields Bool.
+    // id : Bool → Bool，应用于 true（Bool），得到 Bool。
     const idApp: ProofTree = {
       rule: {
         name: 'APP',

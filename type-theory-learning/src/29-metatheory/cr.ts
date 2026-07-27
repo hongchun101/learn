@@ -1,4 +1,4 @@
-// Church-Rosser style convergence check.
+// 风格化的 Church-Rosser 收敛性检查。
 
 import { evalNormalOrder } from '../01-untyped-lambda/evaluator';
 import { alphaEq } from '../01-untyped-lambda/subst';

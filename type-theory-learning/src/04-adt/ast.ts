@@ -1,5 +1,5 @@
 // @ts-nocheck
-// AST extension for products, sums, records, variants.
+// 为积、和、记录、变体扩展的 AST。
 
 export type Var = string;
 
@@ -34,7 +34,7 @@ export type Term =
   | { kind: 'tag'; tag: string; expr: Term }
   | { kind: 'caseTag'; scrut: Term; alts: ReadonlyArray<VariantAlt> };
 
-// Constructors
+// 构造子
 export const bool: Type = { kind: 'bool' };
 export const nat: Type = { kind: 'nat' };
 export const fun = (param: Type, body: Type): Type => ({ kind: 'fun', param, body });

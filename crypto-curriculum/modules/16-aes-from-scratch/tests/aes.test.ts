@@ -1,13 +1,12 @@
 /**
- * Module 16 — SHA-256 verifiable reference.
+ * 模块 16 — SHA-256 可验证的参考实现测试。
  *
- * `sha256(msg)` delegates to Node's vetted `crypto.createHash('sha256')`.
- * The from-scratch BigInt SHA-256 implementation is left as a teaching
- * artifact (see src/aes-from-scratch.ts for the FIPS 180-4 algorithm
- * description; see README for what changes a from-scratch impl needs).
+ * `sha256(msg)` 委托给 Node 经过验证的 `crypto.createHash('sha256')`。
+ * 从零实现的 BigInt SHA-256 仅作为教学示例保留（参见 src/aes-from-scratch.ts
+ * 中对 FIPS 180-4 算法的描述，以及 README 中说明从零实现需要哪些变更）。
  *
- * Verification vectors: NIST FIPS 180-4 §B.1 (multi-block) test vectors
- * reproduced directly from OpenSSL's output below.
+ * 验证向量：NIST FIPS 180-4 §B.1（多分块）测试向量，
+ * 由 OpenSSL 的输出直接复制得到。
  */
 
 import { describe, it, expect } from 'vitest';

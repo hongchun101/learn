@@ -1,4 +1,4 @@
-// Big-step evaluator for ADT-stlc.
+// ADT-STLC 的大步求值器。
 
 import type { Term, Type, Var } from './ast';
 import { v } from './ast';

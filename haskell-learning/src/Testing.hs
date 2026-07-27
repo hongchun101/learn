@@ -1,15 +1,13 @@
 -- |
--- = Chapter 11 — Testing with Tasty, HUnit, QuickCheck
+-- = 第十一章 — 用 Tasty、HUnit 与 QuickCheck 进行测试 =
 --
--- Tasty lets you mix unit specs (HUnit) and property-based tests
--- (QuickCheck). The library is exposed to the test executable; this
--- module ships properties and HUnit-style cases that `tests/Test.hs`
--- picks up.
+-- Tasty 允许混合单元规格（HUnit）与基于属性的测试
+--（QuickCheck）。该库暴露给测试可执行文件；本模块提供属性和
+-- HUnit 风格的用例，由 `tests/Test.hs` 加载。
 --
--- Why QuickCheck matters: hand-written tests cover a few cases;
--- QuickCheck covers thousands and (more importantly) defines the
--- *invariants the type/library relies on* — the laws discussed in
--- earlier chapters.
+-- QuickCheck 的重要性：手写测试只覆盖少数用例；QuickCheck
+-- 可以覆盖数千种情况，而且更重要的是，它定义了类型/库所依赖的
+-- *不变量*——即前面章节讨论的定律。
 module Testing where
 
 import           Test.Tasty
@@ -24,25 +22,25 @@ import           Basics                 (sumListTR, fibFast)
 import           MonoidsFoldable        (countUnique, topK)
 import           Parsing                (parseCube, runParser')
 
--- * HUnit-style: concrete input/output pairs.
+-- * HUnit 风格：具体的输入/输出对。
 
 sumListTR_matches :: TestTree
 sumListTR_matches =
   testCase "sumListTR agrees with Prelude sum" $
     sumListTR [1, 2, 3, 4, 5 :: Int] @?= 15
 
--- * QuickCheck properties.
+-- * QuickCheck 属性。
 
--- | `sumListTR` and `Prelude.sum` give the same total.
+-- | `sumListTR` 与 `Prelude.sum` 得到相同的总和。
 prop_sumListTR_same :: [Int] -> Bool
 prop_sumListTR_same xs = sumListTR xs == L.foldl' (+) 0 xs
 
--- | `fibFast` for nonneg n returns nonneg.
+-- | 对于非负 n，`fibFast` 返回非负值。
 prop_fibFast_nonneg :: Int -> Bool
 prop_fibFast_nonneg n = n >= 0 ==> fibFast n >= 0
 
--- | For disjoint input sets, `countUnique` of a union matches
---   `unionWith (+) mx my`.
+-- | 对于不相交的输入集合，其并集的 `countUnique` 与
+--   `unionWith (+) mx my` 一致。
 prop_countUnique_additive :: [Int] -> [Int] -> Bool
 prop_countUnique_additive xs ys =
   L.null [x | x <- xs, x `L.elem` ys] ==>
@@ -51,11 +49,11 @@ prop_countUnique_additive xs ys =
         mu = countUnique (xs ++ ys)
     in mu == Map.unionWith (+) mx my
 
--- | `topK` produces a subset whose length is bounded by k.
+-- | `topK` 生成一个子集，其长度以 k 为上界。
 prop_topK_length :: [Int] -> Bool
 prop_topK_length xs = L.length (topK 3 xs) <= 3
 
--- | Cube parser is exact on positive integer spells.
+-- | Cube 解析器能精确解析正整数字面形式。
 parseCube_ok :: TestTree
 parseCube_ok =
   testCase "parseCube \" 5 \" gives 125" $
@@ -64,7 +62,7 @@ parseCube_ok =
       Right (v,  _)  -> error ("unexpected value: " <> show v)
       Left  e         -> error (show e)
 
--- | The full Tasty group the test executable imports.
+-- | 测试可执行文件导入的完整 Tasty 测试组。
 tastyTests :: TestTree
 tastyTests = testGroup "Testing chapter"
   [ sumListTR_matches

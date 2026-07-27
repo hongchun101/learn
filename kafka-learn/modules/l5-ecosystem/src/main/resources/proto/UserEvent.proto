@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.kafkalearn.l5.proto;
+
+option java_package = "com.kafkalearn.l5.proto";
+option java_multiple_files = true;
+
+message UserEvent {
+  string user_id = 1;
+  EventType     type  = 2;
+  oneof  payload {
+    double amount = 3;
+    string url    = 4;
+  }
+  int64  ts = 5;
+
+  enum EventType {
+    UNKNOWN = 0;
+    CLICK   = 1;
+    VIEW    = 2;
+    PURCHASE = 3;
+  }
+}

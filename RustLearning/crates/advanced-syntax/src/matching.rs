@@ -1,7 +1,7 @@
-//! Pattern matching deep-dive: ranges, slices, bindings, guards, `@`-binding,
-//! exhaustive `match`, `if let` chains, `let .. else`.
+//! 模式匹配深入：范围、切片、绑定、守卫、`@` 绑定、穷尽 `match`、
+//! `if let` 链、`let .. else`。
 
-/// A small DSL evaluation result.
+/// DSL 求值结果。
 #[derive(Debug, PartialEq, Eq)]
 pub enum Value {
     Int(i64),
@@ -35,14 +35,13 @@ pub fn first_word_in(text: &str) -> Option<&str> {
     (!first.is_empty()).then_some(first)
 }
 
-/// Slicing patterns: handle the first/second/tail of a slice.
+/// 切片模式：处理切片的首部、第二项与尾部。
 pub fn split_at_first<'a>(items: &'a [i32]) -> Option<(&'a [i32], &'a [i32])> {
     let split = items.iter().position(|&i| i == 0)?;
     Some(items.split_at(split))
 }
 
-/// Exhaustive pattern matching on a tagged enum: the compiler enforces
-/// `Empty` is handled.
+/// 对带标签的枚举进行穷尽匹配：编译器强制要求处理 `Empty` 分支。
 pub fn describe(v: &Value) -> &'static str {
     match v {
         Value::Int(0) => "zero",
@@ -58,7 +57,7 @@ pub fn describe(v: &Value) -> &'static str {
     }
 }
 
-/// Pattern `@` binding: capture a name and inspect parts at the same time.
+/// 模式的 `@` 绑定：同时对名称进行捕获并检查其组成部分。
 pub fn log_event(event: &(String, i32)) -> String {
     match event {
         (name, count) if name == "START" => format!("start {name}"),
@@ -67,8 +66,8 @@ pub fn log_event(event: &(String, i32)) -> String {
         (name, _) => format!("{name} many"),
     }
 }
-/// `let ... else`: skip when a precondition fails; otherwise the rest of the
-/// function has a guaranteed shape.
+/// `let ... else`：当某个前置条件不满足时跳过；否则函数余下部分
+/// 都拥有确定的形状。
 pub fn head_of(items: &[i32]) -> Result<i32, Error> {
     let (first, rest) = items.split_first().ok_or(Error::OutOfRange)?;
     if rest.is_empty() {

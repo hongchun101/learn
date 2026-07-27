@@ -1,14 +1,14 @@
 -- |
--- = Chapter 05 — Semigroup, Monoid, Foldable, Map, Set
+-- = 第五章 — Semigroup、Monoid、Foldable、Map、Set =
 --
--- * `Semigroup a` says: there's a `<>` to combine two `a`s.
--- * `Monoid a` says: there's `<>` plus an empty value `mempty`.
---   These two classes let you fold *anything* — log lines, scores,
---   configurations, *inputs of any kind* — with one combinator.
--- * `Foldable` is the "containers you can fold over" class.
---   Lists, Maps, Sets, Maybes, Eithers — all `Foldable`.
--- * `Data.Map.Strict` is the go-to ordered map; `Data.Set` the go-to
---   ordered set. Both are ordered & O(log n) per key.
+-- * `Semigroup a` 表示：存在一个 `<>` 用来合并两个 `a`。
+-- * `Monoid a` 表示：除了 `<>` 之外，还有一个空值 `mempty`。
+--   这两个类让你能用同一种组合子归约**任意**数据——日志行、分数、
+--   配置项、**任何形式的输入**——只需一个 combinator。
+-- * `Foldable` 是"可以归约的容器"类型类。
+--   列表、Map、Set、Maybe、Either——都是 `Foldable`。
+-- * `Data.Map.Strict` 是首选的有序 Map；`Data.Set` 是首选的有序 Set。
+--   两者都保持有序，单键操作 O(log n)。
 module MonoidsFoldable where
 
 import           Data.Map.Strict (Map)
@@ -18,28 +18,27 @@ import qualified Data.Set        as Set
 import           Data.Monoid     (Sum(..), Product(..), All(..), Any(..))
 import           Data.List       (foldl')
 
--- | A newtype with a non-standard monoid.
+-- | 带有非标准 Monoid 的 newtype。
 newtype Avg = Avg { unAvg :: Double }
   deriving (Show, Eq)
 
--- | Sum-merge an `Avg`. Note: this is *not* a true average, but it's a
---   perfectly valid `Semigroup` for "many averages we wanted to
---   separately report."
+-- | 用求和方式合并 `Avg`。注意：这并不是真正的平均值，但对于"我们想
+--   分别汇报的多个平均值"来说，它是一个完全合法的 `Semigroup`。
 instance Semigroup Avg where
   (Avg a) <> (Avg b) = Avg (a + b)
 
 instance Monoid Avg where
   mempty = Avg 0
 
--- | Generic sum using Foldable: works on lists, maps, sets, anything.
+-- | 使用 Foldable 的通用求大小：可用于列表、Map、Set 以及任何可折叠容器。
 size :: Foldable t => t a -> Int
 size = foldl' (\_ n -> n + 1 :: Int -> Int) 0
 
--- | A Foldable that uses monoid instance.
+-- | 利用 Monoid 实例的 Foldable。
 sumF :: (Foldable t, Num a) => t a -> a
 sumF = getSum . foldMap Sum
 
--- | Common Map ops.
+-- | 常见的 Map 操作。
 seedMap :: Map String Int
 seedMap = Map.fromList [("apples", 3), ("oranges", 5), ("pears", 2)]
 
@@ -49,30 +48,30 @@ countTotal = sumF
 countOf :: String -> Map String Int -> Int
 countOf k m = Map.findWithDefault 0 k m
 
--- | Count unique values across a list.
+-- | 统计列表中各唯一值出现的次数。
 countUnique :: (Ord a) => [a] -> Map a Int
 countUnique = foldl' step Map.empty
   where
     step m x = Map.insertWith (+) x 1 m
 
--- | Set union & intersection demoed using semigroups.
+-- | 用 Semigroup 演示 Set 的并集与交集。
 unionF :: (Ord a) => Set a -> Set a -> Set a
 unionF = (<>)
 
--- | Largest k elements via `Foldable` + `Foldable`.
+-- | 通过 `Foldable` + `Foldable` 取最大的 k 个元素。
 topK :: (Ord a) => Int -> [a] -> [a]
 topK k xs = take k (Set.toAscList (Set.fromList xs))
 
--- | The `Any`/`All` monoids of booleans.
+-- | 布尔值上的 `Any` / `All` Monoid。
 allPositive :: [Int] -> Bool
 allPositive = getAll . foldMap (All . (> 0))
 
--- | Use `Foldable` over `Maybe` to write a program over optional data.
+-- | 对 `Maybe` 使用 `Foldable`，以便围绕可选数据编写程序。
 fromMaybe :: a -> Maybe a -> a
 fromMaybe _ (Just x) = x
 fromMaybe d Nothing   = d
 
--- | The demo.
+-- | 演示。
 
 monoidsFoldable :: IO ()
 monoidsFoldable = do

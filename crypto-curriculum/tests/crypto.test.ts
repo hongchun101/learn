@@ -1,16 +1,15 @@
 /**
- * Cross-chapter contract tests (TypeScript reference implementation).
+ * 跨章契约测试（TypeScript 参考实现）。
  *
- * Six invariants — one per chapter's contract — that the language modules
- * MUST also prove in their own language. If a module fails any of these, it
- * does not implement the corresponding primitive correctly.
+ * 六条不变量——对应每个章节的契约——各语言模块也必须在本语言中证明。
+ * 如果某个模块任意一条失败，则说明它没有正确实现对应的原语。
  *
- *   1. encrypt/decrypt round-trip with tag verification
- *   2. mac sign/verify round-trip + forgery rejection
- *   3. hash determinism + spot-check distinctness
- *   4. kdf determinism + domain-separation + variable output length
- *   5. signature sign/verify round-trip + forgery rejection + length sanity
- *   6. csprng uniqueness over a million bytes + zeroed byte absent
+ *   1. 加解密往返并验证标签
+ *   2. MAC 签/验往返 + 拒绝伪造
+ *   3. 哈希的确定性 + 区分性的抽查
+ *   4. KDF 的确定性 + 域名分隔 + 可变输出长度
+ *   5. 签名签/验往返 + 拒绝伪造 + 长度合理性
+ *   6. CSPRNG 在一百万字节内唯一性 + 无连续零字节
  */
 
 import { describe, it, expect } from 'vitest';
@@ -36,9 +35,9 @@ function rand(n: number): Uint8Array {
   return out;
 }
 
-/* ---- small helpers that don't quite earn a function (used 3+ times) ---- */
+/* ---- 使用频次尚不足以单独提函数的小工具（被使用 3 次以上） ---- */
 
-/** Bit-flip the byte at `idx` in a copy of `src`. */
+/** 在 `src` 的副本中将 `idx` 位置的字节按 `mask` 取反。 */
 function flipBit(src: Uint8Array, idx: number, mask: number): Uint8Array {
   const out = new Uint8Array(src);
   out[idx] = (out[idx] ?? 0) ^ mask;

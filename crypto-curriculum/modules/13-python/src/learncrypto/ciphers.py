@@ -1,6 +1,6 @@
-"""AES-256-GCM round-trip using pyca's cryptography.hazmat.
+"""使用 pyca 的 cryptography.hazmat 实现 AES-256-GCM 的加解密往返。
 
-Run with::
+运行方式::
 
     python -c "from learncrypto.ciphers import *; ..."
 """
@@ -12,9 +12,9 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 
 def aes_gcm_encrypt(key: bytes, pt: bytes, aad: bytes | None = None) -> dict[str, bytes]:
-    """Encrypt `pt` with AES-256-GCM. Returns {ciphertext, nonce, tag}.
+    """使用 AES-256-GCM 加密 `pt`。返回 {ciphertext, nonce, tag}。
 
-    The `cryptography` AESGCM.Seal returns ct||tag concatenated; we split.
+    `cryptography` 的 AESGCM.Seal 返回的是 ct||tag 拼接后的结果；我们将其拆分。
     """
     if len(key) != 32:
         raise ValueError("key must be 32 bytes")

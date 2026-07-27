@@ -1,8 +1,8 @@
 // @ts-nocheck
-// Natural transformations modelled as TypeScript functions.
+// 自然变换，以 TypeScript 函数的方式建模。
 //
 //   natural : ∀α. F<α> → G<α>
-//   respect:  forall α,β f.    natural . F<map f>  =  G<map f> . natural
+//   respect:  对所有 α,β f.    natural . F<map f>  =  G<map f> . natural
 
 import type { BoxHKT, MaybeHKT } from './kinds';
 
@@ -31,7 +31,7 @@ const Maybe: MaybeHKT = {
   },
 };
 
-/** Natural transformation `Box → Maybe` = `box a ↦ just a`. */
+/** 自然变换 `Box → Maybe` = `box a ↦ just a`。 */
 export const boxToMaybe = <A>(b: Box<A>): Maybe<A> => Maybe.just(b.value);
 
 export const Box_ = Box;

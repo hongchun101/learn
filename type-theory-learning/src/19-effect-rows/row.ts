@@ -1,4 +1,4 @@
-// Effect rows: open (extendable) vs closed (exhaustive).
+// 效应行：开放（可扩展）与封闭（穷举）。
 
 export type Eff = 'pure' | 'io' | 'state' | 'exn' | 'nondet';
 

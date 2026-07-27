@@ -67,10 +67,10 @@ properties.
 ```bash
 cd crypto-curriculum
 npm install
-npm test            # 90+ tests across 14+ test files
-npm run typecheck   # strict TypeScript clean
-npm run curriculum  # prints the per-module "what you'll learn" table
-npm run demo        # runs every available module's demo
+npm test            # 90+ 个测试，覆盖 14+ 个测试文件
+npm run typecheck   # 严格 TypeScript 检查通过
+npm run curriculum  # 打印每个模块的"你将学到什么"表
+npm run demo        # 运行每个可用模块的演示
 ```
 
 Then enter any module:
@@ -144,17 +144,17 @@ crypto-curriculum/
 ## Quality gates
 
 ```bash
-# Top-level TypeScript invariants: 27/27 passing
+# 顶层 TypeScript 不变量：27/27 通过
 cd crypto-curriculum && npm test
 
-# Per-chapter property tests: 60+ passing
+# 各章节属性测试：60+ 通过
 cd crypto-curriculum && npx vitest run
 
-# Java: 13/13 assertions passing (JDK 8 only)
+# Java：13/13 断言通过（仅 JDK 8）
 cd modules/10-java && javac -encoding UTF-8 -d target src/io/learncrypto/*.java && \
   java -ea -cp target io.learncrypto.TestSuite
 
-# Rust: 5 unit + 5 integration passing
+# Rust：5 个单元 + 5 个集成测试通过
 cd modules/11-rust && cargo test
 ```
 

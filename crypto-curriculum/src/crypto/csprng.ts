@@ -1,11 +1,11 @@
 /**
- * Challenge 6 — CSPRNG (challenge 6 reference).
+ * 挑战 6 —— CSPRNG（挑战 6 参考实现）。
  *
- * Node's `crypto.randomBytes` is the OS CSPRNG (Linux: `getrandom()`,
- * Windows: `BCryptGenRandom` via CNG, macOS: `SecRandomCopyBytes`). All of
- * those are vetted to meet NIST SP 800-90A / SP 800-22 expectations.
+ * Node 的 `crypto.randomBytes` 包装了操作系统的 CSPRNG（Linux：`getrandom()`，
+ * Windows：经由 CNG 的 `BCryptGenRandom`，macOS：`SecRandomCopyBytes`）。
+ * 这些均经过审查以满足 NIST SP 800-90A / SP 800-22 的期望。
  *
- * We expose it as `Csprng` so language modules can match the interface.
+ * 我们将其暴露为 `Csprng`，以便各语言模块能够匹配同一接口。
  */
 
 import { randomBytes } from 'node:crypto';

@@ -1,24 +1,24 @@
-//! Module organization, `pub use` re-exports, and feature flags.
+//! 模块组织、`pub use` 重导出与特性标志。
 //!
-//! - `pub use` flattens the public surface.
-//! - Inline modules vs. separate files vs. `mod foo;` declaration.
-//! - Conditional compilation with `#[cfg(feature = ...)]`.
+//! - `pub use` 用于扁平化公共接口。
+//! - 内联模块 vs. 单独文件 vs. `mod foo;` 声明。
+//! - 使用 `#[cfg(feature = ...)]` 进行条件编译。
 
-//! - `pub use` re-exports the type.
+//! - `pub use` 重导出类型。
 
-/// A private module type only used in tests.
+/// 仅在测试中使用的私有模块类型。
 #[derive(Debug)]
 pub struct Item {
     pub id: u32,
     pub name: String,
 }
 
-/// `pub use` re-export: callers reference `crate::Item` despite the source
-/// living in a submodule.
+/// `pub use` 重导出：尽管源类型位于子模块中，
+/// 调用者可以通过 `crate::ReexportedPublicSurface` 引用它。
 pub use self::internal::PublicSurface as ReexportedPublicSurface;
 
 mod internal {
-    /// Internal: every leaf in the toy module tree.
+    /// 内部：玩具模块树中的每个叶子。
     #[derive(Debug)]
     pub struct PublicSurface {
         pub label: &'static str,
@@ -31,8 +31,7 @@ mod internal {
     }
 }
 
-/// `#[cfg(feature = "...")]` gating. The default build does not pull in
-/// heavy machinery.
+/// `#[cfg(feature = "...")]` 开关。默认构建不会引入重量级机制。
 #[cfg(feature = "serde")]
 pub fn serde_optional_call<T>(_t: &T) -> &str {
     "with-serde"

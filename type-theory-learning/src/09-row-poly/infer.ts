@@ -1,4 +1,4 @@
-// Naïve row unification.
+// 朴素的行合一。
 
 import type { Label, Row, Term, Type } from './ast';
 

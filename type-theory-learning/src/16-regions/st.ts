@@ -1,10 +1,10 @@
 // @ts-nocheck
-// ST monad with branded regions.
+// ST 单子，带区域标记。
 //
-//   ST<S, A>     = computation allocating in region S, returning A
-//   runST :: ∀S. (∀s. ST<s, A>) -> A     (rank-2 polymorphism)
+//   ST<S, A>     = 在区域 S 中分配、返回 A 的计算
+//   runST :: ∀S. (∀s. ST<s, A>) -> A     （rank-2 多态）
 //
-// We approximate the rank-2 polymorphism with a private token type.
+// 我们用一个私有 token 类型来近似 rank-2 多态。
 
 declare const s: unique symbol;
 export type Region = typeof s;

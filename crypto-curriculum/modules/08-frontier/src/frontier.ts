@@ -1,15 +1,15 @@
 /**
- * Module 08 — Frontier cryptography in Node 24.
+ * 模块 08 —— Node 24 中的前沿密码学。
  *
- * Demos that fit the local toolchain:
- *   1. Schnorr identification (zk-pok of discrete log) — textbook-strength.
- *   2. Verifiable random function (VRF) using HMAC-DRBG + Schnorr proof.
- *   3. Toy Private Set Intersection (PSI-CA): two parties compute the size
- *      of their intersection without disclosing elements.
+ * 在本地工具链上可演示的内容：
+ *   1. Schnorr 身份识别协议（离散对数的零知识证明）—— 教科书强度。
+ *   2. 可验证随机函数（VRF），使用 HMAC-DRBG + Schnorr 证明。
+ *   3. 演示版隐私集合求交（PSI-CA）：两方在不暴露各自元素的前提下
+ *      计算交集大小。
  *
- * The 1024-bit prime below is NOT a real-world safe prime — it is purely a
- * mathematical vehicle for demonstrating the ZK protocols. For production,
- * use RFC 5114 / RFC 7919 group 14, or NIST P-256 / X25519.
+ * 下面的 1024 位素数并非真实世界的安全素数 —— 它仅作为演示零知识协议的
+ * 数学载体。生产环境中应使用 RFC 5114 / RFC 7919 第 14 组，
+ * 或 NIST P-256 / X25519。
  */
 
 import { createHash, createHmac, randomBytes } from 'node:crypto';
@@ -66,9 +66,9 @@ export function schnorrKeypair(seed: Buffer): { sk: SchnorrSk; pk: SchnorrPk } {
 }
 
 /**
- * Schnorr identification (Fiat-Shamir-style non-interactive variant).
- * Returns the commitment T and the response s. The challenge `c` is recomputed
- * by the verifier from (T, ctx) and bound to the protocol context.
+ * Schnorr 身份识别协议（Fiat-Shamir 风格、非交互式变体）。
+ * 返回承诺值 T 与响应值 s。挑战值 `c` 由验证方根据 (T, ctx) 重新计算，
+ * 并与协议上下文绑定。
  */
 export function schnorrProve(sk: SchnorrSk, ctx: Buffer): SchnorrProof {
   const r = bytesToBig(createHash('sha256')
@@ -103,7 +103,7 @@ export function schnorrDemo(): void {
     !schnorrVerify(kp.pk, Buffer.from('application:auth/2027'), proof));
 }
 
-// VRF — a deterministic Schnorr-derived output with proof.
+// VRF —— 基于 Schnorr 派生的确定性输出，并附带证明。
 export interface VrfOutput { beta: Buffer; pi: SchnorrProof }
 
 export function vrfEval(sk: SchnorrSk, alpha: Buffer): VrfOutput {
@@ -135,12 +135,12 @@ export function vrfDemo(): void {
   console.log('  verify          :', vrfVerify(kp.pk, alpha, out.beta, out.pi));
 }
 
-// Toy PSI-CA: in a real protocol the OPRF is a Diffie–Hellman-based
-// pseudorandom function. Here we hash + HMAC; correctness is the same property
-// (|A ∩ B| = number of inputs that map to a shared bucket under both keys).
+// 演示版 PSI-CA：在真实协议中 OPRF 是基于 Diffie–Hellman 的
+// 伪随机函数。这里使用 hash + HMAC；正确性体现为同一性质
+//（|A ∩ B| = 在双方密钥下映射到相同桶的输入数量）。
 export function psiCa(setA: Buffer[], setB: Buffer[]): number {
-  // Stable per-element signature: HMAC-SHA256 over a fixed protocol key (in
-  // production this would be the per-party OPRF key).
+  // 稳定的逐元素签名：使用固定协议密钥对输入做 HMAC-SHA256
+  // （生产中这里应使用每方各自的 OPRF 密钥）。
   const protocolKey = createHash('sha256').update(Buffer.from('protocol-v1')).digest();
   const hA = new Set(setA.map((x) => createHmac('sha256', protocolKey).update(x).digest('hex')));
   const hB = new Set(setB.map((x) => createHmac('sha256', protocolKey).update(x).digest('hex')));

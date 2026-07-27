@@ -1,4 +1,4 @@
-//! CSPRNG wrapper around `getrandom::getrandom`.
+//! `getrandom::getrandom` 的 CSPRNG 包装。
 
 pub fn random_bytes(n: usize) -> Vec<u8> {
     let mut out = vec![0u8; n];

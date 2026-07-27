@@ -1,7 +1,7 @@
 /**
- * Run every chapter module's demo entry-point that has one. Each demo is
- * `npx tsx <module>/src/<demo>.ts` (the file invokes its own print/export
- * side-effects when invoked with `argv[1] === <path>`).
+ * 依次运行各章节模块中存在的 demo 入口。每个 demo 的调用形式为
+ * `npx tsx <module>/src/<demo>.ts`（当以 `argv[1] === <path>` 触发该文件
+ * 时，文件自身会执行打印/导出等副作用）。
  */
 
 import { execSync } from 'node:child_process';

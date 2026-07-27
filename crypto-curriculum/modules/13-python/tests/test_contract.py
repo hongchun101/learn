@@ -1,7 +1,6 @@
-"""Six contract tests for the Python primitives.
+"""Python 原语的六项契约测试。
 
-Requires ``cryptography`` (pyca) for AES-GCM and Ed25519; HMAC/HKDF/SHA-256 use
-stdlib only.
+需要 ``cryptography``（pyca）来支持 AES-GCM 和 Ed25519；HMAC/HKDF/SHA-256 仅使用标准库。
 """
 
 import os

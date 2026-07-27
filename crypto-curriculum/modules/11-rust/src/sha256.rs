@@ -1,4 +1,4 @@
-//! SHA-256 wrapper around `sha2::Sha256`.
+//! `sha2::Sha256` 的 SHA-256 包装。
 
 use sha2::{Digest, Sha256 as Sha256Impl};
 

@@ -1,4 +1,4 @@
-// Binary session types modelled as run-time protocols.
+// 将二元会话类型建模为运行时的协议。
 
 export type Action<R> = { kind: 'send'; msg: R } | { kind: 'recv'; label: string } | { kind: 'close' };
 

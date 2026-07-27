@@ -6,11 +6,10 @@ import java.security.KeyPairGenerator;
 import java.security.Signature;
 
 /**
- * Java signature wrapper. On JDK 8 (the version available on this host) Ed25519
- * is not built into the Sun provider — we use SunEC ECDSA over P-256 as the
- * runnable representative. The contract returns signature bytes and a
- * round-trip verify; the *algorithm* is one that actually exists in the local
- * JDK.
+ * Java 签名包装器。在本机可用的 JDK 8 版本上，Sun provider 并未内置
+ * Ed25519 —— 我们使用 SunEC 在 P-256 上的 ECDSA 作为可运行的代表。
+ * 契约接口返回签名字节并提供往返验签；所使用的*算法*是当前本地
+ * JDK 中真实存在的算法。
  */
 public final class Signatures {
     private Signatures() {}
@@ -36,7 +35,7 @@ public final class Signatures {
         return s.verify(sig);
     }
 
-    /** EdDSA is JDK 15+. The host runs JDK 8 so we report availability. */
+    /** EdDSA 需 JDK 15 及以上。本机运行 JDK 8，因此仅报告可用性。 */
     public static String eddsaAvailable() {
         try {
             KeyPairGenerator.getInstance("EdDSA");

@@ -1,4 +1,4 @@
-//! Smart pointers and interior mutability.
+//! 智能指针与内部可变性。
 
 use std::borrow::Cow;
 use std::cell::RefCell;
@@ -8,7 +8,7 @@ pub fn boxed_tree<T>(root: T) -> Box<T> {
     Box::new(root)
 }
 
-/// A reference-counted tree. `Rc<T>` is single-threaded reference counting.
+/// 引用计数的树。`Rc<T>` 是单线程的引用计数。
 #[derive(Debug)]
 pub enum RcTree<T> {
     Leaf(T),
@@ -25,8 +25,7 @@ impl<T> RcTree<T> {
     }
 }
 
-/// Copy-on-write: returns owned data when a transform is needed; otherwise
-/// the borrowed reference is reused.
+/// 写时复制：当需要变换时返回拥有的数据；否则复用借用引用。
 pub fn normalize_whitespace(input: &str) -> Cow<'_, str> {
     if input.contains("  ") {
         Cow::Owned(input.split_whitespace().collect::<Vec<_>>().join(" "))
@@ -35,7 +34,7 @@ pub fn normalize_whitespace(input: &str) -> Cow<'_, str> {
     }
 }
 
-/// `Arc<AtomicUsize>` is the canonical lock-free shared counter.
+/// `Arc<AtomicUsize>` 是典型的无锁共享计数器。
 pub mod multi_thread {
     use std::sync::atomic::{AtomicUsize, Ordering};
     use std::sync::Arc;
@@ -62,7 +61,7 @@ pub mod multi_thread {
     }
 }
 
-/// A `RefCell<T>` plus a callback list: single-threaded observable.
+/// `RefCell<T>` 加上回调列表：单线程下的可观察对象。
 pub struct CellObservable<T> {
     value: Rc<RefCell<T>>,
     listeners: RefCell<Vec<Rc<dyn Fn(&T)>>>,

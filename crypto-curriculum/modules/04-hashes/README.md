@@ -41,10 +41,10 @@ Given `H(M)` for a Merkle–Damgård hash and `|M|`, an attacker can compute
 attacker cannot do is read M.
 
 ```python
-# never make the mistake
-mac = SHA256(key || message)        # broken — extensible from mac
-mac = HMAC-SHA256(key, message)     # OK
-mac = SHA256(message || key)        # usually OK, but avoid
+# 千万不要犯这个错
+mac = SHA256(key || message)        # 已被破解——可从 MAC 扩展
+mac = HMAC-SHA256(key, message)     # 安全
+mac = SHA256(message || key)        # 通常安全，但应避免
 ```
 
 ## Sponge vs Merkle–Damgård

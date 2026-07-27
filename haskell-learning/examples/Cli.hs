@@ -1,22 +1,22 @@
--- | A small, end-to-end Haskell program that puts several chapters
--- together. Intentionally simple — production grade would use
--- `optparse-applicative` or `megaparsec`.
+-- | 一个小型、端到端的 Haskell 程序，把几章的内容
+-- 组合在一起。故意保持简单 —— 生产级通常会使用
+-- `optparse-applicative` 或 `megaparsec`。
 --
---   * Command-line args (Chapter 08)
---   * Pure data processing over rows (Chapters 02 + 05)
---   * Either-based error handling (Chapter 07)
+--   * 命令行参数（第 08 章）
+--   * 对行进行纯数据处理（第 02 + 05 章）
+--   * 基于 Either 的错误处理（第 07 章）
 --
--- Build with `stack ghci examples/Cli.hs`, or compile via the same
--- `stack build` flow.
+-- 通过 `stack ghci examples/Cli.hs` 构建，或者走相同的
+-- `stack build` 流程进行编译。
 module Main where
 
 import           System.Environment (getArgs)
 import qualified Data.Map.Strict    as Map
 
--- | Tiny CSV row: a list of *unquoted* fields split by comma.
+-- | 简易 CSV 行：按逗号切分的*未加引号的*字段列表。
 type Row = [String]
 
--- | Naïve line-and-comma splitter. Not industrial strength.
+-- | 朴素的一行一逗号切分器。并非工业级。
 parseCsv :: String -> [Row]
 parseCsv = map splitComma . lines
 
@@ -27,16 +27,16 @@ splitComma s =
        []       -> [h]
        (_:rest) -> h : splitComma rest
 
--- | Sum the integer in column `c` over each row.
+-- | 对每行第 `c` 列的整数求和。
 columnSum :: Int -> [Row] -> Int
 columnSum c = sum . map (\row -> read (row !! c) :: Int)
 
--- | Frequency map of column `c` values.
+-- | 第 `c` 列取值的频次映射。
 columnFreq :: Int -> [Row] -> Map.Map String Int
 columnFreq c rows =
   Map.fromListWith (+) (map (\row -> (row !! c, 1)) rows)
 
--- | Either-based runner.
+-- | 基于 Either 的运行器。
 runCli :: IO ()
 runCli = do
   args <- getArgs
@@ -54,6 +54,6 @@ runCmd "freq" c s = Right (unlines
                        ])
 runCmd m    _ _  = Left ("unknown command: " <> m)
 
--- | Demo entrypoint.
+-- | 演示入口。
 main :: IO ()
 main = runCli

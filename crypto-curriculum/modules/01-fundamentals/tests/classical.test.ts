@@ -36,8 +36,7 @@ describe('classical: Vigenere', () => {
   });
 
   it('recovers the key on long plaintext (IC + frequency match)', () => {
-    // Long enough text that IC converges. Frequency-match then finds every
-    // shift independently.
+    // 文本足够长时 IC 才会收敛，然后频率匹配逐位找出每个移位。
     const plain = ('we are discovered flee at once we are discovered flee at once ' +
       'send all available forces to the harbor send all available forces to ' +
       'the harbor we have secured the bridge and are holding position ' +

@@ -1,27 +1,27 @@
 -- |
--- = Chapter 06 — Functor, Applicative, validation
+-- = 第六章 — Functor、Applicative 与校验 =
 --
--- Three stages: `Functor` (a single effectful transformation),
--- `Applicative` (combining independent effects in a structure),
--- `Monad` (sequencing dependent effects).
+-- 三个阶段：`Functor`（单次带效果变换）、
+-- `Applicative`（在结构中合并相互独立的效果）、
+-- `Monad`（串行化相互依赖的效果）。
 --
--- The class hierarchy
+-- 类层级
 --   class Functor f     where fmap              :: (a -> b) -> f a -> f b
 --   class Functor f =>  Applicative f where
 --                     pure :: a -> f a
 --                     (<*>) :: f (a -> b) -> f a -> f b
 --
--- Validation is the canonical `Applicative` sweet spot:
--- "run all checks; collect all errors at once." That's
--- `Validation` / `Either`. `Monad` (which we'll see next chapter) is
--- wrong here because it short-circuits on the first `Left`.
+-- 校验是 `Applicative` 的典型甜点场景：
+-- "运行所有检查；一次性收集所有错误。"这正是
+-- `Validation` / `Either` 的用途。`Monad`（下一章会介绍）在这里
+-- 不合适，因为它会在遇到第一个 `Left` 时短路。
 module FunctorsApplicatives where
 
 import           Control.Applicative   ((<*), (*>), (<$))
 import           Data.List              (zipWith)
 
--- | A `Functor` instance for a tiny binary tree to make the laws
---   visibly hold: `fmap id = id` and `fmap (f . g) = fmap f . fmap g`.
+-- | 为一个微小的二叉树实现 `Functor` 实例，刻意让定律一目了然：
+--   `fmap id = id` 与 `fmap (f . g) = fmap f . fmap g`。
 data Tree a = Leaf a | Branch (Tree a) (Tree a)
   deriving (Show, Eq)
 
@@ -29,16 +29,15 @@ instance Functor Tree where
   fmap f (Leaf x)       = Leaf (f x)
   fmap f (Branch l r)   = Branch (fmap f l) (fmap f r)
 
--- | Same laws apply here: `pure id <*> v = v` and
---   `pure (.) <*> u <*> v <*> w = u <*> (v <*> w)`.
+-- | 本实例同样要满足定律：`pure id <*> v = v` 与
+--   `pure (.) <*> u <*> v <*> w = u <*> (v <*> w)`。
 instance Applicative Tree where
   pure x                  = Leaf x
   (Leaf f)       <*> t    = fmap f t
   (Branch l r)   <*> t    = Branch (l <*> t) (r <*> t)
 
--- | Form-style validation using Either. Each step contributes
---   *parallel* failure messages — favouring Applicative over Monad for
---   this exact pattern is the textbook reason.
+-- | 使用 Either 实现的"表单式"校验。每一步都贡献**并行**的失败信息——
+--   针对这种模式优先选择 Applicative 而非 Monad，正是教科书上的经典理由。
 checkName :: String -> Either [String] String
 checkName []   = Left ["name empty"]
 checkName s
@@ -54,26 +53,25 @@ checkAge a
 
 data Person = Person String Int deriving (Show)
 
--- | Combine independent validations: each `Either [String]` is
---   inspected independently — failures *accumulate*, not short-circuit.
+-- | 合并相互独立的校验：每个 `Either [String]` 都被独立检查——
+--   失败信息会**累积**，而不是短路。
 validatePerson :: String -> Int -> Either [String] Person
 validatePerson n a =
   (\name age -> Person name age) <$> checkName n <*> checkAge a
 
--- | Application of the same op across multiple values:
---   `zipWith` is essentially `liftA2 (-)` for lists, which is
---   Applicative behaviour.
+-- | 将同一操作并行施加到多个值上：
+--   `zipWith` 本质上就是列表上的 `liftA2 (-)`，属于 Applicative 行为。
 importsFrom :: [String] -> [String] -> [String]
 importsFrom mods names = zipWith modThenName mods names
   where
     modThenName m n = m ++ "." ++ n
 
--- | `replace` shows that `(<$) :: a -> f b -> f a` lets a constant
---   fill every slot of the structure.
+-- | `replace` 展示了 `(<$) :: a -> f b -> f a` 可以让一个常量
+--   填充结构中的每一个位置。
 replace :: Functor f => b -> f a -> f b
 replace = (<$)
 
--- | The demo.
+-- | 演示。
 
 functorsApplicatives :: IO ()
 functorsApplicatives = do

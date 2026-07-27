@@ -1,9 +1,8 @@
-//! Lifetimes: elision, subtyping, variance, and advanced bounds.
+//! 生命周期：省略、子类型、协变与高级约束。
 
 use std::borrow::Cow;
 
-/// The classic parse-first-then-allocate pattern: copy the smallest possible
-/// string slice from a borrowed input, with explicit lifetimes.
+/// 经典的“先解析再分配”模式：从借用的输入中拷贝出尽可能小的字符串切片，并显式标注生命周期。
 pub fn first_word(input: &str) -> &str {
     let bytes = input.as_bytes();
     bytes
@@ -13,12 +12,12 @@ pub fn first_word(input: &str) -> &str {
         .map_or(input, |idx| &input[..idx])
 }
 
-/// Two-input elision: output lifetime is the shorter of the two.
+/// 双输入的生命周期省略：输出生命周期取两者中较短的那个。
 pub fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() >= y.len() { x } else { y }
 }
 
-/// `Cow` is the canonical example of returning borrowed-or-owned data.
+/// `Cow` 是返回“借用或拥有”数据的经典示例。
 pub fn normalize(input: &str) -> Cow<'_, str> {
     if input.chars().any(|c| c.is_ascii_uppercase()) {
         Cow::Owned(input.to_ascii_lowercase())
@@ -27,8 +26,7 @@ pub fn normalize(input: &str) -> Cow<'_, str> {
     }
 }
 
-/// Variance: a short borrow is a subtype of a long borrow. `&'a T` is
-/// covariant in `'a` and `T`.
+/// 协变性：较短的借用是较长借用的子类型。`&'a T` 对 `'a` 和 `T` 都是协变的。
 pub fn shorter_to_longer<'short, 'long>(short: &'short str, _: &'long str) -> &'short str
 where
     'long: 'short,
@@ -36,13 +34,12 @@ where
     short
 }
 
-/// `'static` is the longest possible lifetime: the data lives for the entire
-/// process.
+/// `'static` 是最长的生命周期：数据在整个进程运行期间都有效。
 pub fn first_word_static() -> &'static str {
     "static-first-word"
 }
 
-/// A struct that holds a borrowed source and tracks its own cursor through it.
+/// 一个持有借用源数据并跟踪自身游标的结构体。
 #[derive(Debug, Clone)]
 pub struct Parser<'src> {
     source: &'src str,
@@ -67,8 +64,8 @@ impl<'src> Parser<'src> {
     }
 }
 
-/// `for<'a>` higher-ranked trait bound — the closure must accept any
-/// lifetime. Used for cross-erasure callbacks.
+/// `for<'a>` 高阶 trait 约束 —— 闭包必须接受任意生命周期。
+/// 适用于跨擦除的回调。
 pub fn starts_with<F>(pred: F, slice: &str) -> bool
 where
     F: for<'a> Fn(&'a str) -> bool,

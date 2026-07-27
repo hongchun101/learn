@@ -1,4 +1,4 @@
-// Demo for Chapter 03.
+// 第 03 章的 demo。
 
 import { arithmeticGrammar, render } from './bnf';
 import type { ProofTree, Rule } from './judgment';
@@ -6,10 +6,10 @@ import { checkProof } from './prover';
 import { fun } from '../02-stlc/ast';
 
 export function runDemo(): void {
-  // BNF rendering.
+  // BNF 渲染。
   console.log('[bnf]\n' + render(arithmeticGrammar));
 
-  // A worked proof of identity on Bool:  ⊦ λx:Bool. x  :  Bool → Bool
+  // 一个在 Bool 上的 identity 证明：  ⊦ λx:Bool. x  :  Bool → Bool
   const bool = { kind: 'bool' } as const;
 
   const varRule: Rule = {

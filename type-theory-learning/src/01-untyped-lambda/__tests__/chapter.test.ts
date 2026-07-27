@@ -1,6 +1,6 @@
-// Vitest spec for Chapter 01.
+// 第 01 章的 Vitest 测试。
 //
-// Every claim from the chapter is asserted.
+// 本章中每一个断言都对应一个被检验的命题。
 
 import { describe, it, expect } from 'vitest';
 
@@ -116,13 +116,13 @@ describe('01 Church encodings', () => {
   });
 
   it('succ(succ(0)) reduces to λf.λx. f (f (f x))', () => {
-    // Bound semantics: apply to succ and zero, compare with `3`.
+    // 绑定语义：把 succ 和 zero 应用进去，与 `3` 比较。
     const t = C.succ(C.succ(C.succ(C.zero)));
     const got = evalNormalOrder(
       app(app(t, lam('n', app(v('n'), v('n')))), v('z')),
       1000,
     );
-    // Apply `3`'s underlying f three times. Use succ (S) and 0 ('z').
+    // 把 `3` 底层的 f 应用三次。使用 succ（S）和 0（'z'）。
     const expect3 = parse('(λf.λx.f (f (f x)))');
     const want = evalNormalOrder(
       app(app(expect3, lam('n', app(v('n'), v('n')))), v('z')),

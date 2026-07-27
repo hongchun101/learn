@@ -1,16 +1,16 @@
 /**
- * Module 06 — Randomness, KDFs, and key management.
+ * 模块 06 —— 随机数、KDF 与密钥管理。
  *
- * Demos:
- *   1. Node CSPRNG sanity (no zero bytes; long stretches of zeros are vanishingly rare).
- *   2. `crypto.scrypt` (closest stdlib KDF to Argon2id on memory cost).
- *   3. HKDF chained — derive multiple subkeys from one master with domain separation.
+ * 示例：
+ *   1. Node CSPRNG 健全性（无零字节；连续多个零字节极不可能出现）。
+ *   2. `crypto.scrypt`（在内存成本方面最接近 Argon2id 的标准库 KDF）。
+ *   3. HKDF 链接——通过域名分隔从一个主密钥派生多个子密钥。
  */
 
 import { randomBytes, scryptSync, hkdfSync } from 'node:crypto';
 
 // ---------------------------------------------------------------------------
-// 1. CSPRNG sanity.
+// 1. CSPRNG 健全性。
 // ---------------------------------------------------------------------------
 
 export function csprngSanity(): void {
@@ -24,7 +24,7 @@ export function csprngSanity(): void {
 }
 
 // ---------------------------------------------------------------------------
-// 2. scrypt KDF (closest stdlib KDF).
+// 2. scrypt KDF（标准库内最接近的 KDF）。
 // ---------------------------------------------------------------------------
 
 export function scryptKdf(): void {
@@ -36,13 +36,13 @@ export function scryptKdf(): void {
   const t1 = process.hrtime.bigint();
   console.log('  key                 :', k.toString('hex').slice(0, 24) + '…');
   console.log('  derivation time (ms):', Number(t1 - t0) / 1_000_000);
-  // Deterministic for same (pw, salt, params)
+  // 对相同 (pw, salt, params) 是确定的
   const k2 = scryptSync(pw, salt, 32, { N: 1 << 15, r: 8, p: 1, maxmem: 256 * 1024 * 1024 });
   console.log('  deterministic       :', k.toString('hex') === k2.toString('hex'));
 }
 
 // ---------------------------------------------------------------------------
-// 3. HKDF chained — three subkeys from one master.
+// 3. HKDF 链接——从一个主密钥派生三个子密钥。
 // ---------------------------------------------------------------------------
 
 export function hkdfChained(): void {
@@ -60,7 +60,7 @@ export function hkdfChained(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Driver.
+// 入口
 // ---------------------------------------------------------------------------
 
 export function execute(): void {

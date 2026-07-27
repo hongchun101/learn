@@ -1,11 +1,10 @@
-// Tests the six primitives the other modules contract-check.
+// 对其他模块要契约检查的六项原语进行测试。
 //
-// Run with:
+// 运行命令：
 //
 //   go test -race ./...
 //
-// Requires Go 1.24+ (uses crypto/hkdf, crypto/ecdh from stdlib).
-package crypto_curriculum_test
+// 需要 Go 1.24+（使用了标准库的 crypto/hkdf、crypto/ecdh）。
 
 import (
 	"bytes"

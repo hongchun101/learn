@@ -1,34 +1,31 @@
-//! Dynamically sized types (DSTs), unsized coercion, `?Sized`.
+//! 动态大小类型（DST）、未固定大小强制转换、`?Sized`。
 //!
-//! A trait object `dyn Trait` is a DST because its size depends on the
-//! concrete type behind it. A `str` is a DST because its size depends on
-//! length.
+//! trait 对象 `dyn Trait` 是一种 DST，因为其大小取决于其背后的具体类型。
+//! `str` 也是一种 DST，因为它的大小取决于长度。
 //!
-//! Generic bounds default to `T: Sized`. Adding `?Sized` allows the bound
-//! to also accept unsized types.
+//! 泛型约束默认是 `T: Sized`。加上 `?Sized` 后，约束也可接受未固定大小类型。
 
 use std::fmt::Debug;
 
-/// A function that takes any `Debug` type, sized or not.
+/// 一个接受任意 `Debug` 类型的函数（无论是否固定大小）。
 pub fn describe<T: Debug + ?Sized>(value: &T) -> String {
     format!("{value:?}")
 }
 
-/// Sum the "size hint" of any iterator, used to assert that unsized
-/// iterators round-trip through trait objects.
+/// 对任意迭代器的“长度提示”进行求和，用于断言未固定大小迭代器
+/// 能够通过 trait 对象来回传递。
 pub fn collect_len(iter: Box<dyn Iterator<Item = u32>>) -> u32 {
     iter.count() as u32
 }
 
-/// A tiny DST carrier: data is appended to a `Box<dyn Any>` when the trait
-/// object captures concrete behavior. This pattern is the basis for
-/// type-erased stores like `AnyMap`.
+/// 一个微小的 DST 载体：当 trait 对象捕获具体行为时，数据会被附加到
+/// `Box<dyn Any>` 中。这种模式是 `AnyMap` 等类型擦除存储的基础。
 pub fn store_dyn() -> Box<dyn std::any::Any> {
     Box::new(42u32)
 }
 
-/// `?Sized` and unsized references: `&str`, `&[T]`, `&dyn Trait` are all
-/// unsized references (`&` to a DST). This function exercises each.
+/// `?Sized` 与未固定大小的引用：`&str`、`&[T]`、`&dyn Trait` 都是
+/// 指向 DST 的未固定大小引用。本函数对它们一一演练。
 pub fn accept_unsized(s: &str, sl: &[i32], t: &(dyn Debug + Send)) -> String {
     let _ = (s, sl);
     format!("{t:?}")
@@ -40,9 +37,9 @@ mod tests {
 
     #[test]
     fn question_sized_works() {
-        // Sized:
+        // 固定大小：
         assert_eq!(describe(&42), "42");
-        // Unsized (str):
+        // 未固定大小（str）：
         assert_eq!(describe("hi"), "\"hi\"");
     }
 
@@ -61,7 +58,7 @@ mod tests {
 
     #[test]
     fn accepts_unsized_refs() {
-        // The fmt::Debug is dyn-compatible; we use `&[1, 2, 3]` for the slice.
+        // `fmt::Debug` 是 dyn 兼容的；这里对切片使用 `&[1, 2, 3]`。
         let s = accept_unsized(
             "x",
             &[1, 2, 3],

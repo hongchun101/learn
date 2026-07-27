@@ -1,0 +1,11 @@
+{
+  "namespace": "com.kafkalearn.l5.avro",
+  "type": "record",
+  "name": "UserEvent",
+  "fields": [
+    { "name": "userId",   "type": "string" },
+    { "name": "type",     "type": { "type": "enum", "name": "EventType", "symbols": ["CLICK","VIEW","PURCHASE"] } },
+    { "name": "amount",   "type": ["null","double"], "default": null },
+    { "name": "ts",       "type": "long", "logicalType": "timestamp-millis" }
+  ]
+}

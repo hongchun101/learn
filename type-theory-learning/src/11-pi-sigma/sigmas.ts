@@ -1,7 +1,7 @@
-// Pi / Sigma modelling.
+// Pi / Sigma 建模。
 //
-// A dependent function  Π (x : A). B(x)  is encoded as
-// a TypeScript function  (x: A) => B(x)  with a phantom witness.
+// 依赖函数  Π (x : A). B(x)  编码为
+// 一个 TypeScript 函数  (x: A) => B(x)  并附带一个幻影见证。
 
 export interface Pi<A, B> {
   readonly _pi: true;
@@ -25,7 +25,7 @@ export const packSigma = <A, B>(a: A, b: (a: A) => B): Sigma<A, B> => ({
 export const first = <A, B>(s: Sigma<A, B>): A => s.first;
 export const second = <A, B>(s: Sigma<A, B>): B => s.second(s.first);
 
-/** Witness type for `Σ x : Nat. Vec(x)` — encoded by hand here. */
+/** `Σ x : Nat. Vec(x)` 的见证类型 —— 此处手工编码。 */
 export interface VecWitness {
   readonly n: number;
   readonly xs: ReadonlyArray<unknown>;

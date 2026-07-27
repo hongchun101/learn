@@ -1,0 +1,13 @@
+{
+  "connector.class": "com.clickhouse.kafka.connect.ClickHouseSinkConnector",
+  "tasks.max": "1",
+  "topics": "clicks.raw,clicks.by-user-1m,clicks.by-url-5m",
+  "hostname": "clickhouse",
+  "port": "8123",
+  "database": "kl",
+  "username": "default",
+  "password": "",
+  "ssl.mode": "disabled",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false"
+}

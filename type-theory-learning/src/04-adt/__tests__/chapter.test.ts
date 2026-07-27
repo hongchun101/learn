@@ -1,4 +1,4 @@
-// Vitest spec for Chapter 04 — ADT.
+// 第 04 章 ADT 的 Vitest 测试。
 
 import { describe, it, expect } from 'vitest';
 

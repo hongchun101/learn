@@ -1,15 +1,14 @@
 /**
- * Module 03 — Asymmetric primitives in Node 24.
+ * 模块 03 —— Node 24 中的非对称原语。
  *
- * Three demos:
- *   1. RSA-OAEP — the *only* RSA encryption anyone should ship.
- *   2. X25519 ECDH — modern default for key exchange.
- *   3. Ed25519 sign + verify — modern default for signatures.
+ * 三个示例：
+ *   1. RSA-OAEP——唯一值得上线的 RSA 加密模式。
+ *   2. X25519 ECDH——密钥交换的现代默认选择。
+ *   3. Ed25519 签名与验签——签名的现代默认选择。
  *
- * The Bleichenbauch-style signature forgery against raw PKCS#1 v1.5 is shown
- * conceptually in the README; reproducing a live attack requires a malformed
- * PKCS#1 verifier on the server side, so we keep it documented rather than
- * demonstrated here.
+ * Bleichenbauch 风格的原始 PKCS#1 v1.5 签名伪造在 README 中以概念
+ * 形式给出；要复现真实攻击需要服务端存在格式错误的 PKCS#1 校验器，
+ * 故此处仅以文档描述，不做真实演示。
  */
 
 import {
@@ -23,7 +22,7 @@ import {
 } from 'node:crypto';
 
 // ---------------------------------------------------------------------------
-// 1. RSA-OAEP — the safe default.
+// 1. RSA-OAEP——安全默认值。
 // ---------------------------------------------------------------------------
 
 export function rsaOaepDemo(): void {
@@ -43,7 +42,7 @@ export function rsaOaepDemo(): void {
 }
 
 // ---------------------------------------------------------------------------
-// 2. X25519 ECDH.
+// 2. X25519 ECDH。
 // ---------------------------------------------------------------------------
 
 export function x25519Demo(): void {
@@ -58,7 +57,7 @@ export function x25519Demo(): void {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Ed25519 signatures.
+// 3. Ed25519 签名。
 // ---------------------------------------------------------------------------
 
 export function ed25519Demo(): void {
@@ -77,7 +76,7 @@ export function ed25519Demo(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Driver.
+// 入口
 // ---------------------------------------------------------------------------
 
 export function execute(): void {
@@ -86,7 +85,7 @@ export function execute(): void {
   ed25519Demo();
 }
 
-// Silence unused-import — `createPrivateKey` is for callers that pass raw bytes.
+// 抑制未使用导入——`createPrivateKey` 是供传入原始字节的调用方使用的。
 void createPrivateKey;
 
 if (process.argv[1]?.endsWith('asymmetric.ts')) execute();

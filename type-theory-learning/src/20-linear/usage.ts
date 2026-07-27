@@ -1,10 +1,10 @@
-// Linear-usage analyzer at the value level.
+// 在值层面的线性使用分析器。
 //
-//   linear : exactly 1 use
-//   affine : exactly 0 or 1 use
-//   relevant : any number of uses ≥ 1
+//   linear  : 恰好 1 次使用
+//   affine  : 0 或 1 次使用
+//   relevant: 任意 ≥ 1 次使用
 //
-// We track usage counts with a Map<name, count>.
+// 我们用 Map<name, count> 记录使用计数。
 
 export type Mode = 'linear' | 'affine' | 'relevant';
 
@@ -23,11 +23,11 @@ export function use(st: UseState, name: string, mode: Mode): UseState {
   return { uses: next };
 }
 
-/** `unusedOk` — is the variable allowed to be unused at this count?
- *  - linear:    must be exactly 1 use → unused OK iff count === 1?  No. "Is 0 still
- *                 acceptable?" → false for linear. Reinterpret: returns true when
- *                 the *use count meets* the mode (so we are free to drop further
- *                 checks at the end).
+/** `unusedOk` —— 该变量在当前计数下是否允许未被使用？
+ *  - linear：    必须恰好使用 1 次 → 未使用 OK 当且仅当 count === 1？否。
+ *                 "0 是否仍可接受？" 对 linear 而言是否定的。重新解读为：当
+ *                 *使用次数满足* 该 mode 时返回 true（这样我们就可以在
+ *                 末尾直接放下进一步的检查）。
  */
 export function unusedOk(mode: Mode, count: number): boolean {
   if (mode === 'linear') return count >= 1;

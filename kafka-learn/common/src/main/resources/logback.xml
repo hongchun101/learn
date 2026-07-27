@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{30} : %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.kafka" level="WARN"/>
+    <logger name="org.apache.kafka.clients.NetworkClient" level="INFO"/>
+    <logger name="org.apache.kafka.clients.Metadata" level="INFO"/>
+    <logger name="org.apache.kafka.clients.consumer.internals" level="INFO"/>
+    <logger name="org.apache.kafka.streams" level="WARN"/>
+    <logger name="org.apache.kafka.connect" level="WARN"/>
+    <logger name="com.kafkalearn" level="INFO"/>
+    <logger name="org.reflections" level="ERROR"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

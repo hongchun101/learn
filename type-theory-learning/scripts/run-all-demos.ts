@@ -1,4 +1,4 @@
-// Runs every chapter's `demo.ts` (where it exists).
+// 运行每一章的 `demo.ts`（如果存在的话）。
 
 import { spawn } from 'node:child_process';
 import { readdirSync, existsSync } from 'node:fs';

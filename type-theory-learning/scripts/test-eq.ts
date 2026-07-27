@@ -5,7 +5,7 @@ function equal2(a: Term, b: Term): boolean {
   if (a.kind !== b.kind) return false;
   switch (a.kind) {
     case 'var': {
-      // explicitly cast
+      // 显式转换
       const x = a as Extract<Term, { kind: 'var' }>;
       return x.name === (b as Extract<Term, { kind: 'var' }>).name;
     }

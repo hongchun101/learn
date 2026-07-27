@@ -1,4 +1,4 @@
-// Algorithm W with a simple Robinson unifier.
+// Algorithm W，使用一个简单的 Robinson 合一算法。
 
 import type { Id, Term, Type } from './ast';
 import { fresh } from './ast';

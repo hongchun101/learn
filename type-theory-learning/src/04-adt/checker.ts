@@ -1,4 +1,4 @@
-// Bidirectional type checker with product, sum, record, variant.
+// 支持积、和、记录与变体的双向类型检查器。
 
 import type { Term, Type, Var } from './ast';
 import { typeEq } from './ast';
@@ -70,8 +70,8 @@ export function infer(env: Env, t: Term): Type {
     case 'inr':
       return { kind: 'sum', left: t.ofLeft, right: infer(env, t.expr) };
     case 'case': {
-      // Without an expected type, we infer using a default expected `Bool`. Tests
-      // should call `check(env, case, τ)` with the desired result type.
+      // 没有期望类型时，我们默认用 `Bool` 推断。
+      // 测试应通过 `check(env, case, τ)` 传入所需的结果类型。
       return checkCase(env, t, { kind: 'bool' });
     }
     case 'record': {

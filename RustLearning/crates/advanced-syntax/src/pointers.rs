@@ -1,11 +1,11 @@
-//! Newtype, `Deref` and `AsRef` patterns.
+//! newtype 模式、`Deref` 与 `AsRef` 模式。
 
 use std::ops::Deref;
 
-/// A newtype wrapper that owns a `String` and exposes read-only access via
-/// `Deref`. `Deref` should be implemented sparingly because deref coercion
-/// can trigger surprising type lookups; here we only allow it because the
-/// wrapper is conceptually a `String` view.
+/// 一个持有 `String` 并通过 `Deref` 提供只读访问的 newtype 包装器。
+/// 由于解引用强制转换可能会触发令人意外的类型查找，
+/// `Deref` 的实现应当谨慎使用；这里之所以允许，
+/// 是因为该包装器本质上就是 `String` 的视图。
 pub struct Name(String);
 
 impl Name {
@@ -26,8 +26,7 @@ impl Deref for Name {
     }
 }
 
-/// A newtype wrapper that implements `AsRef<Path>` to integrate with the
-/// standard library's filesystem APIs.
+/// 一个实现 `AsRef<Path>` 的 newtype 包装器，用于与标准库的文件系统 API 集成。
 pub struct ConfigPath(String);
 
 impl ConfigPath {
@@ -42,8 +41,7 @@ impl AsRef<std::path::Path> for ConfigPath {
     }
 }
 
-/// A small helper showing that `Cow<'a, str>` can be returned for callers
-/// that do not require ownership.
+/// 一个小辅助函数，展示 `Cow<'a, str>` 可以被返回给不需要所有权的调用者。
 pub fn trimmed(input: &str) -> std::borrow::Cow<'_, str> {
     let trimmed = input.trim();
     if trimmed.len() == input.len() {

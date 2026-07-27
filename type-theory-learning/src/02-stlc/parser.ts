@@ -1,4 +1,4 @@
-// Surface parser for STLC surface syntax.
+// STLC 表面语法的解析器。
 //
 //   t ::=  λ x : τ . t
 //       | t t
@@ -8,10 +8,10 @@
 //
 //   τ ::=  Bool | Nat | ( τ ) → τ | τ → τ
 //
-// Notes:
-// - The arrow associates to the right (`τ → τ → τ` reads `τ → (τ → τ)`).
-// - A leading `λ` does not eat the variable name; the variable comes as the
-//   next token. (Compact form — book standard would be `λx:τ.t`.)
+// 注意：
+// - 箭头右结合（`τ → τ → τ` 应读作 `τ → (τ → τ)`）。
+// - 前导的 `λ` 不会吞掉变量名；变量名是下一个 token。（紧凑形式——
+//   教材标准写法是 `λx:τ.t`。）
 
 import type { Term, Type, Var } from './ast';
 import { app, bool, fun, iszero, lam, nat, num, succ, v, fls, tru } from './ast';

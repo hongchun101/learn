@@ -1,4 +1,4 @@
-// Tiny row-polymorphic record calculus.
+// 一个微型的行多态记录演算。
 
 export type Var = string;
 export type Label = string;

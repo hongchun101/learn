@@ -11,7 +11,7 @@ function xorBytes(a: Uint8Array, b: Uint8Array): Uint8Array {
 describe('modes: ECB', () => {
   it('reveals identical-block structure', () => {
     const key = randomBytes(32);
-    const pt  = new Uint8Array(32); // 2 zero blocks
+    const pt  = new Uint8Array(32); // 两个零块
     const cipher = createCipheriv('aes-256-ecb', key, null);
     const c = Buffer.concat([cipher.update(buf(pt)), cipher.final()]);
     expect(c.slice(0, 16).equals(c.slice(16, 32))).toBe(true);
@@ -72,7 +72,7 @@ describe('modes: GCM', () => {
     expect(() => {
       const dec = createDecipheriv('aes-256-gcm', key, iv);
       dec.setAuthTag(tag);
-      dec.setAAD(Buffer.from('header=v2')); // wrong AAD
+      dec.setAAD(Buffer.from('header=v2')); // 错误的 AAD
       dec.update(ct);
       dec.final();
     }).toThrow();

@@ -1,14 +1,14 @@
 /**
- * Module 18 — Capstone: A simple authenticated key-exchange protocol.
+ * 模块 18 — 毕业项目：一个简单的带认证的密钥交换协议。
  *
- * The "naive" version is MITM-able because nothing authenticates the
- * ephemeral DH keys. The "signed" version hardens them via Ed25519.
+ * "naive"（朴素）版本可被中间人攻击，因为没有任何东西对临时 DH 密钥
+ * 进行认证。"signed"（签名）版本则通过 Ed25519 对它们进行加固。
  *
- * Primitives used (each one built in earlier modules):
- *   - X25519 ECDH: ephemeral keypair per session
- *   - HKDF-SHA-256: derive AES key from DH shared secret
- *   - AES-256-GCM: encrypt the payload
- *   - Ed25519 signatures: authentication of long-term identity
+ * 所用原语（每一种都在前面的模块中构建过）：
+ *   - X25519 ECDH：每个会话生成一对临时密钥
+ *   - HKDF-SHA-256：从 DH 共享秘密派生 AES 密钥
+ *   - AES-256-GCM：加密载荷
+ *   - Ed25519 签名：用于长期身份的认证
  */
 
 import {
@@ -25,22 +25,20 @@ import {
 import { HkdfSha256 } from '../../../src/crypto/index.js';
 
 export interface Keypair {
-  sk: KeyObject;
-  pk: Uint8Array;       // 32-byte raw X25519 public
+  pk: Uint8Array;       // 32 字节原始 X25519 公钥
 }
 
 export interface LongTerm {
-  signSk: KeyObject;
-  signPk: Uint8Array;  // 32-byte raw Ed25519 public
+  signPk: Uint8Array;  // 32 字节原始 Ed25519 公钥
 }
 
 const PROTOCOL_LABEL = Buffer.from('mod18/capstone/v1');
 
-/** SPKI header for raw 32-byte X25519 public keys (12 bytes).
- *  Sequence (44 bytes) { sequence (5 bytes) { OID 1.3.101.110 }, BIT STRING (33 bytes) }. */
+/** 32 字节原始 X25519 公钥对应的 SPKI 头（前缀，12 字节）。
+ *  Sequence（44 字节）{ sequence（5 字节）{ OID 1.3.101.110 }, BIT STRING（33 字节）}。 */
 const X25519_SPKI_HDR = Buffer.from('302a300506032b656e032100', 'hex');
-/** SPKI header for raw 32-byte Ed25519 public keys (12 bytes).
- *  Sequence (44 bytes) { sequence (5 bytes) { OID 1.3.101.112 }, BIT STRING (33 bytes) }. */
+/** 32 字节原始 Ed25519 公钥对应的 SPKI 头（前缀，12 字节）。
+ *  Sequence（44 字节）{ sequence（5 字节）{ OID 1.3.101.112 }, BIT STRING（33 字节）}。 */
 const ED25519_SPKI_HDR = Buffer.from('302a300506032b6570032100', 'hex');
 
 export function ephemeralX25519(): Keypair {
@@ -71,7 +69,7 @@ function importEd25519Public(raw: Uint8Array): KeyObject {
   });
 }
 
-/** Diffie-Hellman shared secret. */
+/** Diffie-Hellman 共享秘密。 */
 export function dhShared(mySk: KeyObject, theirPk: Uint8Array): Uint8Array {
   const pkKo = importX25519Public(theirPk);
   return new Uint8Array(diffieHellman({ privateKey: mySk, publicKey: pkKo }));

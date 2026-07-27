@@ -1,9 +1,9 @@
 /**
- * Challenge 3 — SHA-256 (challenge 3 reference).
+ * 挑战 3 —— SHA-256（挑战 3 参考实现）。
  *
- * We deliberately use Node's `crypto.createHash`, which on Linux is wired to
- * OpenSSL. We do NOT use a "pure-JS" SHA-256 here because side-channel and
- * performance guarantees only hold for the OpenSSL/BoringSSL/CNG path.
+ * 我们刻意使用 Node 的 `crypto.createHash`，在 Linux 上它由 OpenSSL 支持。
+ * 这里不使用"纯 JS"实现的 SHA-256，因为只有 OpenSSL/BoringSSL/CNG
+ * 路径才能保证侧信道与性能特性。
  */
 
 import { createHash } from 'node:crypto';
