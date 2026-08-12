@@ -1,0 +1,112 @@
+# 生产:高可用 + 严格安全
+replicaCount: 5
+
+image:
+  repository: myorg/microservice
+  tag: "1.0.0"               # 锁版本,digest 在生产 CI 注入
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+  hosts:
+    - host: api.microservice.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - api.microservice.example.com
+      secretName: prod-microservice-tls
+
+config:
+  logLevel: warn
+  env: production
+  features:
+    hotReload: false
+    debugRoutes: false
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 5
+  maxReplicas: 30
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 10
+          periodSeconds: 60
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 3
+
+# 多 AZ 分散
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: microservice-chart
+          topologyKey: topology.kubernetes.io/zone
+
+# 节点染色
+tolerations:
+  - key: workload
+    operator: Equal
+    value: production
+    effect: NoSchedule
+
+networkPolicy:
+  enabled: true
+  ingressNamespaceSelector:
+    matchLabels:
+      name: ingress-nginx
+  ingressPodSelector: {}
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: database
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 53
+
+serviceMonitor:
+  enabled: true
+  interval: 15s
+
+terminationGracePeriodSeconds: 90
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/microservice-prod

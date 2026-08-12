@@ -1,0 +1,148 @@
+# 公共默认值
+# 真正的环境值请见 values-dev.yaml / values-staging.yaml / values-prod.yaml
+
+# 镜像
+image:
+  repository: myorg/microservice
+  tag: ""                     # 留空 → 用 .Chart.AppVersion
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+# 副本
+replicaCount: 2
+
+# 覆盖名
+nameOverride: ""
+fullnameOverride: ""
+
+# ServiceAccount
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# Pod 配置
+podAnnotations: {}
+podLabels: {}
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  annotations: {}
+
+# Ingress
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: microservice.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# 资源
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# 探针
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# 启动探针(慢启动应用)
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  failureThreshold: 30
+  periodSeconds: 10
+
+# HPA
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# PDB
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# 调度
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# 应用配置
+config:
+  logLevel: info
+  env: development
+  features: {}
+
+# 额外环境变量
+extraEnv: []
+# - name: LOG_FORMAT
+#   value: json
+
+# ServiceMonitor(Prometheus Operator)
+serviceMonitor:
+  enabled: false
+  interval: 30s
+  path: /metrics
+  labels: {}
+
+# NetworkPolicy
+networkPolicy:
+  enabled: false
+  ingressNamespaceSelector: {}
+  ingressPodSelector: {}
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 53
+
+# 优雅关闭
+terminationGracePeriodSeconds: 60

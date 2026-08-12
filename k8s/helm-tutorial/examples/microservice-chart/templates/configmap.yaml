@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "microservice-chart.fullname" . }}-config
+  labels:
+    {{- include "microservice-chart.labels" . | nindent 4 }}
+data:
+  # 全部应用配置以 key/value 形式挂载
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  ENV: {{ .Values.config.env | quote }}
+  {{- range $key, $value := .Values.config.features }}
+  FEATURE_{{ upper $key }}: {{ $value | quote }}
+  {{- end }}

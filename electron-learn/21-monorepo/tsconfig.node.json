@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node", "electron"],
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
+    "composite": true,
+    "paths": {
+      "@app/*": ["apps/desktop/src/*"],
+      "@core/*": ["packages/core/src/*"],
+      "@utils/*": ["packages/utils/src/*"]
+    }
+  },
+  "include": [
+    "apps/desktop/src/main/**/*",
+    "apps/desktop/src/preload/**/*",
+    "apps/desktop/src/utilities/**/*",
+    "packages/core/src/**/*",
+    "packages/utils/src/**/*"
+  ]
+}

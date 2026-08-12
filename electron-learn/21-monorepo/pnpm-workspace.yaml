@@ -1,0 +1,9 @@
+# pnpm-workspace.yaml
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'infra/*'
+
+public-hoist-pattern:
+  - '*eslint*'
+  - '*prettier*'

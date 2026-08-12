@@ -1,0 +1,52 @@
+# Staging:接近生产
+replicaCount: 2
+
+image:
+  repository: myorg/microservice
+  tag: "1.0.0-rc.1"
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: staging.microservice.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - staging.microservice.example.com
+      secretName: staging-microservice-tls
+
+config:
+  logLevel: info
+  env: staging
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: true
+  ingressNamespaceSelector:
+    matchLabels:
+      name: ingress-nginx
+
+serviceMonitor:
+  enabled: true
+  interval: 30s

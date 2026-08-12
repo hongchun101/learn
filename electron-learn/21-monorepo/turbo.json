@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**", "package.json", "tsconfig*.json"]
+    },
+    "lint": {
+      "outputs": [],
+      "inputs": ["src/**", "**/*.config.{js,ts}", ".eslint*"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**", "tests/**"]
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "inputs": ["src/**", "tsconfig*.json"]
+    },
+    "package": {
+      "dependsOn": ["build", "test"],
+      "outputs": ["release/**"]
+    },
+    "e2e": {
+      "dependsOn": ["build"],
+      "outputs": ["playwright-report/**"]
+    }
+  },
+  "globalDependencies": ["tsconfig.base.json"]
+}

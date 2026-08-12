@@ -1,0 +1,14 @@
+# .helmignore - 打包时排除文件
+.DS_Store
+.git/
+.gitignore
+.bzr/
+.hg/
+.svn/
+*.swp
+*.bak
+*.tgz
+.idea/
+.vscode/
+*.iml
+README.md

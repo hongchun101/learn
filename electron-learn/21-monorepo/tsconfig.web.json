@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": [],
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "useDefineForClassFields": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "customConditions": ["browser"],
+    "paths": {
+      "@app/*": ["apps/desktop/src/renderer/*"],
+      "@core/*": ["packages/core/src/*"],
+      "@ui/*": ["packages/ui/src/*"],
+      "@utils/*": ["packages/utils/src/*"]
+    }
+  },
+  "include": [
+    "apps/desktop/src/renderer/**/*",
+    "packages/ui/src/**/*",
+    "packages/utils/src/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{"ts":"2023-10-10T13:55:36Z","level":"INFO","msg":"server started","port":8080}
+{"ts":"2023-10-10T13:55:37Z","level":"INFO","msg":"connected","client":"10.0.0.1"}
+{"ts":"2023-10-10T13:55:38Z","level":"WARN","msg":"slow query","duration_ms":1200}
+{"ts":"2023-10-10T13:55:39Z","level":"ERROR","msg":"db connection failed","code":500}
+{"ts":"2023-10-10T13:55:40Z","level":"INFO","msg":"request","path":"/api/users","status":200}
+{"ts":"2023-10-10T13:55:41Z","level":"DEBUG","msg":"cache miss","key":"user:42"}
+{"ts":"2023-10-10T13:55:42Z","level":"INFO","msg":"request","path":"/api/orders","status":200}
+{"ts":"2023-10-10T13:55:43Z","level":"ERROR","msg":"timeout","op":"sync"}
+{"ts":"2023-10-10T13:55:44Z","level":"INFO","msg":"server shutting down"}
+{"ts":"2023-10-10T13:55:45Z","level":"WARN","msg":"high memory usage","pct":92}

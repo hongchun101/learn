@@ -2,7 +2,7 @@
 
 这是一个可运行、可测试、按学习阶段组织的电子商务案例。你会在同一条业务主线中逐步学习战术设计、战略设计、六边形架构、事件驱动、Saga、Outbox、幂等与架构治理，而不是只记术语。
 
-> DDD 不能靠读完代码自动成为专家。这个仓库提供完整训练路径；专家能力还需要反复建模、与领域专家协作、处理生产约束并复盘模型演化。
+> **想系统掌握完整 DDD 知识体系？先读 [docs/ddd-theory.md](docs/ddd-theory.md)（13 章理论手册，含战略/战术/架构/事件驱动/高级建模/工作坊方法论/团队拓扑/反模式/决策框架/术语索引）。读完再按下方 L0–L8 练功。**
 
 ## 快速开始
 
@@ -250,4 +250,6 @@ bootstrap/      Composition root + process manager + executable scenarios
 
 ## 推荐延伸阅读
 
-按学习顺序：Eric Evans《Domain-Driven Design》；Vaughn Vernon《Implementing Domain-Driven Design》与《Domain-Driven Design Distilled》；Alberto Brandolini 的 EventStorming；Matthew Skelton / Manuel Pais《Team Topologies》；Chris Richardson《Microservices Patterns》。阅读时把每个概念映射回本仓库并写反例，避免只背定义。
+完整 DDD 理论手册见 [docs/ddd-theory.md](docs/ddd-theory.md)（13 章：本质/战略/战术/架构/事件驱动/高级建模/工作坊方法论/团队拓扑/演化治理/反模式/决策框架/阅读路径/术语索引）。
+
+外部按学习顺序：Eric Evans《Domain-Driven Design》；Vaughn Vernon《Implementing Domain-Driven Design》与《Domain-Driven Design Distilled》；Alberto Brandolini 的 EventStorming；Matthew Skelton / Manuel Pais《Team Topologies》；Chris Richardson《Microservices Patterns》。阅读时把每个概念映射回本仓库并写反例，避免只背定义。
