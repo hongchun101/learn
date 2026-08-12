@@ -90,13 +90,11 @@ public func lambdasDemo(): Unit {
 
 /// 映射
 public func map<T, U>(items: Array<T>, transform: (T) -> U): Array<U> {
-    var result = Array<U>(items.size, { _ => throw Exception("unused") })
-    var i = 0
+    var result = ArrayList<U>()
     for (item in items) {
-        result[i] = transform(item)
-        i += 1
+        result.add(transform(item))
     }
-    return result
+    return result.toArray()
 }
 
 /// 过滤

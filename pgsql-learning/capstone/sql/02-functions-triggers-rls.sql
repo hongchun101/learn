@@ -18,9 +18,13 @@ BEGIN
 END
 $$;
 
+DROP TRIGGER IF EXISTS reviews_notify_trg ON shop.reviews;
 CREATE TRIGGER reviews_notify_trg
     AFTER INSERT ON shop.reviews
     FOR EACH ROW EXECUTE FUNCTION shop.make_review_audit();
+
+DROP TABLE IF EXISTS shop.audit_log CASCADE;
+DROP TABLE IF EXISTS shop.session_token CASCADE;
 
 CREATE TABLE shop.audit_log (
     id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -53,6 +57,14 @@ $$;
 ALTER TABLE shop.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shop.order_items ENABLE ROW LEVEL SECURITY;
 
+-- Grants: app_reader can SELECT; app_writer can do anything.
+GRANT USAGE ON SCHEMA shop TO app_reader, app_writer;
+GRANT SELECT ON shop.orders, shop.order_items, shop.products,
+                shop.users, shop.reviews TO app_reader;
+GRANT SELECT, INSERT, UPDATE, DELETE ON shop.orders, shop.order_items,
+                shop.products, shop.users, shop.reviews TO app_writer;
+DROP POLICY IF EXISTS orders_self ON shop.orders;
+DROP POLICY IF EXISTS order_items_self ON shop.order_items;
 CREATE POLICY orders_self ON shop.orders USING (user_id = shop.current_actor());
 CREATE POLICY order_items_self ON shop.order_items
     USING (EXISTS (SELECT 1 FROM shop.orders o

@@ -6,7 +6,6 @@
 // =============================================================================
 
 package cangjie_learning.macros
-import std.collection.*
 
 /// 宏演示入口
 public func macrosDemo(): Unit {

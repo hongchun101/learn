@@ -2,11 +2,13 @@
 // 09_extensions - 扩展函数
 // =============================================================================
 // 覆盖: extend 关键字、为内置类型和自定义类型扩展方法、为枚举扩展
+// 注: 仓颉扩展可以给现有类型添加新方法，包括标准库类型和用户类型。
 // =============================================================================
 
 package cangjie_learning.extensions
 
 import std.collection.*
+import std.math.*
 import cangjie_learning.enums.*
 
 /// 扩展演示入口
@@ -21,43 +23,60 @@ public func extensionsDemo(): Unit {
     println("重复 3 次: ${greeting.repeat(3)}")
     println("首字母大写: ${"hello world".capitalize()}")
     println("是否回文: ${"abcba".isPalindrome()}")
-    println("统计单词: ${"the quick brown fox".wordCount()}")
+    println("单词数: ${"the quick brown fox".wordCount()}")
+    println("substring(0,5): ${greeting.substring(0, 5)}")
+    println("substring(6): ${greeting.substring(6)}")
 
     // ----- 数值扩展 -----
     println("5 的阶乘: ${5.factorial()}")
     println("10 是否偶数: ${10.isEven()}")
     println("13 是否质数: ${13.isPrime()}")
     println("16 的平方根: ${16.sqrt()}")
+    println("|-7| = ${(-7).abs()}")
+    println("100 限制在 [0,10]: ${100.clamped(min: 0, max: 10)}")
+    println("|3.14| = ${3.14.abs()}")
+    println("2^10 = ${2.0.pow(10.0)}")
+    println("3.14 sqrt = ${3.14.sqrt()}")
+    println("3.14 clamped [0,2]: ${3.14.clamped(min: 0.0, max: 2.0)}")
 
     // ----- 数组扩展 -----
     let arr = [3, 1, 4, 1, 5, 9, 2, 6]
-    println("原数组: ${arr}")
-    println("排序: ${arr.sorted()}")
-    println("去重: ${arr}")
-    println("分块(每3个): ${arr}")
+    println("原数组: ${arr.toString()}")
+    println("排序: ${arr.sorted().toString()}")
+
     // ----- 列表扩展 -----
     let list = ArrayList<Int64>()
     list.add(10)
     list.add(20)
     list.add(30)
-    println("列表: ${list}")
-    let joined = list.join("-"); println("列表转字符串: " + joined)
-    println("列表第二个元素: ${list.mySecond().getOrElse({ => -1 })}")
-    println("列表最后一个: ${list.myLast().getOrElse({ => -1 })}")
+    let joined = list.join("-")
+    println("列表转字符串: " + joined)
+
+    let second = list.mySecond()
+    match (second) {
+        case MaybeOption<Int64>.Some(v) => println("列表第二个元素: ${v}")
+        case MaybeOption<Int64>.None => println("列表第二个元素: <无>")
+    }
+    let last = list.myLast()
+    match (last) {
+        case MaybeOption<Int64>.Some(v) => println("列表最后一个: ${v}")
+        case MaybeOption<Int64>.None => println("列表最后一个: <无>")
+    }
 
     // ----- 自定义类型扩展 -----
     let p = Point(3.0, 4.0)
-    println("列表第二个元素: ${list.mySecond()}")
-    println("列表最后一个: ${list.myLast()}")
+    println("距离原点: ${p.distanceToOrigin()}")
+    println("旋转 90 度: ${p.rotated90().toString()}")
     let pNeg = p.negated()
     println("对称点: (${pNeg.x}, ${pNeg.y})")
 
     // ----- 枚举扩展 -----
     let direction = Direction.East
-    println("${direction} 顺时针下一个: ${direction.clockwise()}")
-    println("${direction} 逆时针下一个: ${direction.counterClockwise()}")
+    println("${direction.name()} 顺时针下一个: ${direction.clockwise().name()}")
+    println("${direction.name()} 逆时针下一个: ${direction.counterClockwise().name()}")
+    println("${direction.name()} 对向: ${direction.opposite().name()}")
 
-    // ----- Option 扩展（使用 enums.Option）-----
+    // ----- Option 扩展 -----
     let some: MaybeOption<Int64> = MaybeOption<Int64>.Some(42)
     let none: MaybeOption<Int64> = MaybeOption<Int64>.None
     println("Some(42) * 2 = ${some.mapOr(0, { x => x * 2 })}")
@@ -69,18 +88,18 @@ public func extensionsDemo(): Unit {
 // =============================================================================
 
 extend String {
-    /// 字符数
+    /// 字符数（按字节计）
     public func chars(): Int64 {
         return this.size
     }
 
-    /// 反转
+    /// 反转（按 Unicode 码点）
     public func reverse(): String {
+        let runes = this.toRuneArray()
         var result = ""
-        let chars = this.toRuneArray()
-        var i = chars.size - 1
+        var i = runes.size - 1
         while (i >= 0) {
-            result += chars[i].toString()
+            result += runes[i].toString()
             i -= 1
         }
         return result
@@ -89,7 +108,7 @@ extend String {
     /// 重复
     public func repeat(times: Int64): String {
         var result = ""
-        var i = 0
+        var i: Int64 = 0
         while (i < times) {
             result += this
             i += 1
@@ -97,13 +116,17 @@ extend String {
         return result
     }
 
-    /// 首字母大写
+    /// 首字母大写（ASCII）
     public func capitalize(): String {
         if (this.isEmpty()) {
             return this
         }
-        let first = this[0].toString().toUpperAscii()
-        return first + this.substring(1)
+        let runes = this.toRuneArray()
+        let firstUpper = runes[0].toString().toAsciiUpper()
+        if (runes.size == 1) {
+            return firstUpper
+        }
+        return firstUpper + this.substring(1)
     }
 
     /// 是否回文
@@ -117,12 +140,23 @@ extend String {
             return 0
         }
         var count: Int64 = 1
-        for (c in this) {
-            if (c == r' ') {
+        let space: Rune = r' '
+        for (c in this.toRuneArray()) {
+            if (c == space) {
                 count += 1
             }
         }
         return count
+    }
+
+    /// 切片（从 start 到末尾）
+    public func substring(start: Int64): String {
+        return this[start..this.size]
+    }
+
+    /// 切片（从 start 到 end，不含 end）
+    public func substring(start: Int64, end: Int64): String {
+        return this[start..end]
     }
 }
 
@@ -173,32 +207,51 @@ extend Int64 {
         }
         return x
     }
+
+    /// 限制在 [min, max] 范围内
+    public func clamped(min!: Int64, max!: Int64): Int64 {
+        if (this < min) { return min }
+        if (this > max) { return max }
+        return this
+    }
+
+    /// 取绝对值
+    public func abs(): Int64 {
+        if (this < 0) { return -this }
+        return this
+    }
 }
 
 extend Float64 {
     /// 平方根
     public func sqrt(): Float64 {
-        if (this < 0.0) { throw Exception("负数无平方根") }
-        // 牛顿迭代法
-        if (this == 0.0) { return 0.0 }
-        var x = this
-        var y = (x + 1.0) / 2.0
-        var iter = 0
-        while (iter < 50) {
-            let newY = (y + x / y) / 2.0
-            if ((newY - y).abs() < 0.0000001) { break }
-            y = newY
-            iter += 1
-        }
-        return y
+        return std_math_sqrt(this)
+    }
+
+    /// 绝对值
+    public func abs(): Float64 {
+        return std_math_abs(this)
+    }
+
+    /// 幂
+    public func pow(exp: Float64): Float64 {
+        return std_math_pow(this, exp)
+    }
+
+    /// 限制在 [min, max] 范围内
+    public func clamped(min!: Float64, max!: Float64): Float64 {
+        if (this < min) { return min }
+        if (this > max) { return max }
+        return this
     }
 }
 
 // =============================================================================
-// 数组扩展
+// 数组扩展（要求元素可比较）
 // =============================================================================
 
 extend<T> Array<T> where T <: Comparable<T> {
+    /// 升序排序（冒泡排序示例）
     public func sorted(): Array<T> {
         var arr = this
         let n = arr.size
@@ -218,6 +271,7 @@ extend<T> Array<T> where T <: Comparable<T> {
         return arr
     }
 
+    /// 最大值（数组为空时返回默认值）
     public func maxOrDefault(defaultValue: T): T {
         if (this.isEmpty()) { return defaultValue }
         var max = this[0]
@@ -229,6 +283,7 @@ extend<T> Array<T> where T <: Comparable<T> {
         return max
     }
 
+    /// 最小值（数组为空时返回默认值）
     public func minOrDefault(defaultValue: T): T {
         if (this.isEmpty()) { return defaultValue }
         var min = this[0]
@@ -240,8 +295,6 @@ extend<T> Array<T> where T <: Comparable<T> {
         return min
     }
 }
-
-// 删除 Array<T> where T <: Additive<T> 扩展（Cangjie 此版本不支持 Additive 接口）
 
 // =============================================================================
 // 自定义类型扩展
@@ -259,7 +312,7 @@ public struct Point {
 extend Point {
     /// 到原点距离
     public func distanceToOrigin(): Float64 {
-        return sqrt(x * x + y * y)
+        return std_math_sqrt(x * x + y * y)
     }
 
     /// 旋转 90 度（逆时针）
@@ -270,6 +323,12 @@ extend Point {
     /// 对称点
     public func negated(): Point {
         return Point(-x, -y)
+    }
+}
+
+extend Point <: ToString {
+    public func toString(): String {
+        return "Point(${x}, ${y})"
     }
 }
 
@@ -311,52 +370,8 @@ extend Direction {
             case Direction.West => Direction.East
         }
     }
-}
 
-// =============================================================================
-// ArrayList 扩展
-// =============================================================================
-
-extend<T> ArrayList<T> {
-    public func join(separator: String): String {
-        if (this.isEmpty()) { return "" }
-        var result = this[0].toString()
-        for (i in 1..this.size) {
-            result += separator + this[i].toString()
-        }
-        return result
-    }
-
-    public func mySecond(): MaybeOption<T> {
-        if (this.size < 2) { return MaybeOption<T>.None }
-        return MaybeOption<T>.Some(this[1])
-    }
-
-    public func myLast(): MaybeOption<T> {
-        if (this.isEmpty()) { return MaybeOption<T>.None }
-        return MaybeOption<T>.Some(this[this.size - 1])
-    }
-}
-
-// =============================================================================
-// enums.Option 扩展（在 extensions 模块中添加便利方法）
-// =============================================================================
-
-extend<T> MaybeOption<T> {
-    public func mapOr<U>(defaultValue: U, transform: (T) -> U): U {
-        match (this) {
-            case MaybeOption<T>.Some(v) => transform(v)
-            case MaybeOption<T>.None => defaultValue
-        }
-    }
-}
-
-// =============================================================================
-// Direction 扩展 - ToString
-// =============================================================================
-
-extend Direction <: ToString {
-    public func toString(): String {
+    public func name(): String {
         match (this) {
             case Direction.North => "North"
             case Direction.East => "East"
@@ -367,16 +382,59 @@ extend Direction <: ToString {
 }
 
 // =============================================================================
-// MaybeOption 扩展 - ToString
+// ArrayList 扩展
 // =============================================================================
 
-extend<T> MaybeOption<T> where T <: ToString {
-    public func toString(): String {
+extend<T> ArrayList<T> where T <: ToString {
+    /// 拼接为字符串
+    public func join(separator: String): String {
+        if (this.isEmpty()) { return "" }
+        var result = this[0].toString()
+        for (i in 1..this.size) {
+            result += separator + this[i].toString()
+        }
+        return result
+    }
+
+    /// 取第二个元素（不足时返回 None）
+    public func mySecond(): MaybeOption<T> {
+        if (this.size < 2) { return MaybeOption<T>.None }
+        return MaybeOption<T>.Some(this[1])
+    }
+
+    /// 取最后一个元素（空时返回 None）
+    public func myLast(): MaybeOption<T> {
+        if (this.isEmpty()) { return MaybeOption<T>.None }
+        return MaybeOption<T>.Some(this[this.size - 1])
+    }
+}
+
+// =============================================================================
+// MaybeOption 扩展
+// =============================================================================
+
+extend<T> MaybeOption<T> {
+    /// 当 Some 时应用 transform，否则返回 defaultValue
+    public func mapOr<U>(defaultValue: U, transform: (T) -> U): U {
         match (this) {
-            case MaybeOption<T>.Some(v) => "Some(${v})"
-            case MaybeOption<T>.None => "None"
+            case MaybeOption<T>.Some(v) => transform(v)
+            case MaybeOption<T>.None => defaultValue
         }
     }
 }
 
+// =============================================================================
+// 内部：std.math 函数别名（避免在表达式中重复限定）
+// =============================================================================
 
+func std_math_sqrt(x: Float64): Float64 {
+    return sqrt(x)
+}
+
+func std_math_abs(x: Float64): Float64 {
+    return abs(x)
+}
+
+func std_math_pow(x: Float64, y: Float64): Float64 {
+    return pow(x, y)
+}

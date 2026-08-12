@@ -577,3 +577,272 @@ graph TD
 - Karpenter 下一代节点扩缩,快且智能
 - 配合:`minReplicas: 2-3` + PDB + readiness + 监控
 - 容量规划:稳态 1.3x,突发 3x,Karpenter Spot 混部省钱
+
+## 13.17 Karpenter 深入实战
+
+### Karpenter vs Cluster Autoscaler
+
+```text
+Cluster Autoscaler:
+
+Karpenter:
+```
+
+### 安装 Karpenter
+
+```bash
+# 1. Helm 装 Karpenter
+helm upgrade --install karpenter \
+  oci://public.ecr.aws/karpenter/karpenter \
+
+# 2. 建 KarpenterNodeRole(IAM)
+# 含 EC2/SSM/SQS 权限
+```
+
+### NodePool(核心 CRD)
+
+```yaml
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: default
+spec:
+  template:
+    spec:
+      requirements:
+        operator: In
+        values: ["amd64", "arm64"]              # 优先 ARM
+        operator: In
+        values: ["spot", "on-demand"]           # 优先 Spot
+        operator: In
+        values: [m5, m6i, c5, c6i, r5, r6i]    # 限定 instance family
+        operator: In
+        values: ["large", "xlarge", "2xlarge"]
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: default
+      expireAfter: 720h                         # 节点 30 天后回收
+  limits:
+    cpu: "1000"                                  # 总 CPU 上限
+    memory: 4000Gi
+  disruption:
+    consolidationPolicy: WhenUnderutilized      # 自动合并
+    expireAfter: 720h
+    budgets:
+```
+
+### EC2NodeClass(云厂商配置)
+
+```yaml
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata: { name: default }
+spec:
+  amiFamily: AL2023                             # Amazon Linux 2023
+  role: KarpenterNodeRole-prod
+  subnetSelectorTerms:
+      karpenter.sh/discovery: prod
+  securityGroupSelectorTerms:
+      karpenter.sh/discovery: prod
+  blockDeviceMappings:
+    ebs:
+      volumeSize: 100Gi
+      volumeType: gp3
+      iops: 3000
+      deleteOnTermination: true
+  metadataOptions:
+    httpTokens: required                        # IMDSv2
+```
+
+### 实战:Pod 指定 instance type
+
+```yaml
+# 通用 Pod
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: web }
+spec:
+  template:
+    spec:
+      containers:
+        image: nginx
+        resources:
+          requests: { cpu: 1, memory: 2Gi }
+        # Karpenter 会找:
+        # - 1 CPU
+        # - 2 GB RAM
+        # - 选最小满足的 instance(如 m5.large = 2C8G)
+```
+
+### 实战:AI/ML 工作负载(优先 GPU)
+
+```yaml
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata: { name: gpu }
+spec:
+  template:
+    spec:
+      requirements:
+        operator: In
+        values: [p4d, p5, g5]                   # GPU instance
+        operator: Gt
+        values: ["1"]
+      nodeClassRef:
+        name: gpu
+```
+
+```yaml
+# Pod 指定跑到 gpu 池
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: ai-train }
+spec:
+  template:
+    spec:
+      nodeSelector:
+        karpenter.sh/nodepool: gpu
+      containers:
+        image: myorg/trainer:v1
+        resources:
+          limits: { nvidia.com/gpu: 8 }
+```
+
+### Consolidation(自动整合)
+
+```text
+Karpenter 持续监控节点利用率
+```
+
+### Drift(漂移检测)
+
+```text
+Karpenter 检测节点是否"过期":
+
+发现 drift → 自动重建节点(优雅排水)
+```
+
+### Karpenter 监控
+
+```promql
+# 当前节点数
+sum(karpenter_nodes_total{arch=~".*"})
+
+# Pending Pod 数(应该接近 0)
+sum(kube_pod_status_phase{phase="Pending"})
+
+# Consolidation 次数
+rate(karpenter_consolidations_total[5m])
+
+# Spot 中断(应该 < 1/天)
+rate(karpenter_interruption_received_total[1h])
+```
+
+## 13.18 KEDA 高级:External Scaler
+
+```go
+// 自定义 Scaler 例子
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    "github.com/kedacore/keda/v2/pkg/scalers/external"
+)
+
+type MlPredictScaler struct{}
+
+func (s *MlPredictScaler) GetMetrics(ctx context.Context, name string) ([]external.Metric, error) {
+    // 调 ML 服务
+    resp, err := http.Get("http://ml-service/predict")
+    if err != nil {
+        return nil, err
+    }
+    var data struct{ PredictedLoad int }
+    json.NewDecoder(resp.Body).Decode(&data)
+    
+    return []external.Metric{{
+        MetricName: name,
+        MetricValue: float64(data.PredictedLoad),
+    }}, nil
+}
+
+func (s *MlPredictScaler) GetMetricSpec() []external.MetricSpec {
+    return []external.MetricSpec{{
+        MetricName: "ml-predicted-load",
+        TargetSize: 100,
+    }}
+}
+```
+
+```yaml
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: ml-ai }
+spec:
+  scaleTargetRef: { name: web }
+  pollingInterval: 30
+  triggers:
+    metadata:
+      scalerAddress: ml-predictor:8080
+      threshold: "100"
+```
+
+## 13.19 Pod 资源反模式
+
+```text
+❌ 反模式:
+  
+✅ 正确:
+```
+
+### QoS 等级
+
+```text
+Guaranteed(稳定):
+  
+Burstable(突发):
+  
+BestEffort(尽力):
+```
+
+## 13.20 K8s 1.30+ 扩缩容特性
+
+```text
+HPA:
+  
+Karpenter:
+  
+VPA:
+  
+KEDA:
+```
+
+## 13.21 实战:多维度自动扩缩
+
+```text
+应用 web:
+
+配置:
+  HPA: min 2, max 50
+  VPA: 0-1 副本 = 512Mi
+  Karpenter: 1-100 节点
+  KEDA: Kafka lag > 100 扩
+```
+
+## 13.22 专家清单(终极版)
+
+### HPA
+
+### KEDA
+
+### VPA
+
+### Karpenter
+
+### 容量规划
+
+## 13.23 本章小结(终极版)
+

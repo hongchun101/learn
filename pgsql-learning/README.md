@@ -75,7 +75,7 @@ CAPSTONE — small real e-commerce backend
    + pgvector semantic search over reviews
    + streaming replica + read-only routing
    + pg_dump + WAL archive + PITR
-   + monitoring + alerting
+   + monitoring + alerting + RLS tests
 ```
 
 After modules 01–10 you can write and read any complex SQL.
@@ -85,6 +85,28 @@ After modules 16–19 you can read any error message in `pg_log` and explain
 After modules 20–24 you can ship and operate a PostgreSQL cluster.
 After modules 25–28 you can defend every performance choice with a
 planner-level argument.
+
+## Learning path
+
+This curriculum is the *what*. The *how* (90-day expert roadmap,
+interview prep, career planning) lives in the `docs/` and the root:
+
+| File | Purpose |
+|------|---------|
+| **`LEARNING-PATH.md`** | One-week zero-to-running path + 90-day milestones |
+| **`docs/00-overview.md`** | The five problems and the vocabulary |
+| **`docs/01-architecture.md`** | Process model, memory regions, file regions |
+| **`docs/01-how-to-run.md`** | Three-step quick start |
+| **`docs/02-glossary.md`** | Every term in the curriculum |
+| **`docs/03-roadmap.md`** | 30 / 60 / 90-day expert study plan with daily schedule |
+| **`docs/04-incident-playbook.md`** | Top 15 production incidents + first-three-checks |
+| **`docs/05-pitfalls.md`** | 50+ common mistakes and how to avoid them |
+| **`docs/06-tuning-cheatsheet.md`** | Every GUC that matters, with the right answer |
+| **`docs/07-interview-150.md`** | 150 expert-level Q&A for interviews |
+| **`docs/08-career-roadmap.md`** | Junior → 50K-RMB expert career ladder |
+
+If you read only one: **`LEARNING-PATH.md`**. It tells you what to do
+in what order.
 
 ## The five universal problems
 
@@ -146,20 +168,29 @@ live in `scripts/`.
 | Build an RLS policy that survives a real attack surface | module 23 |
 | Ship a semantic-search product with pgvector | module 24 |
 | Decide between PostgreSQL and a distributed SQL store | module 28 |
+| Diagnose a production incident in their sleep | `docs/04-incident-playbook.md` |
+| Answer 100+ expert-level interview questions | `docs/07-interview-150.md` |
 
 ## Layout
 
 ```
 pgsql-learning/
 ├── README.md                       ── this file
+├── LEARNING-PATH.md                ── start here
 ├── docker/                         ── compose stack (primary + replica + pgadmin)
 ├── .env.example
-├── docs/                           ── 00-overview, 01-architecture, glossary
+├── docs/                           ── 00-overview, 01-architecture, 02-glossary,
+│                                     03-roadmap, 04-incident-playbook,
+│                                     05-pitfalls, 06-tuning-cheatsheet,
+│                                     07-interview-150, 08-career-roadmap
 ├── modules/                        ── 28 module folders, each with SQL + exercises
 ├── sql/00-init/                    ── initial schema seed (loaded by Docker on first init)
 ├── sql/contracts/                  ── the five cross-module contracts
 ├── exercises/                      ── 28 graded problem sets + solutions
 ├── capstone/                       ── full-stack project the curriculum targets
+│   └── sql/                        ── 01-schema, 02-rls, 03-seed, 04-queries,
+│                                     05-ops, 06-pgvector, 07-rls-tests,
+│                                     08-ops-deep-dive
 ├── scripts/                        ── verifiers, helpers, run-all
 ├── diagrams/                       ── mermaid diagrams exported as .mmd
 ├── glossary/                       ── per-module vocab index → docs/02-glossary.md
@@ -169,17 +200,18 @@ pgsql-learning/
 
 ## Reading this repo
 
-1. Read `docs/00-overview.md` once. It defines the five problems and the
+1. Read `LEARNING-PATH.md`. It tells you what order to do things in.
+2. Read `docs/00-overview.md` once. It defines the five problems and the
    vocabulary the rest of the repo uses.
-2. Run module 01 end-to-end. Each module is structured the same way; once
+3. Run module 01 end-to-end. Each module is structured the same way; once
    you understand one, you understand all of them.
-3. Pick the module closest to your work, run its SQL, then read its
+4. Pick the module closest to your work, run its SQL, then read its
    parent and child modules.
-4. After module 10 you can write any production query.
-5. After module 15 you can model any product's data layer.
-6. After module 19 you can read any PostgreSQL error message.
-7. After module 24 you can ship a real cluster.
-8. After module 28 you can defend every performance choice.
+5. After module 10 you can write any production query.
+6. After module 15 you can model any product's data layer.
+7. After module 19 you can read any PostgreSQL error message.
+8. After module 24 you can ship a real cluster.
+9. After module 28 you can defend every performance choice.
 
 ## Quality gates
 
@@ -196,8 +228,17 @@ docker compose -f docker/docker-compose.yml exec primary psql -U postgres -d lea
 |-------|--------|
 | docker stack — primary + replica up | ✔ |
 | contracts — 5/5 | ✔ |
-| modules — 28/28 | ✔ |
-| capstone — small e-commerce + replica + backup + pgvector | ✔ |
+| modules — 28/28 (idempotent, runnable from scratch) | ✔ |
+| capstone — small e-commerce + replica + backup + pgvector + RLS | ✔ |
+| docs/ — roadmap, playbook, pitfalls, cheatsheet, interview Qs, career path | ✔ |
+
+## Target
+
+> 学完本教程可以成为 PostgreSQL 专家,目标月薪 50K (RMB)。
+
+After running this curriculum, you have the *foundation*. The job gets
+you the rest. See `docs/08-career-roadmap.md` for the ladder and the
+90-day milestone plan in `docs/03-roadmap.md`.
 
 ## License
 

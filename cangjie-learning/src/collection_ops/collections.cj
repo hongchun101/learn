@@ -139,13 +139,11 @@ public func collectionsDemo(): Unit {
 
 /// map
 public func myMap<T, U>(items: Array<T>, transform: (T) -> U): Array<U> {
-    var result = Array<U>(items.size, { _ => throw Exception("init") })
-    var i: Int64 = 0
+    var result = ArrayList<U>()
     for (item in items) {
-        result[i] = transform(item)
-        i += 1
+        result.add(transform(item))
     }
-    return result
+    return result.toArray()
 }
 
 /// filter
@@ -211,7 +209,7 @@ public func take<T>(items: Array<T>, n: Int64): Array<T> {
 
 /// skip
 public func skip<T>(items: Array<T>, n: Int64): Array<T> {
-    if (n >= items.size) { return Array<T>(0, { _ => throw Exception("unreachable") }) }
+    if (n >= items.size) { return Array<T>(0, { _ => items[0] }) }
     let newSize = items.size - n
     return Array<T>(newSize, { i => items[n + i] })
 }

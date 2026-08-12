@@ -160,3 +160,44 @@ export const seconds = (n: number): Seconds => n as Seconds;
 if (import.meta.url === `file:///${process.argv[1]}`) {
   console.info('routes keys =', Object.keys(routes));
 }
+
+// ---------------------------------------------------------------------------
+// 11. 模板字面量 DSL —— 用类型层表达小型领域语言
+// ---------------------------------------------------------------------------
+//
+// 把模板字面量、infer 与映射类型组合，可以在类型层实现一个迷你解析器：
+// 给定路径字面量，提取出参数键、参数值类型，并构造一个强类型的
+// `buildUrl(path, params)` 函数。
+//
+// 这是设计 tRPC、Hono、Zod 的 path API 时的核心套路。
+
+// 1) 解析 `:foo` 与 `*` 通配符。
+export type RouteParam<S extends string> = S extends `:${infer P}` ? P : S extends `*` ? 'wildcard' : never;
+
+export type RouteParams<S extends string> = S extends `${string}:${infer P}` ? P : never;
+
+// 2) 给定一个具体路径，提取参数。
+export type ExtractParams<P extends string> = P extends `${string}:${infer K}/${infer R}`
+  ? { [Q in K | keyof ExtractParams<`/${R}`>]: string }
+  : P extends `${string}:${infer K}`
+    ? { [Q in K]: string }
+    : Record<never, never>;
+
+// 3) 强类型的 builder：参数必须按名提供。
+export function buildUrl<P extends string>(path: P, params: ExtractParams<P>): string {
+  return (path as string).replace(/:([A-Za-z]+)/g, (_, k: string) => String((params as Record<string, string>)[k] ?? ''));
+}
+
+// 演示：
+//   type P = ExtractParams<'/users/:id/posts/:postId'>;
+//   //   ^? { id: string; postId: string }
+export type _UserPostParams = ExtractParams<'/users/:id/posts/:postId'>;
+
+// 4) 枚举合法的 HTTP 方法。
+export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+// 5) 强类型的事件总线：把事件名映射到 payload 形状。
+export type EventPayloads<Name extends string> = Name extends `${string}:${string}` ? { readonly [K in Name]: unknown } : never;
+
+// 6) `Uppercase` / `Lowercase` / `Capitalize` / `Uncapitalize` 的内建支持。
+export type RouteName<S extends string> = Capitalize<S>;

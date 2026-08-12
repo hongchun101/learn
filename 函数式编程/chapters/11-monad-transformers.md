@@ -95,9 +95,26 @@ instance (Monoid w, Monad m) => Monad (WriterT w m) where
     return (b, w `mappend` w')
 ```
 
-## 11.4 组合栈
+### 11.3.5 转型器必须满足的律
+
+任何 `MonadTrans t` 满足两条律:
+
+1. **`lift . return = return`**: `lift` 不能改变 `return` 行为
+2. **`lift (m >>= k) = lift m >>= (lift . k)`**: `lift` 与 `>>=` 兼容
+
+对 `Monad m => Monad (t m)` 实例, 需满足 Monad 律 + transformer 律。
 
 ```haskell
+-- 验证 StateT 的 transformer 律
+prop_stateT_lift :: IO Int -> Bool
+prop_stateT_lift m = runStateT (lift m) s == (m >>= \a -> return (a, s))
+  where s = 0
+```
+
+违反律的常见错误: `lift` 内部偷偷塞了状态变化。
+
+## 11.4 组合栈
+
 -- 栈式声明
 type AppM = ReaderT Cfg (StateT AppState (ExceptT String IO))
 ```
@@ -199,15 +216,17 @@ instance Monad m => MonadReader r (ReaderT r m) where
 
 ### 11.6.1 思路
 
-能否把"做出 effect" 与"执行 effect"分开?
+能否把"做出 effect" 与"执行 effect"分开?Free Monad 正是这种工具。
 
 ```haskell
-data Console a
-  = PutStrLn String a
-  | GetLine (String -> a)
+-- 1. 底函子: 一层 effect 的形状
+data ConsoleF next
+  = PutStrLn String next
+  | GetLine (String -> next)
+  deriving Functor
 
--- 描述程序
-type ConsoleM = Free Console
+-- 2. 自由 monad: 把底函子"提升"为 monad
+type ConsoleM = Free ConsoleF
 ```
 
 `Free f a` 是一个"在 $f$ 之上的最小 monad":
@@ -218,45 +237,152 @@ data Free f a
   | Free (f (Free f a))
 ```
 
+关键观察: 我们的 `ConsoleF` 是 `next`-参数化,而不是 `a`-参数化。这让 `Free ConsoleF a` 中的递归层正确接续。GHC 提供 `liftF` 把 `f a` 提升到 `Free f a`:
+
+```haskell
+-- liftF 来自 Data.Free
+liftF :: Functor f => f a -> Free f a
+liftF fa = Free (fmap Pure fa)
+```
+
 ### 11.6.2 用法
 
 ```haskell
-program :: ConsoleM ()
+import Data.Free (Free, liftF, MonadFree)
+
+program :: Free ConsoleF ()
 program = do
+  liftF (PutStrLn "What is your name?" ())
+  name <- liftF (GetLine id)
+  liftF (PutStrLn ("Hello, " ++ name) ())
+```
+
+或者使用更底层的形式(显式 `Pure` / `Free`):
+
+```haskell
+program' :: ConsoleM ()
+program' =
   Free (PutStrLn "What is your name?" (Pure ()))
-  name <- Free (GetLine Pure)
-  Free (PutStrLn ("Hello, " ++ name) (Pure ()))
+  `bind` \() ->
+  Free (GetLine (\name ->
+    Free (PutStrLn ("Hello, " ++ name) (Pure ()))))
 ```
 
 ### 11.6.3 解释器
 
 ```haskell
 runConsole :: ConsoleM a -> IO a
-runConsole (Pure a)   = return a
+runConsole (Pure a) = return a
 runConsole (Free c) = case c of
   PutStrLn s k -> putStrLn s >> runConsole k
   GetLine    k -> getLine >>= runConsole . k
 ```
 
-### 11.6.4 优势
+这是"折叠"底函子层: `Pure` 给结果,`Free` 跑一层 effect 再递归。
 
-- 可测试: 提供一个 fake interpreter
-- 可多后端: 写一次,可在 IO/State 上跑
-- **可重组**: 把多个 DSL 叠起来
+### 11.6.4 多后端
 
-## 11.7 思考题
+```haskell
+-- 假后端: 收集所有输出
+runPure :: ConsoleM a -> ([String], a)
+runPure (Pure a) = ([], a)
+runPure (Free c) = case c of
+  PutStrLn s k -> let (logs, a) = runPure k in (s : logs, a)
+  GetLine    k -> let fakeName = "Alice"
+                      (logs, a) = runPure (k fakeName)
+                  in ("<input:" ++ fakeName ++ ">" : logs, a)
+```
+
+### 11.6.5 优势
+
+- **可测试**: 提供 fake interpreter,无需真 IO。
+- **可多后端**: 同一份 DSL 在 IO / 测试 / 日志收集器上都能跑。
+## 11.7 实战: 并发原语 + Effect 系统对比
+
+### 11.7.1 并发原语
+
+Haskell 的并发模型在 STM (Software Transactional Memory) 与 async 上做了 FP 化的封装:
+
+```haskell
+import Control.Concurrent.STM
+import Control.Concurrent.Async
+
+-- 1. TVar: STM 变量
+counter :: TVar Int
+counter <- newTVarIO 0
+
+-- 2. 事务: 原子读-改-写
+atomically $ do
+  modifyTVar' counter (+ 1)
+  v <- readTVar counter
+  when (v > 100) retry  -- 等待条件
+
+-- 3. async: 轻量线程
+res <- mapConcurrently (download . url) urls
+-- res :: [Response] 并行下载
+
+-- 4. MVar: 同步通道
+putMVar mv "hello"
+takeMVar mv  -- 阻塞直到可读
+```
+
+**核心思想**: 不共享可变状态,只通过 STM 事务"协商"——这正是 FP 不可变性 + 事务原子性的完美结合。
+
+### 11.7.2 Effect 系统对比
+
+真实 Haskell 项目有多种 effect 抽象:
+
+| 系统 | 风格 | 优点 | 缺点 |
+|------|------|------|------|
+| **mtl** | type class | 简洁, 编译时类型 | instance 膨胀 |
+| **RIO** | Record-of-functions | 显式, 易追踪, 工业级 | 需 discipline |
+| **polysemy** | Free 变体 | 自由组合 | 性能开销 |
+| **effectful** | type class + 优化 | 现代, 高性能 | 学习曲线 |
+
+```haskell
+-- mtl 风格
+processOrder :: (MonadReader Cfg m, MonadState Db m, MonadError String m) => Order -> m Receipt
+
+-- RIO 风格
+processOrder :: (Has Cfg env, Has Db env) => Order -> RIO env Receipt
+```
+
+**生产建议**: 中小项目用 `mtl`,大型项目用 `RIO`(Twitter/Standard Chartered 风格)。
+
+### 11.7.3 实战: STM 实现的并发 Map
+
+```haskell
+import qualified Data.Map.Strict as Map
+
+newtype ConcurrentMap k v = ConcurrentMap (TVar (Map.Map k v))
+
+insert :: (Ord k) => k -> v -> ConcurrentMap k v -> STM ()
+insert k v (ConcurrentMap tvar) = modifyTVar' tvar (Map.insert k v)
+
+lookup :: (Ord k) => k -> ConcurrentMap k v -> STM (Maybe v)
+lookup k (ConcurrentMap tvar) = Map.lookup k <$> readTVar tvar
+```
+
+这是 `Control.Concurrent.Map` 的简化版: 跨线程无锁,自动处理一致性。
+
+## 11.8 思考题
 
 1. 写出 `StateT s Maybe a` 的 `instance Monad`。
 2. 写出 `MonadState` 的 `mtl` 风格代码。
-3. 用 `Free` 设计一个 `Logger` DSL,支持 `Info`, `Warn`, `Error`。
-4. 解释: 为什么 `Monad` 转 `MonadTrans` 时 `lift` 是**而不是** `pure`?
+3. 用 `Free` 设计一个 `Logger` DSL,支持 `Info`, `Warn`, `Error`(可运行代码见 `code/Ch11/FreeMonad.hs`)。
+4. 解释: 为什么 `lift :: m a -> t m a` 不同于 `pure :: a -> t m a`?
 5. 举出三个 MTL 风格的好处,并验证 "代码与具体 transformer 无关"。
+6. 用 STM 实现一个"账户转账"事务(读两账户, 验证余额, 写两账户)。
+7. 对比 `mtl` 与 `RIO` 在"添加新 effect"时的改动量。
 
-## 11.8 小结
+## 11.9 小结
 
 - Monad Transformer = 让 monad 叠加。
 - 类型顺序 = 嵌套;`lift` 跨层。
 - MTL 风格 = type class 接口,与具体 transformer 解耦。
 - Free Monad = 最抽象的"DSL → monad" 工具。
+- **并发**: STM + async = 工业级 Haskell 并发。
+- **Effect 系统**: mtl / RIO / polysemy 各有所长,选型要看项目规模。
 
 下一章是 Foldable / Traversable——列表抽象的更高阶。
+

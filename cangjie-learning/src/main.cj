@@ -17,10 +17,17 @@ import cangjie_learning.lambdas.*
 import cangjie_learning.extensions.*
 import cangjie_learning.operator_overloading.*
 import cangjie_learning.error_handling.*
+import cangjie_learning.macros.*
 import cangjie_learning.concurrency.*
 import cangjie_learning.advanced_types.*
 import cangjie_learning.collection_ops.*
-
+import cangjie_learning.io_filesystem.*
+import cangjie_learning.regex_string.*
+import cangjie_learning.time_datetime.*
+import cangjie_learning.advanced_concurrency.*
+import cangjie_learning.reflection_macros.*
+import cangjie_learning.examples.*
+import cangjie_learning.ffi_interop.*
 main(): Int64 {
     println("===============================================")
     println("  仓颉（Cangjie）编程语言 - 高级语法学习项目")
@@ -38,11 +45,17 @@ main(): Int64 {
     extensionsDemo()
     operatorsDemo()
     errorsDemo()
+    macrosDemo()
     concurrencyDemo()
     advancedTypesDemo()
     collectionsDemo()
-
-    println("")
+    ioFilesystemDemo()
+    regexStringDemo()
+    timeDatetimeDemo()
+    advancedConcurrencyDemo()
+    reflectionMacrosDemo()
+    taskManagerDemo()
+    ffiInteropDemo()
     println("===============================================")
     println("  全部演示完成")
     println("===============================================")

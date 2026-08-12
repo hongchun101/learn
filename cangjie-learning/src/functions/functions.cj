@@ -6,7 +6,6 @@
 // =============================================================================
 
 package cangjie_learning.functions
-import std.collection.*
 
 /// 演示函数特性
 public func functionsDemo(): Unit {

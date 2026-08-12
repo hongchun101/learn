@@ -221,6 +221,36 @@ data U = MkU Int#  -- 注意后缀 #
 
 `Int#` 是机器字,`Int` 是 boxed,可 thunk 可 heap。
 
+### 17.8.1 为什么 unboxed 快
+
+| 类型 | 大小 | thunk 头部 | 性能 |
+|------|------|------------|------|
+| `Int` | 1 指针 + thunk | 1-2 词 | 慢 3-10x |
+| `Int#` | 1 机器字 | 0 | 接近 C |
+| `Int` (strict) | 1 指针 | 0 | 中 |
+
+### 17.8.2 Vector Unboxed
+
+```haskell
+-- Data.Vector.Unboxed: 内部存 unboxed 值
+import qualified Data.Vector.Unboxed as VU
+
+-- 关键: 元素是机器字, 无指针
+sum :: VU.Vector Int -> Int
+-- GHC 用 SIMD 优化, 接近 C 速度
+```
+
+### 17.8.3 避免 boxed 的代价
+
+```haskell
+-- 用 strictness annotation 强制求值
+sumStrict :: [Int] -> Int
+sumStrict = foldl' (+) 0
+
+-- 或者用 unboxed sum
+import GHC.Exts (sumUAddr#)
+```
+
 ## 17.9 性能分析
 
 ### 17.9.1 ghc profiling
@@ -288,20 +318,98 @@ import qualified Data.Vector.Unboxed as VU
 -- 大量数值计算用 Vector
 ```
 
-## 17.11 思考题
+## 17.11 GHC 优化原语:Pragmas
+
+Pragma 是 GHC 优化器与开发者之间的直接接口,这是 FP 工程师"从能用变能用好"的关键。
+
+### 17.11.1 INLINE / INLINABLE / NOINLINE
+
+```haskell
+-- INLINE: 强制内联(把函数体展开到调用点)
+{-# INLINE myAdd #-}
+myAdd :: Int -> Int -> Int
+myAdd x y = x + y
+
+-- NOINLINE: 阻止内联(用于大函数或递归)
+{-# NOINLINE complexHelper #-}
+complexHelper :: ... -> ...
+
+-- INLINABLE: 允许跨模块内联
+{-# INLINABLE lookup #-}
+```
+
+**何时用 INLINE**: 性能关键 + 小函数 + 多态(类型特化后内联)。
+
+### 17.11.2 SPECIALIZE
+
+多态函数在具体类型上会因特化而变快。手动保证特化:
+
+```haskell
+{-# SPECIALIZE foo :: Int -> Int #-}
+{-# SPECIALIZE [0] sum' :: [Int] -> Int #-}  -- 仅 RTTI 层级 0
+foo :: Num a => a -> a
+foo x = x + 1
+```
+
+否则 GHC 可能在不同模块中错过特化,产生 `Integer` 慢路径。
+
+### 17.11.3 RULES: 编译期重写
+
+```haskell
+{-# RULES "mapfusion" forall f g xs. map f (map g xs) = map (f . g) xs #-}
+```
+
+这是**用户自定义融合**。`Data.List` 的 `build/foldr` 优化就是 RULES。
+
+### 17.11.4 CAF 与顶级 thunk
+
+```haskell
+-- 错误: 顶级 partial application 创建 CAF
+bigConfig :: Config
+bigConfig = loadFromFile  -- 启动时就执行
+
+-- 更好: 用 IORef / Reader
+```
+
+CAF (Constant Applicative Form) 在模块加载时强制求值,影响启动时间。
+
+### 17.11.5 INLINE vs SPECIALIZE 选择
+
+| 场景 | 用什么 |
+|------|--------|
+| 小 + 多态 | INLINE |
+| 性能关键 + 跨模块 | INLINABLE + SPECIALIZE |
+| 大 / 递归 / 副作用 | NOINLINE |
+| 重复模式 / fusion | RULES |
+
+**实战**: 在 hot path 上加 `{-# INLINE myFunc #-}` + 配 `criterion` 基准测试,通常能拿 2-10x 提升。
+
+### 17.11.6 看 GHC Core
+
+```bash
+$ ghc -ddump-simpl -O2 MyModule.hs
+```
+
+看 Core 输出能直接验证 `fmap` 是否被特化、是否仍是 wrapper。**这是 GHC 调优的最终武器**。
+
+## 17.12 思考题
 
 1. 解释 `1 + 2 : _` 在 ghci 中 `:sprint` 后是 `3 : _`。
 2. 写一个 `foldl'` 比 `foldl` 快 10x 的例子。
 3. 解释 `seq` 与 `$!` 的区别。
 4. 写一个 Stream Fusion 的等价 `build` 例子。
 5. 解释 Text 处理为何比 String 快。
+6. 写一个 RULES pragma 融合 `map f (map g xs) = map (f . g) xs`,用 criterion 测 1000 元素。
+7. 解释为什么 `Int` 比 `Integer` 快,以及 `SPECIALIZE` 在跨模块时的作用。
 
-## 17.12 小结
+## 17.13 小结
 
 - 惰性是 FP 的核心;严格是工具。
 - `seq`, `$!`, `BangPatterns`, `strict data` 强制求值。
 - `foldl'` 严格, `foldr` 惰性。
 - 数组、Vector、Text 比 列表 / String 性能高一个量级。
 - 融合: GHC 会自动消除某些中间结构。
+- **Pragma (INLINE / SPECIALIZE / RULES) + 看 Core** = 性能调优的双刃剑。
 
 下一章:基于性质的测试。
+

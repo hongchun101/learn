@@ -1,9 +1,0 @@
-warning[0m: unused import 'std.collection.*'
- ==> D:\work\project\cangjie-learning\src\macros\macros.cj:9:1:
-  | 
-9 | import std.collection.*
-  | ^^^^^^^^^^^^^^^^^^^^^^^ unused import
-  | 
-  # note: this warning can be suppressed by setting the compiler option `-Woff unused`
-
-1 warning generated, 1 warning printed.

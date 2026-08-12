@@ -80,9 +80,10 @@ public class BusinessException <: Exception {
 public func processFile(path: String): Unit {
     println("  [打开文件] ${path}")
     // defer 在 Cangjie 中需要用 try-finally 模拟
-    let _cleanup = {
+    let cleanup: () -> Unit = {
         => println("  [清理] 释放文件资源")
     }
+    cleanup()
     println("  [处理文件] ${path}")
 
     if (path.isEmpty()) {

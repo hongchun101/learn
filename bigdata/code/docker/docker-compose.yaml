@@ -1,0 +1,181 @@
+# 大数据单机/伪分布开发环境
+# 一键拉起 Hadoop(HDFS+YARN) + Hive + Spark + Kafka + Flink + Iceberg + StarRocks + Doris 客户端
+#
+# 使用:
+#   docker compose up -d
+#   docker compose ps
+#
+# 注意:本 docker-compose 仅供 **本地学习** 与 **源码调试**,资源有限,不适合压测。
+# 生产部署请使用阿里云 EMR / Dataproc / Cloudera / 自建 K8s + Volcano。
+
+version: "3.9"
+x-image: &bigdata-base
+  image: eclipse-temurin:17-jre
+  restart: unless-stopped
+  network_mode: bridge
+
+services:
+  # ===================== HDFS / YARN (伪分布式) =====================
+  namenode:
+    <<: *bigdata-base
+    image: apache/hadoop:3.3.6
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    environment:
+      - HADOOP_HOME=/opt/hadoop
+      - SERVICE_PRECONDITION=namenode:9000
+    ports:
+      - "9870:9870"   # Web UI
+      - "9000:9000"   # RPC
+    volumes:
+      - ./data/hadoop/namenode:/tmp/hadoop-root/dfs/name
+      - ./conf/hadoop/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./conf/hadoop/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+
+  datanode:
+    image: apache/hadoop:3.3.6
+    command: ["hdfs", "datanode"]
+    depends_on: [namenode]
+    environment:
+      - HADOOP_HOME=/opt/hadoop
+    volumes:
+      - ./data/hadoop/datanode:/tmp/hadoop-root/dfs/data
+
+  resourcemanager:
+    image: apache/hadoop:3.3.6
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - "8088:8088"
+    depends_on: [namenode]
+
+  nodemanager:
+    image: apache/hadoop:3.3.6
+    command: ["yarn", "nodemanager"]
+    depends_on: [resourcemanager, datanode]
+
+  # ===================== Hive Metastore(本地学习用 Derby) =====================
+  hive-metastore:
+    image: apache/hive:3.1.3
+    hostname: hive-metastore
+    command: ["hive", "--service", "metastore"]
+    environment:
+      - SERVICE_NAME=metastore
+    ports:
+      - "9083:9083"
+
+  # ===================== Spark Standalone(Master + Worker) =====================
+  spark-master:
+    image: bitnami/spark:3.5.1
+    hostname: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+    ports:
+      - "8080:8080"   # Web UI
+      - "7077:7077"
+      - "4040:4040"
+    volumes:
+      - ./data/spark:/tmp/spark
+
+  spark-worker:
+    image: bitnami/spark:3.5.1
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    depends_on: [spark-master]
+
+  # ===================== Kafka(单节点 KRaft 模式) =====================
+  kafka:
+    image: bitnami/kafka:3.7
+    hostname: kafka
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    ports:
+      - "9092:9092"
+
+  # ===================== Flink Standalone =====================
+  flink-jobmanager:
+    image: flink:1.18.3-java17
+    hostname: jobmanager
+    command: jobmanager
+    environment:
+      - FLINK_PROPERTIES=jobmanager.rpc.address: jobmanager
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./data/flink:/tmp/flink
+
+  flink-taskmanager:
+    image: flink:1.18.3-java17
+    command: taskmanager
+    depends_on: [flink-jobmanager]
+    environment:
+      - FLINK_PROPERTIES=jobmanager.rpc.address: jobmanager
+    volumes:
+      - ./data/flink:/tmp/flink
+
+  # ===================== StarRocks(单节点 BE + FE) =====================
+  starrocks-fe:
+    image: starrocks/fe-ubuntu:3.2.10
+    hostname: starrocks-fe
+    command: ["/opt/starrocks/fe/bin/start_fe.sh"]
+    environment:
+      - FE_SERVICE=fe
+    ports:
+      - "9030:9030"   # MySQL protocol
+      - "8030:8030"   # HTTP
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8030/api/health"]
+      interval: 5s
+      retries: 30
+
+  starrocks-be:
+    image: starrocks/be-ubuntu:3.2.10
+    command: ["/opt/starrocks/be/bin/start_be.sh"]
+    depends_on:
+      starrocks-fe:
+        condition: service_healthy
+    environment:
+      - BE_SERVICE=be
+
+  # ===================== MinIO(S3 兼容,用于 Iceberg 测试) =====================
+  minio:
+    image: minio/minio:latest
+    hostname: minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./data/minio:/data
+
+  # ===================== Grafana + Prometheus 监控 =====================
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+networks:
+  default:
+    name: bigdata-dev

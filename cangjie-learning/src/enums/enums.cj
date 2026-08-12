@@ -6,7 +6,6 @@
 
 package cangjie_learning.enums
 
-import std.collection.*
 
 /// 枚举演示入口
 public func enumsDemo(): Unit {

@@ -1,0 +1,30 @@
+{
+  "description": "nyc_taxi 简化版,用于本地压测(对应第 23 章)",
+  "indices": [
+    {
+      "name": "nyc_taxi",
+      "body": "nyc_taxi_mapping.json"
+    }
+  ],
+  "corpora": [
+    {
+      "name": "nyc_taxi",
+      "documents": [
+        { "source": "http", "document-url": "https://benchmarks.elastic.co/corpora/nyc_taxi/nyc_taxi_docs.json.gz" }
+      ]
+    }
+  ],
+  "schedule": [
+    { "operation": "delete-index", "warmup-iterations": 0, "iterations": 1, "target-throughput": 1 },
+    { "operation": "create-index",  "warmup-iterations": 0, "iterations": 1 },
+    { "operation": "cluster-health","warmup-iterations": 0, "iterations": 1 },
+    { "operation": "bulk",         "warmup-iterations": 100, "iterations": 1000, "target-throughput": 1000, "bulk-size": 1000 },
+    { "operation": "force-merge",  "warmup-iterations": 0, "iterations": 1, "max-num-segments": 1 },
+    { "operation": "refresh",      "warmup-iterations": 0, "iterations": 1 },
+    { "operation": "query-match-all", "warmup-iterations": 50, "iterations": 500, "target-throughput": 100 },
+    { "operation": "default",       "warmup-iterations": 0, "iterations": 1 }
+  ],
+  "operations": [
+    { "name": "query-match-all", "operation-type": "search", "body": { "query": { "match_all": {} } } }
+  ]
+}

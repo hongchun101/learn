@@ -1,358 +1,554 @@
 {
   "options~cangjie_learning.interfaces_traits|x86_64-w64-mingw32|false|false|": {
-    "value": -9068588124999269780,
+    "value": 6700123101705641399,
     "inputHash": 0,
-    "outputHash": -9068588124999269780
+    "outputHash": 6700123101705641399
+  },
+  "compile~cangjie_learning.io_filesystem|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.io_filesystem.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.io_filesystem.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": 5635165296789181223,
+    "outputHash": -5189841080300255552
   },
   "compile~cangjie_learning.operator_overloading|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.operator_overloading.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.operator_overloading.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.operator_overloading.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.operator_overloading.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -6381233304832249374,
-    "outputHash": -5189841056463782159
+    "inputHash": -910293583400506200,
+    "outputHash": -5189841080300255552
   },
   "options~cangjie_learning.operator_overloading|x86_64-w64-mingw32|false|false|": {
-    "value": -7145128459451099665,
+    "value": 306980607724979879,
     "inputHash": 0,
-    "outputHash": -7145128459451099665
+    "outputHash": 306980607724979879
+  },
+  "compile~cangjie_learning.advanced_concurrency|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.advanced_concurrency.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.advanced_concurrency.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": -1544161113203832448,
+    "outputHash": -5189841080300255552
+  },
+  "read~cangjie_learning.time_datetime|": {
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\time_datetime",
+    "inputHash": 0,
+    "outputHash": 3155947213457611427
   },
   "read~cangjie_learning.pattern_matching|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\pattern_matching",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\pattern_matching",
     "inputHash": 0,
-    "outputHash": 3155947213297697360
+    "outputHash": 3155947213457729090
+  },
+  "read~cangjie_learning.regex_string|": {
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\regex_string",
+    "inputHash": 0,
+    "outputHash": 3155947213457519983
   },
   "compile~cangjie_learning.generics|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.generics.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.generics.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.generics.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.generics.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -6306233056089956151,
-    "outputHash": -5189841056463839858
+    "inputHash": 3284374367774694971,
+    "outputHash": -5189841080300255552
+  },
+  "compile~cangjie_learning.examples|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.examples.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.examples.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": -7604750248616768278,
+    "outputHash": -5189841080300255552
   },
   "compile~cangjie_learning.macros|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.macros.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.macros.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.macros.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.macros.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -578169203885111794,
-    "outputHash": -5189841056463782159
+    "inputHash": 5590809357620945028,
+    "outputHash": -5189841080300255552
   },
   "options~cangjie_learning|x86_64-w64-mingw32|false|false|": {
-    "value": 6307301275428167904,
+    "value": -3973487687920507955,
     "inputHash": 0,
-    "outputHash": 6307301275428167904
+    "outputHash": -3973487687920507955
   },
   "compile~cangjie_learning.error_handling|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.error_handling.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.error_handling.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.error_handling.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.error_handling.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": 4605760578092828715,
-    "outputHash": -5189841056463839858
+    "inputHash": 1378383014164797892,
+    "outputHash": -5189841080300255552
   },
   "options~cangjie_learning.generics|x86_64-w64-mingw32|false|false|": {
-    "value": 2138473826538446384,
+    "value": -7889090363057783690,
     "inputHash": 0,
-    "outputHash": 2138473826538446384
+    "outputHash": -7889090363057783690
+  },
+  "options~cangjie_learning.time_datetime|x86_64-w64-mingw32|false|false|": {
+    "value": -6353968852283357583,
+    "inputHash": 0,
+    "outputHash": -6353968852283357583
+  },
+  "read~cangjie_learning.reflection_macros|": {
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\reflection_macros",
+    "inputHash": 0,
+    "outputHash": 3155947213457510474
   },
   "options~cangjie_learning.lambdas|x86_64-w64-mingw32|false|false|": {
-    "value": 4231636006983025218,
+    "value": -1282118832029750434,
     "inputHash": 0,
-    "outputHash": 4231636006983025218
+    "outputHash": -1282118832029750434
   },
   "read~cangjie_learning.concurrency|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\concurrency",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\concurrency",
     "inputHash": 0,
-    "outputHash": 3155947213297697360
+    "outputHash": 3155947213457588958
   },
   "compile~cangjie_learning.basics|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.basics.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.basics.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.basics.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.basics.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -9153262790466815645,
-    "outputHash": -5189841056463782159
+    "inputHash": 2253075607374713504,
+    "outputHash": -5189841080300226861
   },
   "compile~cangjie_learning.enums|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.enums.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.enums.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.enums.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.enums.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -4848987142572785859,
-    "outputHash": -5189841056463782159
+    "inputHash": -297944325522353863,
+    "outputHash": -5189841080300255552
   },
   "read~cangjie_learning.generics|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\generics",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\generics",
     "inputHash": 0,
     "outputHash": 3155947213297494147
   },
   "options~cangjie_learning.functions|x86_64-w64-mingw32|false|false|": {
-    "value": -9074938797303694463,
+    "value": 2353086859359441510,
     "inputHash": 0,
-    "outputHash": -9074938797303694463
+    "outputHash": 2353086859359441510
+  },
+  "read~cangjie_learning.examples|": {
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\examples",
+    "inputHash": 0,
+    "outputHash": 3155947213457734968
   },
   "options~cangjie_learning.concurrency|x86_64-w64-mingw32|false|false|": {
-    "value": 8561596796973831127,
+    "value": -8690323813682708782,
     "inputHash": 0,
-    "outputHash": 8561596796973831127
+    "outputHash": -8690323813682708782
   },
   "options~cangjie_learning.structs_classes|x86_64-w64-mingw32|false|false|": {
-    "value": -1039809819896813273,
+    "value": 8643782927597732700,
     "inputHash": 0,
-    "outputHash": -1039809819896813273
+    "outputHash": 8643782927597732700
   },
   "read~cangjie_learning|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src",
     "inputHash": 0,
-    "outputHash": 3155947213297697360
+    "outputHash": 3155947213457742876
   },
   "options~cangjie_learning.macros|x86_64-w64-mingw32|false|false|": {
-    "value": -6808948112705202506,
+    "value": -2385354736253018882,
     "inputHash": 0,
-    "outputHash": -6808948112705202506
+    "outputHash": -2385354736253018882
+  },
+  "read~cangjie_learning.io_filesystem|": {
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\io_filesystem",
+    "inputHash": 0,
+    "outputHash": 3155947213457617770
   },
   "read~cangjie_learning.enums|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\enums",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\enums",
     "inputHash": 0,
-    "outputHash": 3155947213297458737
+    "outputHash": 3155947213457596018
   },
   "read~cangjie_learning.extensions|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\extensions",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\extensions",
     "inputHash": 0,
-    "outputHash": 3155947213297511544
+    "outputHash": 3155947213457742447
+  },
+  "options~cangjie_learning.examples|x86_64-w64-mingw32|false|false|": {
+    "value": 5391853231156721663,
+    "inputHash": 0,
+    "outputHash": 5391853231156721663
   },
   "compile~cangjie_learning.lambdas|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.lambdas.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.lambdas.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.lambdas.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.lambdas.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -8766173806349862571,
-    "outputHash": -5189841056463782159
+    "inputHash": 4922813657078767197,
+    "outputHash": -5189841080300255552
   },
   "options~cangjie_learning.enums|x86_64-w64-mingw32|false|false|": {
-    "value": 7283769764357591381,
+    "value": -1380180375945273837,
     "inputHash": 0,
-    "outputHash": 7283769764357591381
+    "outputHash": -1380180375945273837
+  },
+  "options~cangjie_learning.ffi_interop|x86_64-w64-mingw32|false|false|": {
+    "value": -2637843548011433834,
+    "inputHash": 0,
+    "outputHash": -2637843548011433834
   },
   "read~cangjie_learning.operator_overloading|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\operator_overloading",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\operator_overloading",
     "inputHash": 0,
     "outputHash": 3155947213297697360
   },
   "compile~cangjie_learning.interfaces_traits|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.interfaces_traits.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.interfaces_traits.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.interfaces_traits.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.interfaces_traits.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -3950123247653957436,
-    "outputHash": -5189841056463782159
+    "inputHash": -6584711888368206022,
+    "outputHash": -5189841080300226861
+  },
+  "options~cangjie_learning.advanced_concurrency|x86_64-w64-mingw32|false|false|": {
+    "value": -8525752481504880749,
+    "inputHash": 0,
+    "outputHash": -8525752481504880749
   },
   "read~cangjie_learning.advanced_types|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\advanced_types",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_types",
     "inputHash": 0,
     "outputHash": 3155947213297708619
   },
   "compile~cangjie_learning.collection_ops|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.collection_ops.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.collection_ops.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.collection_ops.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.collection_ops.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": 1986547799390826386,
-    "outputHash": -5189841056463839858
+    "inputHash": 69650944817987012,
+    "outputHash": -5189841080300252138
   },
   "read~cangjie_learning.macros|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\macros",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\macros",
     "inputHash": 0,
-    "outputHash": 3155947213297488190
+    "outputHash": 3155947213457597054
   },
   "read~cangjie_learning.structs_classes|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\structs_classes",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\structs_classes",
     "inputHash": 0,
     "outputHash": 3155947213297697360
+  },
+  "compile~cangjie_learning.regex_string|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.regex_string.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.regex_string.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": -8764067407965088359,
+    "outputHash": -5189841080300255552
+  },
+  "compile~cangjie_learning.ffi_interop|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.ffi_interop.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.ffi_interop.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": 3959539467222360308,
+    "outputHash": -5189841080300226861
   },
   "compile~cangjie_learning.structs_classes|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.structs_classes.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.structs_classes.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.structs_classes.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.structs_classes.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": 3423401135195202440,
-    "outputHash": -5189841056463782159
+    "inputHash": 4869696449378547247,
+    "outputHash": -5189841080300255552
   },
   "options~cangjie_learning.extensions|x86_64-w64-mingw32|false|false|": {
-    "value": -4828920301137858241,
+    "value": -7466968205606304027,
     "inputHash": 0,
-    "outputHash": -4828920301137858241
+    "outputHash": -7466968205606304027
   },
   "options~cangjie_learning.basics|x86_64-w64-mingw32|false|false|": {
-    "value": 4132213087598673927,
+    "value": -6075004371288393228,
     "inputHash": 0,
-    "outputHash": 4132213087598673927
+    "outputHash": -6075004371288393228
+  },
+  "read~cangjie_learning.ffi_interop|": {
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\ffi_interop",
+    "inputHash": 0,
+    "outputHash": 3155947213457738336
   },
   "options~cangjie_learning.collection_ops|x86_64-w64-mingw32|false|false|": {
-    "value": -5335083872968617755,
+    "value": -7856074692086316534,
     "inputHash": 0,
-    "outputHash": -5335083872968617755
+    "outputHash": -7856074692086316534
   },
   "read~cangjie_learning.basics|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\basics",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\basics",
     "inputHash": 0,
-    "outputHash": 3155947213297488190
+    "outputHash": 3155947213457508562
   },
   "options~cangjie_learning.advanced_types|x86_64-w64-mingw32|false|false|": {
-    "value": -8860416399927564044,
+    "value": -654575809957669316,
     "inputHash": 0,
-    "outputHash": -8860416399927564044
+    "outputHash": -654575809957669316
   },
   "compile~cangjie_learning.advanced_types|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.advanced_types.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.advanced_types.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.advanced_types.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.advanced_types.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -7073276955918364587,
-    "outputHash": -5189841056463839858
+    "inputHash": 5454324994609844251,
+    "outputHash": -5189841080300255552
+  },
+  "options~cangjie_learning.io_filesystem|x86_64-w64-mingw32|false|false|": {
+    "value": 8256614247817028772,
+    "inputHash": 0,
+    "outputHash": 8256614247817028772
   },
   "compile~cangjie_learning.functions|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.functions.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.functions.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.functions.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.functions.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -4355181288890661074,
-    "outputHash": -5189841056463782159
+    "inputHash": -3508099528722235766,
+    "outputHash": -5189841080300226861
+  },
+  "compile~cangjie_learning.extensions|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.extensions.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.extensions.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": -5259902963107510310,
+    "outputHash": -5189841080300252138
+  },
+  "compile~cangjie_learning|x86_64-w64-mingw32|false|false|executable|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\bin\\main.exe",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\bin\\cangjie_learning.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": -8332092603373956444,
+    "outputHash": -5189841080300252138
   },
   "read~cangjie_learning.error_handling|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\error_handling",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\error_handling",
     "inputHash": 0,
-    "outputHash": 3155947213297487202
+    "outputHash": 3155947213457598855
+  },
+  "compile~cangjie_learning.reflection_macros|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.reflection_macros.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.reflection_macros.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": -1017919469881492253,
+    "outputHash": -5189841080300255552
   },
   "read~cangjie_learning.lambdas|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\lambdas",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\lambdas",
     "inputHash": 0,
-    "outputHash": 3155947213297697360
+    "outputHash": 3155947213457585789
   },
   "compile~cangjie_learning.pattern_matching|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.pattern_matching.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.pattern_matching.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.pattern_matching.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.pattern_matching.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": -7268165076945802415,
-    "outputHash": -5189841056463782159
+    "inputHash": -2917365814361740122,
+    "outputHash": -5189841080300255552
+  },
+  "read~cangjie_learning.advanced_concurrency|": {
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_concurrency",
+    "inputHash": 0,
+    "outputHash": 3155947213457739561
   },
   "read~cangjie_learning.collection_ops|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\collection_ops",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\collection_ops",
     "inputHash": 0,
-    "outputHash": 3155947213297513098
+    "outputHash": 3155947213457591879
+  },
+  "options~cangjie_learning.regex_string|x86_64-w64-mingw32|false|false|": {
+    "value": 4231763806938475175,
+    "inputHash": 0,
+    "outputHash": 4231763806938475175
+  },
+  "compile~cangjie_learning.time_datetime|x86_64-w64-mingw32|false|false|static|": {
+    "value": [
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.time_datetime.a",
+        "checkKind": "check-exists"
+      },
+      {
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.time_datetime.cjo",
+        "checkKind": "check-timestamp"
+      }
+    ],
+    "inputHash": 2010464244524374623,
+    "outputHash": -5189841080300255552
   },
   "options~cangjie_learning.pattern_matching|x86_64-w64-mingw32|false|false|": {
-    "value": 4575597327561658438,
+    "value": -571572648382881658,
     "inputHash": 0,
-    "outputHash": 4575597327561658438
+    "outputHash": -571572648382881658
   },
   "compile~cangjie_learning.concurrency|x86_64-w64-mingw32|false|false|static|": {
     "value": [
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.concurrency.a",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\libcangjie_learning.concurrency.a",
         "checkKind": "check-exists"
       },
       {
-        "path": "D:\\work\\project\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.concurrency.cjo",
+        "path": "D:\\work\\project\\learn\\cangjie-learning\\target\\release\\cangjie_learning\\cangjie_learning.concurrency.cjo",
         "checkKind": "check-timestamp"
       }
     ],
-    "inputHash": 4787516585086756512,
-    "outputHash": -5189841056463782159
+    "inputHash": 2244966808103415179,
+    "outputHash": -5189841080300255552
+  },
+  "options~cangjie_learning.reflection_macros|x86_64-w64-mingw32|false|false|": {
+    "value": -4284560560812889797,
+    "inputHash": 0,
+    "outputHash": -4284560560812889797
   },
   "options~cangjie_learning.error_handling|x86_64-w64-mingw32|false|false|": {
-    "value": 553142342141016415,
+    "value": -889826164964668941,
     "inputHash": 0,
-    "outputHash": 553142342141016415
+    "outputHash": -889826164964668941
   },
   "read~cangjie_learning.functions|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\functions",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\functions",
     "inputHash": 0,
-    "outputHash": 3155947213297488190
+    "outputHash": 3155947213457597054
   },
   "read~cangjie_learning.interfaces_traits|": {
-    "value": "D:\\work\\project\\cangjie-learning\\src\\interfaces_traits",
+    "value": "D:\\work\\project\\learn\\cangjie-learning\\src\\interfaces_traits",
     "inputHash": 0,
-    "outputHash": 3155947213297697360
+    "outputHash": 3155947213457599043
   }
 }

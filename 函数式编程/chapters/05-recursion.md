@@ -213,22 +213,80 @@ length = fix $ \rec xs -> case xs of
 
 > 高级话题:把递归抽象成"在 fold / unfold / hylomorphism 上的形态"。
 
+### 5.6.1 Fix: 把递归类型展开
+
+递归类型 `data List a = Nil | Cons a (List a)` 表达"自己包含自己"。要把"包含自己的"展开成"可在 Functor 上做 fmap"的形式,需要 `Fix`:
+
 ```haskell
+-- 固定点: 给出"包含 f 层"的递归结构
+newtype Fix f = Fix { unFix :: f (Fix f) }
+
+-- List 的 functor 层
+data ListF a r = NilF | ConsF a r
+  deriving Functor
+
+-- List a = Fix (ListF a)
+type List a = Fix (ListF a)
+toList :: [a] -> List a
+toList []     = Fix NilF
+toList (x:xs) = Fix (ConsF x (toList xs))
+fromList :: List a -> [a]
+fromList (Fix NilF)       = []
+fromList (Fix (ConsF x r)) = x : fromList r
+```
+
+### 5.6.2 三种形态
+
+```haskell
+-- cata (catamorphism): 折叠
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata alg (Fix f) = alg (fmap (cata alg) f)
 
+-- ana (anamorphism): 展开
 ana :: Functor f => (a -> f a) -> a -> Fix f
 ana coalg a = Fix (fmap (ana coalg) (coalg a))
 
+-- hylo (hylomorphism): 展开后折叠
 hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
 hylo alg coalg = cata alg . ana coalg
 ```
 
-- **cata (catamorphism)**: 折叠
-- **ana (anamorphism)**: 展开
-- **hylo (hylomorphism)**: 展开后折叠 = 函数式编译器
+- **cata** 把递归结构"塌缩"为一个值,等价于 fold。
+- **ana** 从一个种子"展开"为递归结构,等价于 unfold。
+- **hylo** = ana + cata,这是**函数式编译器**的形态: 把输入展开成 AST,再塌缩成目标。
 
-这一族抽象是 FP+cat theory 一致性的精彩展示。
+### 5.6.3 实例: cata = foldr
+
+```haskell
+-- foldr 是 cata 的特例
+foldrCata :: (a -> b -> b) -> b -> List a -> b
+foldrCata f z = cata alg
+  where
+    alg NilF         = z
+    alg (ConsF x r)  = f x r
+```
+
+### 5.6.4 para / apo: 携带"剩余"
+
+```haskell
+-- para: 折叠时拿到"原始子结构"(不只是 fmap 后的值)
+para :: Functor f => (f (Fix f, a) -> a) -> Fix f -> a
+para alg (Fix f) = alg (fmap (\r -> (r, para alg r)) f)
+
+-- apo: 展开时携带"已展开"
+apo :: Functor f => (a -> f (Either (Fix f) a)) -> a -> Fix f
+apo coalg a = Fix (fmap (either id (apo coalg)) (coalg a))
+```
+
+`para` 让你访问原始递归子树,`apo` 让你提前停止展开。这是**属性文法(attribute grammars)**的代数化。
+
+### 5.6.5 实际价值
+
+- **正确性**: 用 cata 而不是手写递归,自动避免 thunk 累积。
+- **融合**: GHC 的 `recursion-schemes` 库与 worker/wrapper 配合可生成高效代码。
+- **编译器**: 一个 AST 优化 = 多个 cata 串接。
+
+这一族抽象是 FP + 范畴论一致性的精彩展示,也是 F-algebra 理论的入口。
 
 ## 5.7 实践:几个递归的"练手"
 

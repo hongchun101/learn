@@ -68,18 +68,66 @@ instance Comonad Stream where
   duplicate s@(Cons _ rest) = Cons s (duplicate rest)
 ```
 
+### 14.2.4 Comonad 律
+
+```haskell
+class Functor w => Comonad w where
+  extract   :: w a -> a
+  duplicate :: w a -> w (w a)
+
+extend :: Comonad w => w a -> (w a -> b) -> w b
+extend w f = fmap f (duplicate w)
+```
+
+满足律:
+
+1. **左单位**: `extract . duplicate = id`
+2. **右单位**: `fmap extract . duplicate = id`
+3. **结合律**: `duplicate . duplicate = fmap duplicate . duplicate`
+
+第四个常被忽略但等价的形式:
+4. **extend-extract 律**: `extend extract = id`
+
+```haskell
+-- 用 QuickCheck 验证 Store 的 Comonad 律
+prop_store :: (s -> Int) -> s -> Int
+prop_store f s =
+  extract (duplicate (Store (f, s))) == f s
+```
+
+### 14.2.5 derive Comonad (GHC 9.4+)
+
+```haskell
+{-# LANGUAGE DeriveComonad #-}
+
+data Stream a = Cons a (Stream a)
+  deriving (Functor, Comonad)
+```
+
 ## 14.3 Comonad 的"语境"
 
 Comonad 表示"有结构 + 当前焦点"的计算。`extract` 拿到当前焦点,`duplicate` 展开成"结构中的所有子结构"。
 
 ### 14.3.1 1D Cellular Automaton
 
-```haskell
-type Cellular = Store Int
+把"一维邻居" 看作 Store Comonad 的视角: 当前焦点 + 周围邻居:
 
-step :: (Cellular Int -> Int) -> Cellular Int -> Cellular Int
-step rule store = rule <$> extend (tail . iterate left) store
--- 焦点与邻居
+```haskell
+type Cellular = Store Int  -- 焦点位置
+
+-- 邻居: 当前位置与左邻
+neighbors :: Cellular Int -> (Int, Int, Int)
+neighbors (Store (g, pos)) = (g (pos - 1), g pos, g (pos + 1))
+
+-- 用 Rule 30 规则: a XOR (b OR c)
+rule30 :: (Int, Int, Int) -> Int
+rule30 (a, b, c) = a `xor` (b .|. c)
+  where xor x y = (x + y) `mod` 2
+        (.|.) x y = (x + y) `mod` 2
+
+-- 单步: 在每个位置应用 rule30
+step :: Cellular Int -> Cellular Int
+step s = extend (rule30 . neighbors) s
 ```
 
 ### 14.3.2 Stream processing
@@ -94,12 +142,21 @@ window n = take n . iterate (drop 1) . extractDup
 
 ### 14.3.3 UI / Reactive
 
+UI Comonad = Store Comonad + 当前 state。结构上与 `Store` 相同:
+
 ```haskell
+-- Store s a = 当前 state + "从 state 读 a" 的读函数
 newtype UI s a = UI { runUI :: (s, s -> a) }
+
+instance Functor (UI s) where
+  fmap f (UI (s, g)) = UI (s, f . g)
+
 instance Comonad (UI s) where
-  extract (UI (_, f)) = f ???
-  -- 焦点 = 当前 state 的视图
+  extract   (UI (s, g)) = g s
+  duplicate (UI (s, g)) = UI (s, \s' -> UI (s', g))
 ```
+
+-- `extract` 拿到当前 state 的视图,`duplicate` 把每个可能的 state 都铺成"所有 UI"。
 
 Tailwind / React 思想 = "UI 是 state 的函数 + 当前 state"。
 

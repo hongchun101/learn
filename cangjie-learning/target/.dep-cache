@@ -1,59 +1,11 @@
 {
   "bin": {},
   "pkg-build": {
-    "D:\\work\\project\\cangjie-learning\\src\\error_handling": {
-      "package": "cangjie_learning.error_handling",
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\enums": {
+      "package": "cangjie_learning.enums",
       "isMacro": false,
       "accessLevel": "public",
-      "timeStamp": 1783472898,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "cangjie_learning.enums",
-          "isStd": false,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\error_handling\\errors.cj"
-            }
-          ]
-        },
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\error_handling\\errors.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\operator_overloading": {
-      "package": "cangjie_learning.operator_overloading",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783472189,
+      "timeStamp": 1786549387,
       "dependencies": [],
       "std-dependencies": [
         {
@@ -65,83 +17,7 @@
       "testUsed": false,
       "mockUsed": false
     },
-    "D:\\work\\project\\cangjie-learning\\src\\enums": {
-      "package": "cangjie_learning.enums",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783472577,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\enums\\enums.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\functions": {
-      "package": "cangjie_learning.functions",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783472872,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\functions\\functions.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\generics": {
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\generics": {
       "package": "cangjie_learning.generics",
       "isMacro": false,
       "accessLevel": "public",
@@ -153,7 +29,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\generics\\generics.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\generics\\generics.cj"
             }
           ]
         },
@@ -163,7 +39,7 @@
           "isStd": true,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\generics\\generics.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\generics\\generics.cj"
             }
           ]
         }
@@ -189,173 +65,11 @@
       "testUsed": false,
       "mockUsed": false
     },
-    "D:\\work\\project\\cangjie-learning\\src\\collection_ops": {
-      "package": "cangjie_learning.collection_ops",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783473259,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "cangjie_learning.enums",
-          "isStd": false,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\collection_ops\\collections.cj"
-            }
-          ]
-        },
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\collection_ops\\collections.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\basics": {
-      "package": "cangjie_learning.basics",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783472872,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\basics\\basics.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\pattern_matching": {
-      "package": "cangjie_learning.pattern_matching",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783472189,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\pattern_matching\\matching.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\structs_classes": {
-      "package": "cangjie_learning.structs_classes",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783472189,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\structs_classes\\structs.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\lambdas": {
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\lambdas": {
       "package": "cangjie_learning.lambdas",
       "isMacro": false,
       "accessLevel": "public",
-      "timeStamp": 1783472189,
+      "timeStamp": 1786549222,
       "dependencies": [
         {
           "orPackage": "",
@@ -363,7 +77,7 @@
           "isStd": true,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\lambdas\\lambdas.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\lambdas\\lambdas.cj"
             }
           ]
         }
@@ -389,7 +103,7 @@
       "testUsed": false,
       "mockUsed": false
     },
-    "D:\\work\\project\\cangjie-learning\\src\\advanced_types": {
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_types": {
       "package": "cangjie_learning.advanced_types",
       "isMacro": false,
       "accessLevel": "public",
@@ -401,7 +115,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\advanced_types\\advanced_types.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_types\\advanced_types.cj"
             }
           ]
         },
@@ -411,7 +125,7 @@
           "isStd": true,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\advanced_types\\advanced_types.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_types\\advanced_types.cj"
             }
           ]
         }
@@ -437,11 +151,11 @@
       "testUsed": false,
       "mockUsed": false
     },
-    "D:\\work\\project\\cangjie-learning\\src\\interfaces_traits": {
-      "package": "cangjie_learning.interfaces_traits",
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\examples": {
+      "package": "cangjie_learning.examples",
       "isMacro": false,
       "accessLevel": "public",
-      "timeStamp": 1783472189,
+      "timeStamp": 1786551600,
       "dependencies": [
         {
           "orPackage": "",
@@ -449,7 +163,7 @@
           "isStd": true,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\interfaces_traits\\traits.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\examples\\task_manager.cj"
             }
           ]
         }
@@ -475,11 +189,81 @@
       "testUsed": false,
       "mockUsed": false
     },
-    "D:\\work\\project\\cangjie-learning\\src\\concurrency": {
-      "package": "cangjie_learning.concurrency",
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\io_filesystem": {
+      "package": "cangjie_learning.io_filesystem",
       "isMacro": false,
       "accessLevel": "public",
-      "timeStamp": 1783472189,
+      "timeStamp": 1786549739,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "std.fs",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\io_filesystem\\io_filesystem.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.binary": [
+            "std.core"
+          ]
+        },
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.fs": [
+            "std.collection",
+            "std.core",
+            "std.io",
+            "std.time"
+          ]
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_concurrency": {
+      "package": "cangjie_learning.advanced_concurrency",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786551543,
       "dependencies": [
         {
           "orPackage": "",
@@ -487,50 +271,27 @@
           "isStd": true,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\concurrency\\concurrency.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_concurrency\\advanced_concurrency.cj"
             }
           ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
         },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src\\macros": {
-      "package": "cangjie_learning.macros",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783472872,
-      "dependencies": [
         {
           "orPackage": "",
-          "package": "std.collection",
+          "package": "std.sync",
           "isStd": true,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\macros\\macros.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_concurrency\\advanced_concurrency.cj"
             }
           ]
         }
       ],
       "std-dependencies": [
+        {
+          "std.binary": [
+            "std.core"
+          ]
+        },
         {
           "std.collection": [
             "std.core",
@@ -538,11 +299,36 @@
           ]
         },
         {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
           "std.core": []
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
         },
         {
           "std.math": [
             "std.core"
+          ]
+        },
+        {
+          "std.sync": [
+            "std.core",
+            "std.time"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
           ]
         }
       ],
@@ -551,67 +337,29 @@
       "testUsed": false,
       "mockUsed": false
     },
-    "D:\\work\\project\\cangjie-learning\\src\\extensions": {
-      "package": "cangjie_learning.extensions",
-      "isMacro": false,
-      "accessLevel": "public",
-      "timeStamp": 1783473283,
-      "dependencies": [
-        {
-          "orPackage": "",
-          "package": "cangjie_learning.enums",
-          "isStd": false,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\extensions\\extensions.cj"
-            }
-          ]
-        },
-        {
-          "orPackage": "",
-          "package": "std.collection",
-          "isStd": true,
-          "imports": [
-            {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\extensions\\extensions.cj"
-            }
-          ]
-        }
-      ],
-      "std-dependencies": [
-        {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
-          "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
-        }
-      ],
-      "features": [],
-      "product": true,
-      "testUsed": false,
-      "mockUsed": false
-    },
-    "D:\\work\\project\\cangjie-learning\\src": {
+    "D:\\work\\project\\learn\\cangjie-learning\\src": {
       "package": "cangjie_learning",
       "isMacro": false,
       "accessLevel": "public",
-      "timeStamp": 1783472189,
+      "timeStamp": 1786551725,
       "dependencies": [
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.advanced_concurrency",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
         {
           "orPackage": "",
           "package": "cangjie_learning.advanced_types",
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -621,7 +369,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -631,7 +379,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -641,7 +389,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -651,7 +399,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -661,7 +409,17 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.examples",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -671,7 +429,17 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.ffi_interop",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -681,7 +449,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -691,7 +459,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -701,7 +469,17 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.io_filesystem",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -711,7 +489,17 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.macros",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -721,7 +509,7 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -731,7 +519,27 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.reflection_macros",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.regex_string",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         },
@@ -741,11 +549,560 @@
           "isStd": false,
           "imports": [
             {
-              "file": "D:\\work\\project\\cangjie-learning\\src\\main.cj"
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.time_datetime",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\main.cj"
             }
           ]
         }
       ],
+      "std-dependencies": [
+        {
+          "std.core": []
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\basics": {
+      "package": "cangjie_learning.basics",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786550027,
+      "dependencies": [],
+      "std-dependencies": [
+        {
+          "std.core": []
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\functions": {
+      "package": "cangjie_learning.functions",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786549371,
+      "dependencies": [],
+      "std-dependencies": [
+        {
+          "std.core": []
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\extensions": {
+      "package": "cangjie_learning.extensions",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786551588,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.enums",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\extensions\\extensions.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "std.collection",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\extensions\\extensions.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "std.math",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\extensions\\extensions.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\concurrency": {
+      "package": "cangjie_learning.concurrency",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786549243,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "std.collection",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\concurrency\\concurrency.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\ffi_interop": {
+      "package": "cangjie_learning.ffi_interop",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786551651,
+      "dependencies": [],
+      "std-dependencies": [
+        {
+          "std.core": []
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\interfaces_traits": {
+      "package": "cangjie_learning.interfaces_traits",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786549401,
+      "dependencies": [],
+      "std-dependencies": [
+        {
+          "std.core": []
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\collection_ops": {
+      "package": "cangjie_learning.collection_ops",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786549321,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.enums",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\collection_ops\\collections.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "std.collection",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\collection_ops\\collections.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\error_handling": {
+      "package": "cangjie_learning.error_handling",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786549406,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "cangjie_learning.enums",
+          "isStd": false,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\error_handling\\errors.cj"
+            }
+          ]
+        },
+        {
+          "orPackage": "",
+          "package": "std.collection",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\error_handling\\errors.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\structs_classes": {
+      "package": "cangjie_learning.structs_classes",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1783472189,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "std.collection",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\structs_classes\\structs.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\regex_string": {
+      "package": "cangjie_learning.regex_string",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786550206,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "std.regex",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\regex_string\\regex_string.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.binary": [
+            "std.core"
+          ]
+        },
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        },
+        {
+          "std.regex": [
+            "std.collection",
+            "std.core",
+            "std.sync"
+          ]
+        },
+        {
+          "std.sync": [
+            "std.core",
+            "std.time"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\macros": {
+      "package": "cangjie_learning.macros",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786549371,
+      "dependencies": [],
+      "std-dependencies": [
+        {
+          "std.core": []
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\reflection_macros": {
+      "package": "cangjie_learning.reflection_macros",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786550123,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "std.collection",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\reflection_macros\\reflection_macros.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\pattern_matching": {
+      "package": "cangjie_learning.pattern_matching",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786551426,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "std.collection",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\pattern_matching\\matching.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\time_datetime": {
+      "package": "cangjie_learning.time_datetime",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1786549582,
+      "dependencies": [
+        {
+          "orPackage": "",
+          "package": "std.time",
+          "isStd": true,
+          "imports": [
+            {
+              "file": "D:\\work\\project\\learn\\cangjie-learning\\src\\time_datetime\\time_datetime.cj"
+            }
+          ]
+        }
+      ],
+      "std-dependencies": [
+        {
+          "std.binary": [
+            "std.core"
+          ]
+        },
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
+          ]
+        }
+      ],
+      "features": [],
+      "product": true,
+      "testUsed": false,
+      "mockUsed": false
+    },
+    "D:\\work\\project\\learn\\cangjie-learning\\src\\operator_overloading": {
+      "package": "cangjie_learning.operator_overloading",
+      "isMacro": false,
+      "accessLevel": "public",
+      "timeStamp": 1783472189,
+      "dependencies": [],
       "std-dependencies": [
         {
           "std.core": []

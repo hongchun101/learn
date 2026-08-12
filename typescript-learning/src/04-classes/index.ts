@@ -100,7 +100,7 @@ export interface Timestamped {
 export function TimestampedBase<TBase extends Constructor>(Base: TBase) {
   return class extends Base implements Timestamped {
     readonly createdAt = new Date();
-    private _updatedAt = new Date();
+    _updatedAt = new Date();
     touch(): void {
       this._updatedAt = new Date();
     }

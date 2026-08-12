@@ -535,3 +535,463 @@ rules:
 - CIS Benchmark 用 kube-bench 检查
 - 完整专家清单覆盖各层
 - 安全是持续过程,定期演练
+## 21.21 Falco 深入实战
+
+### Falco 架构
+
+```text
+Syscall Events → kernel module / eBPF probe → Falco userspace
+                                              ↓
+                                         规则匹配
+                                              ↓
+                                         告警输出
+                                              ↓
+                              stdout / falcosidekick → Slack/ELK/SIEM
+```
+
+### 安装(现代 eBPF 模式)
+
+```bash
+helm repo add falcosecurity https://falcosecurity.github.io/charts
+helm install falco falcosecurity/falco \
+  --namespace falco --create-namespace \
+  --set driver.kind=modern_ebpf \
+  --set tty=true \
+  --set falco.json_output=true \
+  --set falco.http_output.enabled=true \
+  --set falco.http_output.url="http://falcosidekick.falco.svc:2801"
+
+# Sidekick(分发告警)
+helm install falcosidekick falcosecurity/falcosidekick \
+  --namespace falco \
+  --set config.slack.channel="#security" \
+  --set config.slack.webhookurl="https://hooks.slack.com/xxx" \
+  --set config.elasticsearch.enabled=true
+```
+
+### 规则详解
+
+```yaml
+# /etc/falco/falco_rules.local.yaml
+- rule: Container Drift Detection
+  desc: 检测容器内二进制/库变化
+  condition: >
+    open_write and container and 
+    fd.name startswith /usr/bin or
+    fd.name startswith /usr/sbin or
+    fd.name startswith /bin or
+    fd.name startswith /sbin or
+    fd.name startswith /lib
+  output: >
+    容器内写二进制(可能已被攻陷)
+    user=%user.name command=%proc.cmdline 
+    file=%fd.name container=%container.name
+  priority: CRITICAL
+  tags: [filesystem, drift]
+
+- rule: Crypto Mining Detection
+  desc: 检测加密挖矿
+  condition: >
+    spawned_process and container and 
+    (proc.name in (xmrig, minerd, minergate, cryptonight) or
+     proc.cmdline contains "stratum+tcp" or
+     proc.cmdline contains "cryptonight")
+  output: >
+    检测到加密挖矿
+    user=%user.name command=%proc.cmdline 
+    container=%container.name
+  priority: CRITICAL
+  tags: [cryptomining]
+
+- rule: Reverse Shell
+  desc: 检测反弹 shell
+  condition: >
+    spawned_process and container and 
+    (proc.name in (bash, sh, zsh) and 
+     (proc.cmdline contains "/dev/tcp" or
+      proc.cmdline contains "nc -" or
+      proc.cmdline contains "ncat" or
+      proc.cmdline contains "bash -i"))
+  output: >
+    检测到反弹 shell
+    command=%proc.cmdline container=%container.name
+  priority: CRITICAL
+  tags: [shell]
+```
+
+### Falco 进阶:Macros + Lists
+
+```yaml
+# lists
+- list: shell_binaries
+  items: [bash, sh, zsh, csh, ksh, fish]
+
+- list: sensitive_files
+  items: [/etc/shadow, /etc/passwd, /etc/sudoers, /root/.ssh, /root/.aws/credentials]
+
+# macros(规则复用)
+- macro: container
+  condition: container.id != host
+
+- macro: spawned_process
+  condition: evt.type = execve and evt.dir = <
+
+- macro: sensitive_file_access
+  condition: >
+    open_read and 
+    fd.name in (sensitive_files) and
+    container
+```
+
+### Falcosidekick 集成(50+ 输出)
+
+```yaml
+# 输出目标(可同时多个)
+config:
+  slack:
+    channel: "#security"
+    webhookurl: "https://hooks.slack.com/xxx"
+    outputformat: "all"
+  elasticsearch:
+    host: "elasticsearch.logging.svc"
+    port: 9200
+    index: "falco"
+  loki:
+    endpoint: "http://loki.logging.svc:3100"
+  prometheus:
+    enabled: true
+    port: 9095
+  aws_s3:
+    bucket: "security-logs"
+    region: "us-east-1"
+  opensearch:
+    hostport: "opensearch.logging.svc:9200"
+  webhook:
+    address: "http://siem.company.com/falco"
+```
+
+### Falco 事件接入 SIEM
+
+```bash
+# Falco 输出 JSON
+{
+  "output": "...",
+  "priority": "Critical",
+  "rule": "Crypto Mining Detection",
+  "time": "2024-01-15T10:00:00Z",
+  "output_fields": {
+    "container.name": "web-7d4f8b9c-xyz",
+    "k8s.ns.name": "prod",
+    "k8s.pod.name": "web-7d4f8b9c-xyz",
+    "proc.cmdline": "xmrig --url stratum+tcp://..."
+  }
+}
+```
+
+## 21.22 镜像签名(cosign)实战
+
+### 签名前准备
+
+```bash
+# 1. 生成密钥(生产用 KMS 替代)
+cosign generate-key-pair
+# → cosign.key(私钥,妥善保管)
+# → cosign.pub(公钥,推到 K8s 或 registry)
+
+# 2. 公钥打到 K8s Secret
+kubectl create secret generic cosign-pub \
+  --from-file=cosign.pub=./cosign.pub \
+  -n prod
+```
+
+### 签名流程
+
+```bash
+# 1. CI 中签名(用 KMS)
+cosign sign --key awskms://alias/cosign registry.company.com/web:v1.0.0
+
+# 2. 无密钥签名(OIDC + 短期证书)
+COSIGN_EXPERIMENTAL=1 cosign sign \
+  registry.company.com/web:v1.0.0
+# 浏览器 OIDC 登录(Google/GitHub/Microsoft)
+# 自动短期证书,记录到 Rekor
+```
+
+### K8s 准入验证(Connaisseur)
+
+```bash
+# 装 Connaisseur
+helm repo add connaisseur https://sigstore.github.io/connaisseur
+helm install connaisseur connaisseur/connaisseur --namespace connaisseur --create-namespace
+```
+
+```yaml
+# 配置信任的公钥
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: connaisseur-config
+  namespace: connaisseur
+data:
+  config.yaml: |
+    policies:
+      - name: "default"
+        type: "cosign"
+        selector: "registry.company.com/*"
+        keys:
+          - cosign.pub
+      - name: "no-signature-required"
+        type: "skip"
+        selector: "k8s.gcr.io/*"
+```
+
+### Kyverno 验证(替代方案)
+
+```yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-image-signature
+spec:
+  validationFailureAction: Enforce
+  rules:
+  - name: verify
+    match:
+      any:
+      - resources:
+          kinds: ["Pod"]
+    verifyImages:
+    - imageReferences: ["registry.company.com/*"]
+      attestors:
+      - entries:
+        - keys:
+            publicKeys: |-
+              -----BEGIN PUBLIC KEY-----
+              MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE...
+              -----END PUBLIC KEY-----
+```
+
+### 应急:跳过验证
+
+```yaml
+# 例外 annotation
+metadata:
+  annotations:
+    cosign.sigstore.dev/skip: "true"
+```
+
+## 21.23 镜像 SBOM + 漏洞实战
+
+### Syft 生成 SBOM
+
+```bash
+# 安装
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+# 生成
+syft registry.company.com/web:v1.0.0 -o spdx-json > sbom.spdx.json
+syft registry.company.com/web:v1.0.0 -o cyclonedx-json
+
+# 附加到镜像
+cosign attach sbom --key cosign.key registry.company.com/web:v1.0.0 sbom.spdx.json
+```
+
+### Trivy Operator(运行中扫描)
+
+```bash
+helm repo add trivy-operator https://aquasecurity.github.io/trivy-operator
+helm install trivy-operator trivy-operator/trivy-operator \
+  --namespace trivy-system --create-namespace
+```
+
+```bash
+# 自动生成报告
+kubectl get vulnerabilityreports -A
+# NAMESPACE  NAME                    CRITICAL  HIGH  MEDIUM
+# prod       web-7d4f8b9c-xyz-pod   0         2     5
+
+# 详细
+kubectl describe vulnerabilityreport web-7d4f8b9c-xyz-pod -n prod
+```
+
+### CI 阻断策略
+
+```yaml
+# GitHub Actions
+- name: Trivy Scan
+  run: |
+    trivy image --exit-code 1 \
+      --severity CRITICAL,HIGH \
+      registry.company.com/web:${{ github.sha }}
+```
+
+## 21.24 Secrets 高级管理
+
+### External Secrets Operator(ESO)
+
+```bash
+helm install external-secrets external-secrets/external-secrets \
+  --namespace external-secrets --create-namespace
+```
+
+```yaml
+# 1. SecretStore(连接 Vault/AWS Secrets Manager)
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: vault-backend
+  namespace: prod
+spec:
+  provider:
+    vault:
+      server: "https://vault.company.com"
+      path: "secret"
+      version: "v2"
+      auth:
+        kubernetes:
+          mountPath: "kubernetes"
+          role: "prod-role"
+          serviceAccountRef:
+            name: eso-sa
+---
+# 2. ExternalSecret(拉取并同步为 K8s Secret)
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: db-credentials
+  namespace: prod
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: vault-backend
+    kind: SecretStore
+  target:
+    name: db-secret
+    creationPolicy: Owner
+  data:
+  - secretKey: DB_PASSWORD
+    remoteRef:
+      key: prod/db
+      property: password
+```
+
+### Vault Secrets Operator
+
+```bash
+helm install vault-secrets-operator hashicorp/vault-secrets-operator \
+  --namespace vault-secrets-operator-system --create-namespace
+```
+
+```yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: db-credentials
+spec:
+  vaultAuthRef: default
+  mount: kubernetes
+  path: secret/data/prod/db
+  type: kv-v2
+  refreshAfter: 60s
+  destination:
+    create: true
+    name: db-secret
+```
+
+## 21.25 K8s 1.30+ 新安全特性
+
+```text
+1. Pod 沙箱(Sandboxed Pods):
+   - gVisor / Kata Containers
+   - 隔离 syscall,减少攻击面
+   
+2. 用户命名空间(userns):
+   - Pod 用独立 UID 范围
+   - 容器逃逸不影响主机
+   
+3. Pod Resources Subresource GA:
+   - /status 子资源分离
+   - 防止竞态
+   
+4. AppArmor GA:
+   - 配置文件级权限
+   
+5. 安全上下文默认化(PSA):
+   - 命名空间默认限制
+```
+
+### 用户命名空间(userns)实战
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: userns-pod
+spec:
+  hostUsers: false  # K8s 1.28+ 启用用户命名空间
+  securityContext:
+    sysctls:
+    - name: kernel.unprivileged_userns_clone
+      value: "1"
+  containers:
+  - name: app
+    image: nginx
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+```
+
+### gVisor 沙箱
+
+```yaml
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: gvisor
+handler: runsc
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sandboxed
+spec:
+  runtimeClassName: gvisor
+  containers:
+  - name: app
+    image: nginx
+```
+
+## 21.26 专家清单(终极版)
+
+### 镜像层
+- [ ] 镜像用 distroless/chainguard
+- [ ] CI 中 Trivy 扫描,CRITICAL 阻断
+- [ ] cosign 签名所有生产镜像
+- [ ] SBOM 生成 + 签名 + 验证
+- [ ] K8s 准入验证签名
+
+### 运行时
+- [ ] Falco(eBPF)+ Falcosidekick
+- [ ] Tetragon(可选,Falco 替代)
+- [ ] 沙箱(gVisor/Kata)用于不可信工作负载
+- [ ] 用户命名空间(K8s 1.28+)
+
+### 凭证/加密
+- [ ] etcd KMS 加密
+- [ ] External Secrets + Vault
+- [ ] 自动轮换
+
+### 监控/响应
+- [ ] Falco → SIEM/告警
+- [ ] 异常进程/网络/文件
+- [ ] 战时响应 Runbook
+- [ ] 红蓝对抗演练
+
+## 21.27 本章小结(终极版)
+
+- 4C 安全模型贯穿始终
+- **Falco** = 运行时安全(规则驱动)
+- **cosign** = 镜像签名(供应链)
+- **External Secrets** = 凭证管理
+- **沙箱** = 终极防御(gVisor/Kata)
+- 安全 = 持续过程,需演练

@@ -221,31 +221,129 @@ Singletons 库让 GHC 也能部分支持:
 -- 模式匹配 toSing 间接作出值相关断言
 ```
 
-## 16.6 思考题
+## 16.6 类型级编程:DataKinds 与 Peano
+
+把数字提升为类型,长度编码进类型:
+
+```haskell
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE KindSignatures #-}
+
+-- 1. 自然数类型
+data Nat = Z | S Nat
+
+-- 2. 长度编码的 vector
+data Vec (n :: Nat) a where
+  VNil  :: Vec 'Z a
+  VCons :: a -> Vec n a -> Vec ('S n) a
+
+-- 3. 安全 head
+vhead :: Vec ('S n) a -> a
+vhead (VCons x _) = x
+-- vhead VNil 编译失败! (无法构造 Vec 'Z)
+
+-- 4. 长度加法(类型级)
+type family Add (m :: Nat) (n :: Nat) :: Nat where
+  Add 'Z     n = n
+  Add ('S m) n = 'S (Add m n)
+```
+
+这是 Dependent Haskell 的"折中版本": 类型可由类型计算,但不可由值计算。
+
+## 16.7 DerivingVia 与 GeneralizedNewtypeDeriving
+
+```haskell
+{-# LANGUAGE DerivingVia #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE StandaloneDeriving #-}
+
+-- 1. GeneralizedNewtypeDeriving: 从内部类型"借"实例
+newtype Email = Email String
+  deriving newtype (Show, Eq, IsString)
+  -- 内部是 String, 自动获得 String 的 IsString
+  -- 现在: "alice@example.com" :: Email 是合法的
+
+-- 2. DerivingVia: 通过中间类型派生
+newtype Age = Age Int
+  deriving newtype (Show)
+
+-- 通过 Semigroup/Monoid 实例的"代理"
+newtype SumInt = SumInt { unSumInt :: Int }
+  deriving newtype (Show)
+
+-- Sum 是 Monoid, 借它给 SumInt
+instance Semigroup SumInt where
+  (<>) = coerce ( (<>) :: Sum Int -> Sum Int -> Sum Int )
+  -- SumInt 现在是 Semigroup
+```
+
+### 16.7.1 实战: UserId / UserEmail 类型化
+
+```haskell
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DerivingVia #-}
+
+newtype UserId = UserId Int
+  deriving newtype (Show, Eq, Ord, Num, Enum, FromJSON, ToJSON)
+-- 内部 Int, 但不可与 Int 混用
+
+getUser :: UserId -> IO User
+getUser (UserId n) = fetch n
+-- 不会传错参数
+```
+
+这是 FP 工程中"用类型防止 bug"的核心模式: **让非法状态不可表达**。
+
+## 16.8 ConstraintKinds: 把约束当 kind
+
+```haskell
+{-# LANGUAGE ConstraintKinds #-}
+import Data.Kind (Constraint)
+
+-- 把"约束"提升为一等类型
+type Showable a = (Show a, Eq a)  -- 这是 Constraint kind
+
+-- 用于 type family
+type family OnlyShow (c :: Constraint) :: Constraint where
+  OnlyShow Show = ()
+  OnlyShow _    = (() :: Constraint)
+```
+
+实战: 复杂约束的简写。
+
+## 16.9 思考题
 
 1. 用 GADT 写一个"类型化链表",元素类型由构造子决定。
 2. 写出类型族 `Eithers :: [Type] -> Type`, 把类型列表 fold 成 Either 的嵌套。
 3. 解释 `runST :: (forall s. ST s a) -> a` 为何需要 `forall s` 在参数内。
 4. `Proxy :: Proxy a` 是什么用法?
 5. 写出 list 上 `foldr :: (a -> b -> b) -> b -> [a] -> b` 的 foldl 形式。
+6. 用 DataKinds 写一个 `Vec 3 Int` 类型,确保只有 3 个元素的 vector 能构造。
+7. 用 DerivingVia 写一个 `UserId newtype`,使其不与 `Int` 混用但保留 Int 的算术。
 
-## 16.7 关键扩展
+## 16.10 关键扩展
 
 ```
-GADTs            Generalised ADT
-TypeFamilies     类型级函数
-RankNTypes       rank-2+ 多态
-KindSignatures   注解 * -> *
-ConstraintKinds  类型类约束作为 kind
-QuantifiedConstraints  等价约束
+GADTs                       Generalised ADT
+TypeFamilies                类型级函数
+RankNTypes                  rank-2+ 多态
+KindSignatures              注解 * -> *
+ConstraintKinds             类型类约束作为 kind
+QuantifiedConstraints       等价约束
+DataKinds                   把 data constructor 提升为 type
+DerivingVia                 通过中间类型派生
+GeneralizedNewtypeDeriving  newtype 继承底层实例
 ```
 
-## 16.8 小结
+## 16.11 小结
 
 - GADT: 构造子可自由指定结果类型。
 - Type Family: 类型级函数。
 - Rank-N: 多态函数嵌套。
 - HKT: 类型构造子的参数化。
 - 依赖类型: 类型依赖值,Agda/Idris 完备支持。
+- **DataKinds**: 类型级数字 / 长度编码,运行时为 0 开销。
+- **DerivingVia / GNTD**: 借实例的两种方式,简化 newtype 编写。
+- **ConstraintKinds**: 约束作为一等类型。
 
 下一章:性能与严格性。

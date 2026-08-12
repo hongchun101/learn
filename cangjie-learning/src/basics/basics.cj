@@ -5,7 +5,7 @@
 // =============================================================================
 
 package cangjie_learning.basics
-import std.collection.*
+
 
 // 顶层常量
 public const PI: Float64 = 3.14159265358979
@@ -29,7 +29,8 @@ public func basicsDemo(): Unit {
 
     // 类型推导
     let inferred = "仓颉"
-    let inferredInt = 100
+    let inferredInt: Int64 = 100
+    println("类型推导 Int: ${inferredInt}")
 
     println("不可变值: ${immutable}")
     println("可变值: ${mutable}")
@@ -53,16 +54,16 @@ public func basicsDemo(): Unit {
     let greeting = "你好, ${name}! 数字: ${1 + 2}"
     println(greeting)
 
-    // ----- 控制流 -----
-    let sign = if (intVal > 0) {
+    // ----- 控制流：使用变量避免编译期折叠 -----
+    let v = globalCounter * 7 + intVal
+    let sign = if (v > 0) {
         "正数"
-    } else if (intVal < 0) {
+    } else if (v < 0) {
         "负数"
     } else {
         "零"
     }
-    println("sign = ${sign}")
-
+    println("符号: ${sign}")
     // ----- 循环 -----
     var sum: Int64 = 0
     var i = 1

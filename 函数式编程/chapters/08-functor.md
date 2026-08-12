@@ -47,7 +47,7 @@ instance Functor Maybe where
 
 instance Functor (Either e) where
   fmap _ (Left e)  = Left e
-  fmap f (Right a) = Right (f f a)
+  fmap f (Right a) = Right (f a)
 ```
 
 ### 8.2.2 infix 语法
@@ -77,8 +77,8 @@ infixl 4 <$>
 -- 错的实现: 在 fmap 里偷偷加东西
 instance Functor Maybe where
   fmap _ Nothing  = Nothing
-  fmap f (Just x) = Just (f x) ++ Just x  -- 错误!
--- 编译通过, 但 quickCheck 立即找到反例
+  fmap f (Just x) = Just (f x, x)   -- 偷偷加了一个旧值
+-- 编译通过, 但 quickCheck 立即找到反例(identity 律)
 ```
 
 QuickCheck 测试:
@@ -207,12 +207,12 @@ data F = F Int  -- 没有类型参数, 无法做 Functor
 ```
 
 ### 8.7.3 违反律
-
 ```haskell
--- 错误: 把 Null 视为 Nothing
+-- 错误: 偷偷丢弃信息
 instance Functor Maybe where
-  fmap f Nothing  = Nothing
-  fmap f (Just x) = Just (f x) `seq` Nothing  -- 违反律!
+  fmap _ Nothing  = Nothing
+  fmap f (Just _) = Nothing   -- 把值丢了!违反 identity 律
+-- 编译通过, 但 quickCheck 立即找到反例
 ```
 
 **律是 hard constraint**——违反律的类型不应是 Functor。
@@ -243,17 +243,9 @@ Applicative  ─ 保应用
 Monad        ─ 保绑定
 ```
 
-## 8.10 思考题
 
-1. 证明 `(->) r` 满足 Functor 律。
-2. 写 `data Box a = Box a` 的 Functor。
-3. 给 `data Pair a = Pair a a` 写 Functor。
-4. 写 `data Tree a = Tip | Node a (Tree a) (Tree a)` 的 Functor。
-5. 解释 `fmap` 与函数复合 `(.)` 的关系。
+## 8.10 小结
 
-## 8.11 小结
-
-- Functor = "有内部形状的类型,对内部做映射" 的抽象。
 - 两条律 (`fmap id = id`, `fmap (f . g) = fmap f . fmap g`) 是 definitional。
 - 范畴论里,Functor 是保持结构和复合的态射。
 - 实践里,`<$>` 是 `fmap` 的中缀语法糖。

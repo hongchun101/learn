@@ -13,8 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint . --ext .ts,.tsx",
-    "format": "prettier --write .",
+    "lint": "eslint .",
     "format:check": "prettier --check .",
     "start:examples": "tsx src/01-basics/index.ts",
     "clean": "rm -rf dist coverage .tsbuildinfo"

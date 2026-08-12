@@ -296,6 +296,81 @@ data List a = Nil | Cons a (List a)
 
 ADT = 初代数(余极限的特例)。
 
+### 13.8.3 F-Algebra: 把递归写为范畴论对象
+
+对函子 $F$, **F-代数**是 pair $(A, f: F(A) \to A)$。直观: $F$ 是"一层结构", $f$ 是"折叠一层结构"的方式。
+
+**初始代数**是**唯一一个**从 $1$ 出发到所有 F-代数的态射:
+
+$$
+\text{Init}(F) = (Fix\ F, \text{in}) \quad \text{其中} \quad \text{in}: F(\text{Fix}\ F) \to \text{Fix}\ F
+$$
+
+Haskell 实现:
+
+```haskell
+newtype Fix f = Fix { unFix :: f (Fix f) }
+
+-- 初始代数的同构
+inF :: Functor f => f (Fix f) -> Fix f
+inF = Fix
+
+outF :: Functor f => Fix f -> f (Fix f)
+outF = unFix
+```
+
+**catamorphism** = 初始代数到任意 F-代数的唯一态射:
+
+```haskell
+cata :: Functor f => (f a -> a) -> Fix f -> a
+cata alg = alg . fmap (cata alg) . outF
+```
+
+### 13.8.4 Lambek 引理
+
+>**Lambek 引理**: 初始代数的 $\text{in}$ 是同构。
+即 $\text{out} \circ \text{in} = \text{id}_{F(\text{Fix}\ F)}$。
+
+这给递归类型一种**"自指同构"** 的语义: 展开 + 折叠 = 自己。
+
+### 13.8.5 F-Coalgebra
+
+对偶地, **F-余代数**是 $(A, f: A \to F(A))$。"展开"一步。
+
+**最终余代数**对应"无限展开" (如 `Stream`):
+
+```haskell
+data StreamF a r = ConsF a r
+  deriving Functor
+
+-- Stream a = Fix (StreamF a) 是初始代数
+-- 但"无限 stream"是 StreamF a 的最终余代数 (coinductive)
+```
+
+**anamorphism** = 任意 F-余代数到最终余代数的态射:
+
+```haskell
+ana :: Functor f => (a -> f a) -> a -> Fix f
+ana coalg = inF . fmap (ana coalg) . coalg
+```
+
+### 13.8.6 Hylomorphism
+
+hylo = cata + ana: 展开 + 折叠 = 编译器
+
+```haskell
+hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
+hylo alg coalg = cata alg . ana coalg
+```
+
+**fusion law**: hylo 内的中间结构可被消除(如果 alg 与 coalg 配合):
+
+$$
+\text{cata}\ alg \circ \text{ana}\ coalg = \text{cata}\ alg' \quad \text{当 alg 与 coalg 配对时}
+$$
+
+这是 deforestation 优化的理论基础。
+
 ## 13.9 思考题
 
 1. 证明 $(\textbf{Set}, \times, 1)$ 是对称幺半范畴。
@@ -310,6 +385,7 @@ ADT = 初代数(余极限的特例)。
 - 函子: 范畴之间的映射,保结构。
 - 自然变换: 函子之间的态射,保分量。
 - 极限/余极限: 通用结构(积/余积/指数/初代数)。
+- F-代数 / F-余代数: 递归与共递归的代数化(cata / ana / hylo)。
 - 伴随: 两个函子之间的"等价"。
 - Yoneda: 函子由其"可命态射" 决定。
 

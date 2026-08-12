@@ -1,0 +1,124 @@
+package com.learning.`18_functional_patterns`.v2
+
+/**
+ * M18 —— 函数式模式(Scala 2 版)。
+ *
+ * 不依赖 cats,纯 stdlib 实现:
+ *   - Functor(Option)
+ *   - Monad(Option, Either, List)
+ *   - Traverse
+ *   - Monoid
+ *   - State(用函数)
+ *   - Reader(用 curry)
+ */
+object FunctionalPatterns {
+
+  // -------------------------------------------------------------------------
+  // 1) Monoid
+  // -------------------------------------------------------------------------
+  trait Monoid[A] {
+    def empty: A
+    def combine(x: A, y: A): A
+  }
+
+  object Monoid {
+    implicit val intMonoid: Monoid[Int]    = new Monoid[Int] { def empty = 0; def combine(a: Int, b: Int) = a + b }
+    implicit val stringMonoid: Monoid[String] = new Monoid[String] { def empty = ""; def combine(a: String, b: String) = a + b }
+    implicit def listMonoid[A]: Monoid[List[A]] = new Monoid[List[A]] { def empty = Nil; def combine(a: List[A], b: List[A]) = a ++ b }
+  }
+
+  def combineAll[A: Monoid](xs: List[A]): A = {
+    val M = implicitly[Monoid[A]]
+    xs.foldLeft(M.empty)(M.combine)
+  }
+
+  // -------------------------------------------------------------------------
+  // 2) Functor(在 Option 上)
+  // -------------------------------------------------------------------------
+  trait Functor[F[_]] {
+    def map[A, B](fa: F[A])(f: A => B): F[B]
+  }
+
+  implicit val optionFunctor: Functor[Option] = new Functor[Option] {
+    def map[A, B](fa: Option[A])(f: A => B): Option[B] = fa.map(f)
+  }
+
+  // -------------------------------------------------------------------------
+  // 3) traverse 手动实现
+  // -------------------------------------------------------------------------
+  def traverse[F[_], A, B](xs: List[A])(f: A => F[B])(implicit F: Functor[F]): F[List[B]] =
+    xs.foldRight[F[List[B]]](F.map(/* pure */ ???)(_ => Nil)) { (a, acc) =>
+      // 注意:简化版,假设 F 是 Monad
+      ???
+    }
+
+  // 简化版:用 Either 做示例
+  def eitherTraverse[A, B, E](xs: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
+    xs.foldRight[Either[E, List[B]]](Right(Nil)) { (a, acc) =>
+      for {
+        b  <- f(a)
+        bs <- acc
+      } yield b :: bs
+    }
+
+  // -------------------------------------------------------------------------
+  // 4) sequence
+  // -------------------------------------------------------------------------
+  def eitherSequence[E, A](xs: List[Either[E, A]]): Either[E, List[A]] =
+    eitherTraverse(xs)(identity)
+
+  // -------------------------------------------------------------------------
+  // 5) State 模拟
+  // -------------------------------------------------------------------------
+  case class State[S, A](run: S => (S, A))
+
+  object State {
+    def apply[S, A](run: S => (S, A)): State[S, A] = new State(run)
+
+    def pure[S, A](a: A): State[S, A] = State(s => (s, a))
+
+    def get[S]: State[S, S] = State(s => (s, s))
+    def set[S](s: S): State[S, Unit] = State(_ => (s, ()))
+  }
+
+  // -------------------------------------------------------------------------
+  // 6) Reader 模拟(用 curry)
+  // -------------------------------------------------------------------------
+  type Reader[R, A] = R => A
+
+  object Reader {
+    def pure[R, A](a: A): Reader[R, A] = _ => a
+    def ask[R]: Reader[R, R] = identity
+  }
+
+  // -------------------------------------------------------------------------
+  // 7) 实战:Monoid 求和
+  // -------------------------------------------------------------------------
+  def run(): Unit = {
+    import Monoid._
+
+    // Monoid
+    assert(combineAll(List(1, 2, 3, 4)) == 10)
+    assert(combineAll(List("a", "b", "c")) == "abc")
+    assert(combineAll(List(List(1), List(2), List(3))) == List(1, 2, 3))
+
+    // Functor
+    val o: Option[Int] = Some(42)
+    val mapped = optionFunctor.map(o)(_ + 1)
+    assert(mapped == Some(43))
+
+    // eitherTraverse
+    val r1: Either[String, List[Int]] =
+      eitherTraverse(List("1", "2", "3"))(s => scala.util.Try(s.toInt).toEither.left.map(_.getMessage))
+    assert(r1 == Right(List(1, 2, 3)))
+
+    val r2 = eitherTraverse(List("1", "x", "3"))(s => scala.util.Try(s.toInt).toEither.left.map(_.getMessage))
+    assert(r2.isLeft)
+
+    // sequence
+    assert(eitherSequence(List(Right(1), Right(2), Right(3))) == Right(List(1, 2, 3)))
+    assert(eitherSequence(List(Right(1), Left("e"), Right(3))).isLeft)
+
+    println("M18 Functional Patterns (Scala 2) demo passed.")
+  }
+}

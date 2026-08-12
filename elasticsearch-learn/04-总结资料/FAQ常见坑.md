@@ -656,7 +656,223 @@ PUT /index/_settings
 
 > 不推荐改,默认是 `request` 模式,保证 ACID-D 持久性。
 
+
 ---
+
+## 十三、专家级常见坑(50K 必备)
+
+### F51. dense_vector 写完搜不到?
+
+**原因**:
+
+- 没建 HNSW 索引(`index: false` 后再改 `true` 不会重建)。
+- `dims` 与写入向量维度不一致。
+- `similarity` 与距离计算方式不匹配(cosine 时向量应归一化)。
+
+**解决**:
+
+- 删索引重建 + 正确 mapping。
+- 验证 `dims` 等于 embedding 维度。
+- cosine 距离先 `l2_norm`。
+
+---
+
+### F52. RRF 召回率比单 BM25 还差?
+
+**原因**:
+
+- KNN 候选数 `num_candidates` 太小。
+- 业务 query 强 keyword 命中(型号、ID),向量召回"语义失真"。
+- RRF `window_size` 太小,只融合前几名。
+
+**解决**:
+
+- 增大 `num_candidates` 到 `k × 10-50`。
+- 强 keyword 走 filter,向量召回补语义。
+- 调整 `rank_constant`(常用 60),A/B 测试。
+
+---
+
+### F53. Painless `NullPointerException`?
+
+**原因**:doc_values 字段缺值时 `doc['x'].value` 抛 NPE。
+**解决**:`doc['x'].size() > 0 ? doc['x'].value : default` 兜底。
+
+---
+
+### F54. Runtime field 加完聚合报错?
+
+**原因**:runtime field 不能直接做 `terms` 聚合的高 cardinality(性能问题)。
+**解决**:高频聚合走 doc_values,先 `update_by_query` 写回,再 `properties` 加同名字段提升。
+
+---
+
+### F55. Java API Client 连接池耗尽?
+
+**原因**:同步阻塞,bulk 任务堆积。
+**解决**:
+
+- 改异步 + 限流(每实例并发 < 100)。
+- 调整 `RestClient` 的 `setMaxConnPerRoute` 与 `setMaxConnTotal`。
+- 加熔断器。
+
+---
+
+### F56. Reindex 后数据不一致?
+
+**原因**:reindex 期间源端写入未捕获。
+**解决**:
+
+- 暂停源写,或用 `version_type=external`。
+- reindex 完做增量 `update_by_query`(配合时间戳)。
+- 双写兜底 + 对账脚本。
+
+---
+
+### F57. 分片数算错,后期分裂很慢?
+
+**原因**:初期 shard 数太少,后期 split 索引成本高(双倍磁盘,CPU 翻倍)。
+**预防**:建索引就预留 2× 增长。改分片数本质 = reindex,无法在线调。
+
+---
+
+### F58. 节点 OOM,Kibana 显示空白?
+
+**原因**:master 节点兼任 data,大聚合内存爆。
+**解决**:
+
+- master 独立部署,只跑 `node.roles: [master]`。
+- 大聚合限流 `search.max_open_scroll_context`。
+- 加 heap dump 排查大对象。
+
+---
+
+### F59. CCR follower 一直 lag?
+
+**原因**:
+
+- 源端 translog 暴增(reindex / 大批量回写)。
+- 网络带宽打满。
+- follower 端 IO 不足。
+
+**解决**:
+
+- 大操作期间 `POST /_ccr/<idx>/_pause` 暂停。
+- 调大 `ccr.indices.recovery.max_bytes_per_sec`。
+- follower 用 SSD。
+
+---
+
+### F60. search_after 翻页重复?
+
+**原因**:翻页过程中 sort 字段值有重复(常见 `timestamp` 同毫秒)。
+**解决**:
+
+- 加唯一字段到 sort:`["@timestamp", "_id"]`。
+- 用 PIT 保证一致快照。
+
+---
+
+### F61. 数据流无法 update_by_query?
+
+**原因**:Data Stream 不支持 update by query 直写。
+**解决**:
+
+- `_update_by_query` 需要先 unfollow 转成普通 index。
+- 或者在 ingest pipeline 中处理字段改写。
+
+---
+
+### F62. ES 进程被 Linux OOM killer?
+
+**原因**:节点 memory cgroup 限制;或宿主机内存吃紧。
+**解决**:
+
+- JVM heap 不超过物理内存 50%。
+- `vm.overcommit_memory=1`。
+- 给 ES 节点 cgroup 留 1.5x 物理内存额度。
+
+---
+
+### F63. snapshot restore 报 shard size 错?
+
+**原因**:源/目标 Lucene 版本不兼容。
+**解决**:源目标 ES 主版本号一致;**7.x ↔ 8.x 不能直接跨版本 restore**。
+
+---
+
+### F64. ILM 在多节点时,卡在 warm 阶段?
+
+**原因**:没有 `node.roles: [data_warm]` 节点,或 `box_type` tag 不匹配。
+**解决**:
+
+- 部署分角色节点。
+- `cluster.routing.allocation.require.box_type: warm`。
+
+---
+
+### F65. forcemerge 后写入变慢?
+
+**原因**:把写入路径优化打散(原 segment 数少,小写入要 re-segment)。
+**预防**:forcemerge 只用于静态/历史索引,生产热数据绝不 forcemerge。
+
+---
+
+### F66. 查询 P99 突然飙升,监控无异常?
+
+**排查**:
+
+- `/_tasks?actions=*search*&detailed=true` 看长任务。
+- 慢日志,找 P99 变慢时间段的具体 query。
+- `profile=true` 抽样。
+- GC 日志(`jstat -gcutil <pid> 1s`)。
+- 磁盘 IO(`iostat -x 1`)。
+
+---
+
+### F67. ES + Kafka 消费,offset 推进但数据丢失?
+
+**原因**:bulk 部分失败未捕获,程序继续推进 offset。
+**解决**:
+
+- bulk 后遍历 `items`,error 项入死信队列。
+- 死信消费完成后再推进 offset。
+- 监控:bulk 失败率 / 死信队列长度。
+
+---
+
+### F68. ES 跨集群 join 报错?
+
+**原因**:不同 ES 主版本,跨集群搜索版本不匹配。
+**解决**:CCS 跨主版本会有限制(7.x ↔ 8.x 部分兼容),严格保持同主版本。
+
+---
+
+### F69. ES 安全开启后,Java 客户端连接拒绝?
+
+**原因**:SSL context 没配;证书不受信。
+**解决**:
+
+- `setSSLContext(sslContext)`。
+- `setHttpClientConfigCallback(b -> b.setDefaultCredentialsProvider(credsProvider))`。
+- 用公司 CA 签发的证书,或 `verification_mode: certificate`。
+
+---
+
+### F70. 生产 ES 怎么定监控告警阈值?
+
+**经验值**:
+
+- `jvm.mem.heap_used_percent > 75%` 警告,> 90% 紧急。
+- `disk.used_percent > 70%` 警告(默认 watermark 85% 偏激进)。
+- `unassigned_shards > 0` 持续 5 min P1。
+- `cluster.status != green` P0。
+- `indexing.index_failed > 0` P0。
+- P99 latency 相比基线 +50% P2。
+- 阈值要 **基于基线** 调整,不要拍脑袋。
+
+---
+
 
 ## 写在最后
 

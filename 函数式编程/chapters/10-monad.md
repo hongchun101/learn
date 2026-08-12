@@ -184,6 +184,49 @@ prop_rightUnit m = m >>= return == m
 prop_assoc m f g = ((m >>= f) >>= g) == (m >>= (\x -> f x >>= g))
 ```
 
+### 10.4.3 律的证明草图(以 `Maybe` 为例)
+
+**左单位**: `return a >>= f = Just a >>= f = f a` ✓
+
+**右单位**: 分两种情况
+- `Nothing >>= return = Nothing` ✓
+- `Just x >>= return = Just x` ✓
+
+**结合律**:
+- `Nothing` 分支两侧都到 `Nothing` ✓
+- `Just x` 分支:
+  - 左: `(Just x >>= f) >>= g = f x >>= g`
+  - 右: `Just x >>= (\y -> f y >>= g) = (\y -> f y >>= g) x = f x >>= g` ✓
+
+### 10.4.4 非律实例的反例
+
+**反例 1: 顺序错乱的列表 Monad**:
+```haskell
+-- 错误: 改变顺序的 Monad 实例
+instance Monad [] where
+  return x = [x]
+  xs >>= f = reverse [y | x <- xs, y <- f x]  -- 加了 reverse
+-- 验证: [1, 2] >>= (\x -> [x, -x]) = [-1, 1, -2, 2]
+-- 但 [(1, 2)] >>= (\x -> [x, -x]) = [1, -1, 2, -2]
+-- 结合律: ([1] >>= const [1,2]) >>= const [3,4] = [1, 2, 3, 4]
+--       != [1] >>= (\x -> const [1,2] x >>= const [3,4]) = [3, 4, 1, 2]
+-- 破坏结合律!
+```
+
+**反例 2: 偷偷"忘记忆"的 Monad**:
+```haskell
+-- 错误: Monad 律要求保留信息
+newtype Forgetful a = Forgetful Int
+instance Monad Forgetful where
+  return _ = Forgetful 0
+  Forgetful x >>= _ = Forgetful (x + 1)  -- 每次都加 1
+-- return 1 >>= id = Forgetful 0, 但 id 1 = Forgetful 1, 不等
+-- 破坏左单位!
+```
+
+这些反例说明: 律不是"自然"的,需要小心验证。QuickCheck 是发现这类 bug 的最佳工具。
+
+
 ## 10.5 推导 Monad 应有
 
 ```haskell
@@ -252,9 +295,25 @@ instance Monad (Cont r) where
 
 ```haskell
 callCC :: ((a -> Cont r b) -> Cont r a) -> Cont r a
+callCC f = Cont $ \k -> runCont (f (\a -> Cont $ \_ -> k a)) k
 ```
 
-早期退出 / 跳转到标签。
+实战: 提前退出(模拟 break)
+
+```haskell
+import Control.Monad.Cont
+
+-- 用 callCC 跳出循环
+firstPositive :: [Int] -> Cont r (Maybe Int)
+firstPositive xs = callCC $ \break -> do
+  forM_ xs $ \x ->
+    when (x > 0) $ break (Just x)   -- 跳到 break
+  return Nothing
+
+-- 经典例子: 异常
+safeDivC :: Int -> Int -> Cont r (Either String Int)
+safeDivC _ 0 = callCC $ \throw -> throw (Left "div by zero")
+```
 
 ## 10.9 范畴论视角
 

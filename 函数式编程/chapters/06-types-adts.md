@@ -284,12 +284,100 @@ toString Green = "green"
 
 编译器保证: 模式匹配必须覆盖所有构造子。**这是 FP 类型驱动编程的关键收益**。
 
+## 6.5A Parse, don't validate
+
+FP 工程的"圣杯模式": **不在运行时检查,在解析时保证**。
+
+```haskell
+-- 反例: 验证后扔掉信息
+processAge :: Int -> Either String Int
+processAge n
+  | n < 0     = Left "age negative"
+  | n > 150   = Left "age too large"
+  | otherwise = Right n
+
+-- 之后: 总要重新 validate
+-- renderAge :: Int -> String  -- 不知道是不是合法
+
+-- 正例: 用类型"记住"已验证
+newtype Age = Age Int
+  deriving (Show, Eq, Ord)
+
+mkAge :: Int -> Maybe Age
+mkAge n
+  | n < 0 || n > 150 = Nothing
+  | otherwise         = Just (Age n)
+
+-- 之后: Age 永远合法, 无需再检查
+renderAge :: Age -> String
+renderAge (Age n) = show n
+```
+
+**核心**: 解析函数返回的不是 `Int`,而是 `Age`。非法值在类型层就不可表达。
+
+### 6.5A.1 实战: NonEmpty / Positive / MkEmail
+
+```haskell
+-- 1. NonEmpty: 编译期保证至少一个
+import Data.List.NonEmpty (NonEmpty(..))
+
+head' :: NonEmpty a -> a
+head' (x :| _) = x
+-- head' :: [a] -> a 做不到! (空列表无 head)
+
+-- 2. Positive: 拒绝非正数
+newtype Positive = Positive Int
+  deriving (Show)
+
+mkPositive :: Int -> Maybe Positive
+mkPositive n | n > 0 = Just (Positive n)
+              | otherwise = Nothing
+
+-- 3. Email: 解析后保证格式合法
+newtype Email = Email String
+
+mkEmail :: String -> Maybe Email
+mkEmail s
+  | '@' `elem` s && not (null before) && not (null after) = Just (Email s)
+  | otherwise = Nothing
+  where (before, after) = break (== '@') s
+```
+
+### 6.5A.2 PatternSynonyms: 模式同义词
+
+```haskell
+{-# LANGUAGE PatternSynonyms #-}
+
+data Color = RGB Int Int Int | Named String
+
+-- 给一个清晰模式
+pattern Red   :: Color
+pattern Green :: Color
+pattern Blue  :: Color
+pattern Red   = RGB 255   0   0
+pattern Green = RGB 0   255   0
+pattern Blue  = RGB 0     0 255
+
+-- 双向:
+-- Red   = ... 作为值
+-- case x of Red -> ...  作为模式
+isPrimary :: Color -> Bool
+isPrimary Red   = True
+isPrimary Green = True
+isPrimary Blue  = True
+isPrimary _     = False
+```
+
+PatternSynonyms 是把"复杂 ADT"包装成"用户友好 API"的标准工具。
+
 ## 6.6 思考题
 
 1. 写一个 ADT `Shape = Circle Double | Rectangle Double Double | Triangle Double Double Double`,并写出 `area :: Shape -> Double`。
 2. 用 Algebra 视角推导 `Either a (b, c) ≅ (a, b) + (a, c)`(在范畴论里它们同构)。
 3. 写一个 `BinTree a` 的 ADT,实现 `size`、`height`、`mapTree`。
 4. 证明 `data List a = Nil | Cons a (List a)` 满足的同构: `List a ≅ 1 + a × List a`,因此 `|[a]|` 满足递归 $L = 1 + aL$,解得 $L = 1/(1-a)$(无 size 限制时)。
+5. 用 parse-don't-validate 写一个 `PhoneNumber` 类型,保证格式合法。
+6. 用 PatternSynonyms 简化 Ch3 的 Church 布尔。
 
 ## 6.7 小结
 
@@ -297,4 +385,6 @@ toString Green = "green"
 - H-M 类型系统让你无需写类型,即可获得强类型。
 - ADT = 代数视角建模。积类型 = 笛卡儿积, 和类型 = 标记联合。
 - 模式匹配 + 穷尽性检查 = 类型驱动编程的护航。
-- 下一章进入高阶函数 + 柯里化 + 函子之前的"绞肉机"——函数组合。
+- **Parse, don't validate**: 让非法状态在类型层不可表达。
+- **PatternSynonyms**: 给复杂 ADT 友好 API。
+

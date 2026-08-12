@@ -16,6 +16,8 @@ default = []
 test = "cjpm test"
 run = "cjpm run"
 
+[test]
+
 [profile.dev]
 opt-level = "none"
 debug = true

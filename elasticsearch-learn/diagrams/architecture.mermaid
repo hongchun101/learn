@@ -1,0 +1,64 @@
+# 01 整体架构 / Cluster Topology
+# 对应第 12 章、第 14 章、第 24 章
+
+flowchart TB
+  subgraph Client[客户端]
+    App[App / SDK]
+  end
+
+  subgraph Edge[Edge Layer]
+    LB[Load Balancer / Kibana]
+  end
+
+  subgraph Mgmt[Master 节点 ×3]
+    M1[m1: master]
+    M2[m2: master]
+    M3[m3: master]
+  end
+
+  subgraph Hot[Hot Tier - 热数据]
+    D1[d1: data + ingest + ml]
+    D2[d2: data + ingest + ml]
+  end
+
+  subgraph Warm[Warm Tier - 温数据]
+    D3[d3: data_warm]
+    D4[d4: data_warm]
+  end
+
+  subgraph Cold[Cold Tier - 冷数据]
+    D5[d5: data_cold]
+  end
+
+  subgraph Frozen[Frozen Tier - 冰数据]
+    S3[(S3 / Object Store)]
+  end
+
+  subgraph Cross[跨 Region 灾备]
+    RegionB[Region B Cluster + CCR]
+  end
+
+  App --> LB --> D1 & D2 & D3 & D4 & D5
+  M1 -. coord .-> D1 & D2 & D3
+  D1 -. ILM .-> D3 -. ILM .-> D5 -. searchable_snapshot .-> S3
+  D1 -. CCR .-> RegionB
+```
+
+```mermaid
+# 02 多租户架构 / Multi-tenancy
+flowchart LR
+  T1[Tenant A] -->|alias: tenant_a_*| A1[Index A1]
+  T2[Tenant B] -->|alias: tenant_b_*| B1[Index B1]
+  T3[Tenant C] -->|alias: tenant_c_*| C1[Index C1]
+  A1 & B1 & C1 --> DLS[Document / Field Level Security]
+  DLS --> Node[Shared Cluster]
+```
+
+```mermaid
+# 03 冷热分层(ILM)
+flowchart LR
+  A[Hot: SSD 1副本] -->|rollover 1d| B[Warm: SSD 1副本<br/>forcemerge]
+  B -->|7d| C[Cold: HDD 0副本]
+  C -->|30d| D[Frozen: S3 partial cache]
+  D -->|365d| E[Delete]
+```

@@ -1,0 +1,15 @@
+{
+  "name": "frontend-expert-capstone-portfolio",
+  "version": "1.0.0",
+  "description": "前端专家教程 - 入门项目示例(纯 HTML 作品集页)",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx --yes serve -l 3000 .",
+    "preview": "npx --yes serve -l 3000 .",
+    "build": "echo 'No build step for static HTML' && exit 0",
+    "lint:html": "npx --yes htmlhint index.html",
+    "lighthouse": "npx --yes lighthouse http://localhost:3000 --view --only-categories=performance,accessibility,seo,best-practices"
+  },
+  "keywords": ["frontend", "tutorial", "portfolio", "html", "css", "a11y"],
+  "license": "MIT"
+}

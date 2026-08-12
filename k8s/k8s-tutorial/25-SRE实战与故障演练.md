@@ -693,3 +693,518 @@ graph TD
 总投入: 100+ 小时
 回报: Kubernetes 专家
 ```
+## 25.20 LitmusChaos 实战
+
+### 架构
+
+```text
+ChaosOperator
+  ↓
+ChaosExperiment(实验定义: 杀 pod/网络延迟/IO 故障)
+  ↓
+ChaosEngine(实验调度: 在哪个 namespace 跑)
+  ↓
+ChaosResult(实验结果)
+```
+
+### 安装
+
+```bash
+helm repo add litmuschaos https://litmuschaos.github.io/charts
+helm install chaos litmuschaos/litmus \
+  --namespace litmus --create-namespace
+```
+
+### 实战:Pod 删除实验
+
+```yaml
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: pod-delete-engine
+  namespace: prod
+spec:
+  appinfo:
+    appns: prod
+    applabel: "app=web"
+    appkind: deployment
+  chaosServiceAccount: pod-delete-sa
+  experiments:
+  - name: pod-delete
+    spec:
+      components:
+        env:
+        - name: TOTAL_CHAOS_DURATION
+          value: "60"        # 跑 60s
+        - name: CHAOS_INTERVAL
+          value: "10"         # 每 10s 杀一个
+        - name: FORCE
+          value: "true"
+```
+
+```yaml
+# ServiceAccount + RBAC
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-delete-sa
+  namespace: prod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-delete-role
+  namespace: prod
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: [delete, get, list]
+```
+
+### 实战:网络延迟实验
+
+```yaml
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: network-latency
+  namespace: prod
+spec:
+  appinfo:
+    appns: prod
+    applabel: "app=api"
+    appkind: deployment
+  chaosServiceAccount: network-chaos-sa
+  experiments:
+  - name: pod-network-latency
+    spec:
+      components:
+        env:
+        - name: NETWORK_INTERFACE
+          value: "eth0"
+        - name: NETWORK_LATENCY
+          value: "2000"        # 2s
+        - name: TOTAL_CHAOS_DURATION
+          value: "300"
+        - name: PODS_AFFECTED_PERC
+          value: "50"          # 50% pod
+```
+
+### 实战:Node CPU 压力
+
+```yaml
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: node-cpu-hog
+spec:
+  experiments:
+  - name: node-cpu-hog
+    spec:
+      components:
+        env:
+        - name: NODE_CPU_CORE
+          value: "2"
+        - name: NODE_CPU_PERCENTAGE
+          value: "90"
+        - name: TOTAL_CHAOS_DURATION
+          value: "300"
+  nodeSelector:
+    nodes:
+    - node-1
+    - node-2
+```
+
+### Chaos Workflow(实验编排)
+
+```yaml
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosWorkflow
+metadata:
+  name: full-chaos-game-day
+  namespace: prod
+spec:
+  entry: experiment-1
+  templates:
+  - name: experiment-1
+    templateType: Experiment
+    arguments:
+      parameters:
+      - name: duration
+        value: "60"
+    chaosEngine: pod-delete-engine
+  - name: experiment-2
+    templateType: Experiment
+    dependencies:
+    - experiment-1
+    arguments:
+      parameters:
+      - name: latency
+        value: "1000"
+    chaosEngine: network-latency
+  - name: experiment-3
+    templateType: Experiment
+    dependencies:
+    - experiment-2
+    chaosEngine: stress-cpu
+```
+
+## 25.21 故障演练(Gameday)完整流程
+
+### 准备阶段(T-1 周)
+
+```text
+1. 选场景
+   - 节点宕机
+   - AZ 故障
+   - 数据库主从切换
+   - 镜像仓库不可用
+   - 网络分区
+   - 配置文件错误
+   - 流量激增 10x
+
+2. 准备回滚方案
+   - 文档化应急步骤
+   - 测试回滚
+
+3. 通知相关方
+   - 客服/支持团队
+   - 客户(大客户)
+   - 管理层
+
+4. 工具准备
+   - 战时频道建立
+   - 战时角色分配
+   - 状态页面预更新
+
+5. 准备可观测
+   - Dashboard
+   - 告警
+   - 录像(可选)
+```
+
+### 演练日(T 日)
+
+```text
+09:00 启动会议
+  - 介绍场景、目标
+  - 角色确认(IC, Ops, Comm)
+  - 终止条件明确
+
+09:30 战时角色就位
+  - 战时频道开启
+  - 监控开启
+
+10:00 注入故障
+  - 标记 T0
+  - 记录团队响应时间
+  
+10:00-12:00 观察
+  - 团队是否能发现问题
+  - 团队如何应对
+  - 工具是否有效
+  - 流程是否顺畅
+  
+12:00 终止
+  - 恢复系统
+  - 确认稳定
+  
+12:30 初步复盘
+  - 关键发现
+  - 改进行动
+```
+
+### 复盘阶段(T+1 周)
+
+```text
+1. 详细复盘
+   - 完整时间线
+   - 战时决策分析
+   - 工具/流程/人员问题
+  
+2. 改进措施
+   - 短期(立即): 文档、配置
+   - 中期(1-2 周): 工具、流程
+   - 长期(1-3 月): 架构、培训
+  
+3. 行动项跟踪
+   - 负责人
+   - 截止时间
+   - 完成度
+```
+
+### 常见场景演练清单
+
+```text
+季度必做:
+  □ 单 AZ 故障模拟
+  □ etcd leader 切换
+  □ 节点批量下线
+  □ 数据库主从切换
+
+半年必做:
+  □ 整个 region 故障
+  □ 镜像仓库不可用
+  □ DNS 故障
+  □ 证书过期
+  
+年度必做:
+  □ 灾备切换
+  □ 安全事件响应
+  □ 备份恢复演练
+```
+
+## 25.22 灾备(DR)演练
+
+### DR 等级
+
+| 等级 | RTO | RPO | 成本 |
+|------|-----|-----|------|
+| L0 备份 | 24h | 24h | 低 |
+| L1 温备 | 4h | 1h | 中 |
+| L2 热备 | 1h | 5min | 高 |
+| L3 多活 | 秒级 | 0 | 极高 |
+
+### 灾备切换剧本
+
+```markdown
+# 灾备切换剧本 - 主集群 → 备集群
+
+## 触发条件
+- 主集群 > 30 分钟不可用
+- 重大故障无法快速恢复
+- IC 决策
+
+## 切换步骤
+1. DNS 切换(TTL 已设 60s)
+   - 主域名 A 记录: 主集群 LB → 备集群 LB
+   
+2. 验证备集群健康
+   - kubectl get nodes
+   - 应用健康检查
+   - 数据一致性
+   
+3. 流量切到备集群
+   - 监控延迟、错误率
+   
+4. 通知客户
+   - 状态页更新
+   - 客服话术
+   
+5. 继续观察
+   - 30 分钟/1 小时/6 小时 check-in
+   
+6. 切回
+   - 主集群恢复
+   - 数据回写
+   - 流量切回主
+```
+
+### Velero 灾备实战
+
+```bash
+# 1. 备集群安装 Velero + 凭证
+velero install \
+  --provider aws \
+  --bucket prod-backup \
+  --prefix velero \
+  --secret-file ./credentials-velero \
+  --backup-location-config region=us-west-2
+
+# 2. 灾备恢复
+velero restore create --from-backup daily-20250120
+
+# 3. 验证
+kubectl get all -n prod
+curl http://prod-web.example.com
+```
+
+### 数据库 DR(关键!)
+
+```text
+MySQL/PostgreSQL:
+  - 主库写入 → binlog/WAL → 异步同步到备
+  - 备库提升为主: 切换 VIP, 改配置
+  - 应用: 数据源切到新主
+  - 时间: 5-30 分钟
+  
+Redis:
+  - 哨兵/Cluster 自动选主
+  - 应用感知新主(连接池刷新)
+  - 时间: 秒级
+  
+Kafka:
+  - MirrorMaker 2 / Confluent Replicator
+  - 双集群,应用双写
+  - 时间: 分钟级
+```
+
+## 25.23 战时工具集
+
+### 必备工具
+
+```bash
+# 1. kubectl 高级用法
+kubectl get events -A --sort-by=.lastTimestamp | tail -50
+kubectl top pods -A | sort -k 3 -nr | head
+kubectl get pods -A -o wide | grep -v Running
+
+# 2. nicolaka/netshoot
+kubectl run debug --rm -it --image=nicolaka/netshoot -- bash
+# 内含: nslookup, curl, tcpdump, nmap, iperf3, etc.
+
+# 3. 抓包
+kubectl debug pod/web-xxx -it --image=nicolaka/netshoot --target=app -- tcpdump -i eth0 -w /tmp/cap.pcap
+kubectl cp web-xxx:/tmp/cap.pcap .
+
+# 4. strace 进程
+kubectl debug pod/web-xxx -it --image=nicolaka/netshoot --target=app -- strace -p 1
+
+# 5. 节点调试
+kubectl debug node/node-1 -it --image=ubuntu
+```
+
+### 战时协作
+
+```bash
+# Slack
+/incident start "API 错误率飙升"
+# 自动:
+#  - 创建战时频道
+#  - 拉 IC/Ops/Comm
+#  - 时间线机器人启动
+
+# Zoom
+# 战时 bridge
+
+# PagerDuty / Opsgenie
+# 值班轮换,告警升级
+```
+
+## 25.24 故障复盘文化
+
+### 无指责复盘(Just Culture)
+
+```text
+传统:
+  "谁把 bug 推到生产了?"  → 找替罪羊
+  
+无指责:
+  "为什么系统允许 bug 推到生产?"
+  - 测试不充分?
+  - 灰度机制缺失?
+  - 回滚不够快?
+  - 监控告警不到位?
+```
+
+### 5 Whys(5 个为什么)
+
+```text
+问题: 订单服务挂了
+Why 1: 因为数据库连接耗尽
+Why 2: 因为没有连接泄漏监控
+Why 3: 因为没有标准库,各业务自封装
+Why 4: 因为没有团队规范
+Why 5: 因为没人在意(优先级低)
+```
+
+### 复盘文档模板
+
+```markdown
+# 故障复盘:2024-01-15 订单服务故障
+
+## TL;DR
+- 严重度: SEV-1
+- 影响: 1 小时, 30% 订单失败
+- 根因: DB 连接泄漏
+
+## 影响
+- 业务损失: ¥XX 万
+- 用户影响: 100 万
+- 持续: 1 小时
+
+## 时间线
+| 时间 | 事件 |
+|------|------|
+| 13:50 | 部署 v2.1 |
+| 14:00 | 告警(订单错误率 >5%) |
+| 14:02 | 战时频道建立 |
+| 14:05 | IC 介入 |
+| 14:10 | 定位: DB 连接耗尽 |
+| 14:15 | 决策: 回滚 |
+| 14:20 | 回滚完成 |
+| 14:25 | 监控恢复 |
+| 15:00 | 战时结束 |
+
+## 根因
+新代码在异常分支未释放 DB 连接,持续累积直到连接池满。
+
+## 触发
+  - 部署 v2.1
+  
+## 检测
+  - 告警系统在错误率 > 5% 时触发 ✓
+  - 监控 dashboard 正常 ✓
+  - 响应时间 5 分钟 ✓
+  
+## 响应
+  - 战时启动 2 分钟 ✓
+  - IC 介入 5 分钟 ✓
+  - 根因定位 10 分钟 ✓
+  - 回滚 5 分钟 ✓
+  
+## 恢复
+  - 完全恢复 1 小时 ✗(目标 30 分钟)
+  
+## 改进措施
+| # | 改进 | 负责人 | 截止 | 状态 |
+|---|------|--------|------|------|
+| 1 | 加连接池监控(可用率) | 张三 | 3 天 | 待办 |
+| 2 | 连接 close 在 finally 块 | 李四 | 1 天 | 待办 |
+| 3 | 灰度 5%→50%→100% | 王五 | 1 周 | 待办 |
+| 4 | 自动回滚(SLI 失败) | 赵六 | 2 周 | 待办 |
+| 5 | 增加连接泄漏单测 | 钱七 | 1 周 | 待办 |
+
+## 经验教训
+  - 测试不充分,异常路径未覆盖
+  - 灰度机制弱,直接全量
+  - 连接池监控缺失
+```
+
+## 25.25 专家清单(终极版)
+
+### SRE 基础
+- [ ] SLI/SLO 体系建立
+- [ ] Error Budget 跟踪
+- [ ] 战时流程演练
+
+### 可观测
+- [ ] 监控(RED + USE)
+- [ ] 日志(集中 + 结构化)
+- [ ] 追踪(全链路)
+
+### 故障演练
+- [ ] 季度 GameDay
+- [ ] LitmusChaos 部署
+- [ ] DR 切换演练(半年)
+
+### 故障响应
+- [ ] 战时角色 RACI
+- [ ] 工具链(Slack/PagerDuty)
+- [ ] Runbook 完善
+  
+### 复盘文化
+- [ ] 无指责复盘
+- [ ] 行动项跟踪
+- [ ] 定期 review
+
+## 25.26 本章小结(终极版)
+
+- **SLI/SLO/SLA** = SRE 三大支柱
+- **Error Budget** = 量化稳定性的工具
+- **战时流程**:Detec → Respond → Mitigate → RCA → Postmortem
+- **故障演练** = Chaos Mesh/LitmusChaos + GameDay
+- **灾备**:RPO/RTO 决定等级,定期演练
+- **复盘** = 无指责文化 + 5 Whys + 行动项跟踪
+- **工具**:Slack/PagerDuty/Statuspage/Chaos Mesh
+- 关键是:流程 + 工具 + 文化 + 持续演练

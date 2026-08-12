@@ -1,5 +1,5 @@
 import { describe, it, expectTypeOf } from 'vitest';
-import {
+import type {
   Concat,
   Get,
   Head,

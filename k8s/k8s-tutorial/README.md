@@ -15,6 +15,8 @@
 - Prometheus + Grafana + Loki + Tempo 可观测性
 - 备份恢复(etcd / Velero)、安全加固、Operator 开发
 - GitOps(ArgoCD / Flux)、性能调优、SRE 故障演练
+- **进阶(50K+)**:**eBPF**(Cilium/Pixie/Tetragon)、**渐进式交付**(Argo Rollouts/Flagger)、**策略即代码**(OPA/Kyverno)、**供应链安全**(SLSA/cosign)、**FinOps**(Kubecost/FinOps)、**多集群**(Cluster API/Karmada)、**AI 集成**(K8sGPT/vLLM/GPU)、**50K 面试真题**
+- **终极(50K+ 必备)**:**Gateway API** / **ExternalDNS** / **cert-manager** / **KubeRay** / **Volcano** / **Spark on K8s** / **Airflow** / **JupyterHub** / **KServe** / **Knative** / **KEDA 60+ scaler** / **Argo Events** / **Strimzi Kafka** / **Debezium CDC** / **OpenTelemetry** / **Tempo** / **Thanos** / **Mimir** / **Cortex** / **Sloth SLO** / **Pyroscope** / **Vector** / **K3s** / **KubeEdge** / **OpenYurt** / **Virtual Kubelet** / **kOps** / **kubespray** / **Backstage IDP** / **Crossplane** / **Skaffold** / **Tilt** / **Buildpacks** / **Telepresence** / **SOPS** / **Harbor** / **Dragonfly P2P** / **BuildKit** / **kaniko** / **SBOM**
 
 ## 目录
 
@@ -70,8 +72,33 @@
 
 | # | 主题 | 重点 |
 |---|------|------|
-| [24](./24-性能调优与生产检查清单.md) | 性能调优与生产清单 | 调优维度 / 容量规划 / 发布检查清单 |
-| [25](./25-SRE实战与故障演练.md) | SRE 实战与故障演练 | SLO/SLI / Chaos Engineering / 故障复盘 |
+| [24](./24-性能调优与生产检查清单.md) | 性能调优与生产清单 | 调优维度 / 容量规划 / 发布检查清单 / pprof / 火焰图 / bpftrace |
+| [25](./25-SRE实战与故障演练.md) | SRE 实战与故障演练 | SLO/SLI / Chaos Engineering / LitmusChaos / DR 演练 / 战时复盘 |
+
+### 专家扩展篇(50K 进阶)
+
+| # | 主题 | 重点 |
+|---|------|------|
+| [26](./26-eBPF深度与可观测性.md) | eBPF 与可观测性 | Cilium / Hubble / Pixie / Tetragon / bpftrace / 内核态安全 |
+| [27](./27-渐进式交付Argo-Rollouts-Flagger.md) | 渐进式交付 | Argo Rollouts / Flagger / 金丝雀分析 / 蓝绿 / A/B |
+| [28](./28-策略即代码OPA-Kyverno.md) | 策略即代码 | OPA / Gatekeeper / Kyverno / ValidatingAdmissionPolicy |
+| [29](./29-供应链安全SLSA-sigstore-cosign.md) | 供应链安全 | SLSA / sigstore / cosign / SBOM / Trivy / Tekton Chains |
+| [30](./30-成本优化与FinOps.md) | 成本优化与 FinOps | Kubecost / OpenCost / VPA / Spot / Karpenter / 节点池 |
+| [31](./31-多集群管理Cluster-API.md) | 多集群管理 | Cluster API / Karmada / Rancher / Submariner / DR |
+| [32](./32-AI与K8s集成.md) | AI 与 K8s | K8sGPT / kubectl-ai / BotKube / GPU / Kubeflow / vLLM |
+| [33](./33-认证与面试50K真题.md) | 认证与 50K 面试 | CKA/CKAD/CKS / 50K 真题 / 学习路径 / 薪资谈判 |
+
+### 进阶扩展篇(50K+ 必备)
+
+| # | 主题 | 重点 |
+|---|------|------|
+| [34](./34-Gateway-API-ExternalDNS-Cert-Manager.md) | Gateway API/ExternalDNS/Cert-Manager | Gateway API 角色分离 / cert-manager ACME / ExternalDNS / Reloader / MetalLB BGP |
+| [35](./35-大数据与AI工作负载.md) | 大数据 / AI 工作负载 | KubeRay / Volcano (Gang Scheduling) / Spark on K8s / Airflow / JupyterHub / KServe |
+| [36](./36-Serverless与事件驱动.md) | Serverless 与事件驱动 | Knative / KEDA 60+ scaler / Argo Events / Strimzi Kafka / Debezium CDC |
+| [37](./37-可观测性全链路.md) | 可观测性全链路 | OpenTelemetry / Tempo / Thanos / Mimir / Cortex / Sloth SLO / Pyroscope / Vector |
+| [38](./38-边缘计算与多云.md) | 边缘计算与多云 | K3s / K0s / KubeEdge / OpenYurt / Virtual Kubelet / kOps / kubespray |
+| [39](./39-开发者体验与平台工程.md) | 开发者体验与平台工程 | Backstage IDP / Crossplane / Skaffold / Tilt / Buildpacks / Telepresence / SOPS |
+| [40](./40-镜像仓库与镜像分发.md) | 镜像仓库与镜像分发 | Harbor / Dragonfly P2P / BuildKit / kaniko / SBOM / 不可变 tag |
 
 ## 学习路径
 
@@ -97,7 +124,16 @@ graph LR
   R --> S[20-21. 生产]
   S --> T[22. Operator]
   T --> U[23. GitOps]
-  U --> V[24-25. SRE]
+  U --> V[24-25. 调优/SRE]
+  V --> W[26. eBPF]
+  W --> X[27-28. 渐进/策略]
+  X --> Y[29-30. 供应链/FinOps]
+  Y --> Z[31-32. 多集群/AI]
+  Z --> AA[33. 50K]
+  AA --> AB[34-36. 网关/数据/Serverless]
+  AB --> AC[37-38. 可观测/边缘]
+  AC --> AD[39-40. 平台/镜像]
+  AD --> AE[专家毕业]
 ```
 
 | 阶段 | 文档 | 学完能 |
@@ -108,7 +144,96 @@ graph LR
 | 生产 | 17-23 | 完整可观测体系 + GitOps + Operator |
 | 专家 | 24-25 | 性能调优 + SRE 故障演练 + 容量规划 |
 
+### 50K 进阶(0 → 50K 月薪)
+
+| 阶段 | 文档 | 学完能 | 预期月薪 |
+|------|------|--------|---------|
+| 入门(0-6 月) | 01-11 | 部署/运维 K8s 集群,熟练 kubectl | 10-20K |
+| 进阶(6-12 月) | 12-23 | 完整可观测 + GitOps + Operator | 20-30K |
+| 高级(12-24 月) | 24-31 | 多集群 + 成本 + 供应链 + DR 演练 | 30-45K |
+| 专家(24+ 月) | 32-33 | AI 集成 + 50K 面试 | 45-60K+ |
+
+### 认证路线(强烈推荐)
+
+```text
+运维路线:   KCNA → CKA → CKS
+开发路线:   KCNA → CKAD → CKA → CKS
+安全方向:   KCNA → CKA → CKS + Kyverno/Cert-manager 深入
+架构方向:   KCNA → CKA + 多云/多集群经验
+```
+
+### 终极(50K+ 必备工具清单)
+
+| 类别 | 工具 |
+|------|------|
+| **网关/入口** | Gateway API(Envoy Gateway/Istio/Cilium)、ExternalDNS、cert-manager(Let's Encrypt/Vault)、Reloader、MetalLB(BGP/L2) |
+| **数据/AI/ML** | KubeRay、Volcano(Gang Scheduling)、Spark on K8s、Airflow、Apache Spark Operator、JupyterHub、KServe、Kubeflow Pipelines、Trino、Iceberg |
+| **Serverless/事件** | Knative Serving、KEDA 60+ scalers、Argo Events、CloudEvents、Strimzi Kafka、Debezium CDC、Argo Workflows |
+| **可观测性** | OpenTelemetry SDK/Collector、Tempo、Jaeger、Thanos、Cortex、Mimir、Sloth SLO、Pyroscope、Vector、Parca、Inspektor Gadget |
+| **边缘/多云** | K3s、K0s、KubeEdge、OpenYurt、Virtual Kubelet、Cluster API、kOps、kubespray、Submariner、Skupper |
+| **开发者体验** | Backstage、Crossplane、Skaffold、Tilt、Buildpacks(Kpack/pack)、Telepresence、SOPS、Sealed Secrets、ArgoCD Image Updater |
+| **镜像仓库/分发** | Harbor、Dragonfly P2P、Kraken、BuildKit、kaniko、cosign、syft、Trivy、Distroless/Chainguard |
+| **eBPF** | Cilium、Hubble、Pixie、Tetragon、bpftrace、Inspektor Gadget、Parca、Calico eBPF dataplane |
+| **CI/CD/构建** | Tekton、Argo Workflows、Jenkins X、Buildpacks、Kaniko、Drone、Spinnaker |
+| **服务网格** | Istio、Linkerd、Consul Connect、App Mesh、Cilium Service Mesh |
+| **Serverless GPU/AI** | KubeRay、vLLM、KServe、MLflow、Feast、Vector Databases |
+| **安全深度** | Falco、Tetragon、Tracee、Connaisseur、Kyverno、OPA Gatekeeper、CIS Bench、Cilium Tetragon、gVisor、Kata Containers |
+| **存储/数据库** | Rook Ceph、MinIO、Longhorn、OpenEBS、Zalando Postgres、MySQL Operator、Strimzi、Redis Operator、MongoDB Operator、Vitess |
+| **多租户** | vcluster、Cluster API、HNC、hierarchical namespaces、kubefed(v2) |
+| **数据库 Operator** | Strimzi(Kafka)、Zalando(Postgres)、MySQL Operator、Percona、MongoDB、Redis、RabbitMQ、etcd、TiDB、Vitess、ClickHouse、TimescaleDB、Cassandra、MinIO、SeaweedFS |
+
+## 学完本教程
+
+| **数据库 Operator** | Strimzi(Kafka)、Zalando(Postgres)、MySQL Operator、Percona、MongoDB、Redis、RabbitMQ、etcd、TiDB、Vitess、ClickHouse、TimescaleDB、Cassandra、MinIO、SeaweedFS |
+
+### 终极(50K+) 学习路径
+
+```text
+Stage 1 (40+ 章): 入门 → 专家 (1-2 年)
+Stage 2 (33 章): 50K 基础 (3-6 月)
+Stage 3 (34-40 章): 50K+ 扩展工具链 (持续)
+
+必备实战(终极专家):
+  1. 用 Cluster API 部署 3 region 集群
+  2. 部署 Backstage IDP,开发者自助服务
+  3. 用 KubeRay 跑 LLM 训练(K8sGPT 分析 + KServe 推理)
+  4. 用 Volcano 跑 Spark 大数据流水线
+  5. 用 Karpenter + Spot 节省 50% 成本
+  6. 用 OpenTelemetry + Mimir + Tempo 统一可观测
+  7. 用 ArgoCD Image Updater + 渐进式交付
+  8. 用 Crossplane 让开发者自助申请 RDS
+  9. 用 Dragonfly 加速 200 节点镜像分发
+  10. 用 Knative 0-1 副本处理突发流量
+  11. 用 LitmusChaos 季度 GameDay
+  12. 主导 1 次跨 region DR 切换演练
+```
+- [ ] 完整可观测体系(Prom + Graf + Loki + Tempo)
+- [ ] GitOps(ArgoCD)+ 渐进式交付(Argo Rollouts)落地
+- [ ] 写 1+ 个 Operator/CRD
+- [ ] eBPF/Cilium 替代 iptables
+- [ ] 多集群多区域架构
+- [ ] 主导故障复盘 + 混沌演练
+- [ ] 成本优化 30%+
+- [ ] CNCF 贡献(加分)
+
+### 完整 40 章总结
+
+```text
+基础篇 (01-05):  架构 / kubectl / Pod / Deployment / Label
+核心篇 (06-11):  Service / Ingress / Config / 存储 / StatefulSet / DaemonSet&Job
+调度篇 (12-16):  调度 / HPA / RBAC / 网络 / 资源(含 Karpenter 深入)
+可观测 (17-19):  监控 / 日志 / 排错
+生产篇 (20-23):  HA / 安全 / Operator / GitOps
+专家篇 (24-25):  调优 / SRE
+扩展篇 (26-33): eBPF / 渐进交付 / 策略 / 供应链 / FinOps / 多集群 / AI / 50K 面试
+终极篇 (34-40): Gateway API / 数据 AI / Serverless / 可观测全链路 / 边缘多云 / 平台工程 / 镜像分发
+
+总投入: 300+ 小时
+回报: Kubernetes 终极专家(50K-80K 月薪)
+```
+
 ## 速查表(收藏)
+
 
 ### kubectl 必记
 
@@ -266,6 +391,21 @@ labels:
 - [ ] 跑一次 chaos 实验(杀 pod/网络分区)
 - [ ] 写一份故障复盘文档
 
+### 50K 专家扩展清单
+
+- [ ] 部署 Cilium 替代 kube-proxy(用 Hubble 排网络)
+- [ ] 用 Argo Rollouts 做金丝雀(AnalysisTemplate)
+- [ ] 部署 Kyverno 写 5+ 策略(资源/镜像/label)
+- [ ] cosign 签名所有生产镜像,K8s 准入验证
+- [ ] 装 Kubecost,优化集群成本 30%+
+- [ ] 部署 Cluster API 管理 2+ 集群
+- [ ] 用 K8sGPT/kubectl-ai 加速排错
+- [ ] 主导一次 GameDay(用 LitmusChaos)
+- [ ] 实施一次 DR 切换演练
+- [ ] 培训新人 / 写一篇技术博客
+- [ ] CKA + CKS 认证
+- [ ] CNCF 项目贡献(可选,加分)
+
 ## 进阶阅读
 
 - [官方文档](https://kubernetes.io/zh-cn/docs/)
@@ -275,3 +415,41 @@ labels:
 - [CKA 考试大纲](https://github.com/cncf/curriculum)
 - [Kubernetes Patterns](https://k8spatterns.io/)
 - [Production-Grade Container Build](https://github.com/GoogleContainerTools/distroless)
+
+## 50K 面试准备(必看)
+
+完整 30 道 50K 面试真题 + 答案,见 [33 章](./33-认证与面试50K真题.md)。
+
+**核心题**:
+1. Pod 一直 Pending,如何排查?
+2. HPA 公式是什么?扩容失败常见原因?
+3. K8s 网络模型要求?CNI 工作原理?
+4. eBPF 在 K8s 中的应用场景?
+5. 多集群架构如何设计(Active-Passive/Active-Active)?
+6. 镜像签名验证流程(SLSA/cosign)?
+7. 渐进式交付 vs 传统部署?
+8. 数据库要不要上 K8s?
+9. 集群从 100 扩到 1000 节点,主要挑战?
+10. FinOps 优化手段有哪些?
+
+## 学完本教程
+
+```text
+基础篇 (01-05):  架构 / kubectl / Pod / Deployment / Label
+核心篇 (06-11):  Service / Ingress / Config / 存储 / StatefulSet / DaemonSet&Job
+调度篇 (12-16):  调度 / HPA / RBAC / 网络 / 资源
+可观测 (17-19):  监控 / 日志 / 排错
+生产篇 (20-23):  HA / 安全 / Operator / GitOps
+专家篇 (24-25):  调优 / SRE
+专家扩展 (26-33): eBPF / 渐进式交付 / 策略 / 供应链 / FinOps / 多集群 / AI / 50K 面试
+
+总投入: 200+ 小时
+回报: Kubernetes 专家(50K 月薪)
+```
+
+**下一步**:
+- 实战 > 看书(用 minikube/kind 跑)
+- 主导项目(100+ 节点生产集群)
+- CKA + CKS 认证
+- 培训/分享/贡献
+- 持续学习(K8s 一直在变)

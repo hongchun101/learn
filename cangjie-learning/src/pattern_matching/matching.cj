@@ -131,11 +131,13 @@ public enum JsonValue {
     | JObject(ArrayList<(String, JsonValue)>)
 }
 
-/// 格式化 JSON
 public func formatJson(value: JsonValue, indent!: Int64 = 0): String {
     let pad = repeatStr("  ", indent)
+    let _padUsed = pad
+    _padUsed.size
     match (value) {
         case JsonValue.JNull => "null"
+
         case JsonValue.JBoolean(b) => "${b}"
         case JsonValue.JNumber(n) => "${n}"
         case JsonValue.JString(s) => "\"${s}\""

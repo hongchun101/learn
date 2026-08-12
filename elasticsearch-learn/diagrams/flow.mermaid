@@ -1,0 +1,85 @@
+# 01 搜索请求生命周期 - 第 12 章
+sequenceDiagram
+  participant App
+  participant Coord
+  participant Shard1
+  participant Shard2
+  participant Shard3
+  App->>Coord: POST /idx/_search
+  Coord->>Coord: parse + rewrite
+  Coord->>Shard1: search request
+  Coord->>Shard2: search request
+  Coord->>Shard3: search request
+  Shard1-->>Coord: top 10 (local)
+  Shard2-->>Coord: top 10 (local)
+  Shard3-->>Coord: top 10 (local)
+  Coord->>Coord: merge + sort + pagination
+  Coord-->>App: final hits
+```
+
+```mermaid
+# 02 Master 选举 - 第 12 章
+sequenceDiagram
+  participant N1
+  participant N2
+  participant N3
+  Note over N1,N3: N1 当前 master 失联
+  N2->>N3: preVote
+  N3-->>N2: ok
+  N2->>N2: bump term, become candidate
+  N2->>N3: vote request
+  N3-->>N2: granted
+  N2-->>N1,N3: elected as master
+```
+
+```mermaid
+# 03 Reindex 双写切换 - 第 22 章
+flowchart LR
+  A[V1 alias write] -->|reindex| B[V2 build]
+  B -->|add alias read-only| C{Dual write?}
+  C -->|No, just reindex| D[Stop V1 write<br/>Switch alias]
+  C -->|Yes, zero-downtime| E[Keep V1 write<br/>Dual write V2]
+  E -->|backfill done| F[Switch alias write to V2]
+  F -->|stability check| G[Drop V1]
+```
+
+```mermaid
+# 04 慢查询 profile 流水线 - 第 7、9、10 章
+flowchart LR
+  Q[Query DSL] --> R[Rewrite]
+  R --> B[Build scorers]
+  B --> M[Match docs]
+  M --> S[Score / highlight / sort]
+  S --> F[Fetch _source]
+  F --> RES[Result]
+
+  Q -. profile .-> P[Profile Tree<br/>query / rewrite / score / fetch]
+  P --> RES
+```
+
+```mermaid
+# 05 CCR 数据流 - 第 13 章
+flowchart LR
+  subgraph Leader[Leader Cluster]
+    L1[Primary shard]
+    L2[Translog]
+  end
+  subgraph Follower[Follower Cluster]
+    F1[Follower shard]
+    F2[Remote buffer]
+  end
+  L1 -> L2 ->|ship| F2 -> F1
+  F1 -. lag .-> L1
+```
+
+```mermaid
+# 06 Vector + BM25 混合 (RRF) - 第 19 章
+flowchart LR
+  Q[Query] --> BM[BM25 match]
+  Q --> KV[KNN search]
+  BM --> RRF[RRF rank]
+  KV --> RRF
+  RRF --> Top[Top K]
+  Top --> OptionalRerank[Cross-Encoder Rerank]
+  OptionalRerank --> Final[Final Result]
+```

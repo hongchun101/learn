@@ -126,6 +126,55 @@ SLI、适应度函数、告警与复审触发器
 - **技术债（Technical Debt）**：当前设计/实现相对所需状态的缺口，使未来变更、验证或运行产生额外成本；可有意承担，也可在学习后无意识别。普通缺陷或功能缺失不因“质量差”自动成为技术债。
 - **架构治理（Architecture Governance）**：让决策权、原则、标准、例外、证据和复审形成闭环，而不是中央审批所有实现细节。
 
+### 4.4 职业发展与求职（参考第 9–10 章）
+
+- **P 序列 / 职级体系**：国内互联网大厂常见技术级别序列（P6/P7/P8/P9），不同公司具体定义和薪酬差异显著；外企有 L4–L7、IC1–IC6、61–63 等不同体系。"目标 50K 薪资"在不同公司可对应 P7、Staff Engineer 或 Senior Architect。
+- **影响力半径（Influence Radius）**：从团队（L1）到跨团队（L2）到业务线（L3）到全公司（L4）到行业（L5）的分级，用于评估 P7+ 架构师的成长阶段。
+- **Individual Contributor（IC）路径**：技术深度路径，不带人或带 1–3 人，影响力以"被引用、被采纳"为度量。
+- **Engineering Manager（EM）路径**：技术管理路径，承担业务 + 人员 + 战略责任。
+- **Tech Lead Manager（TLM）**：混合路径，兼具技术深度和团队管理。
+- **STAR-L 框架**：在 STAR（情境/任务/行动/结果）基础上增加 Learning（学习与反思），用于行为面试准备。
+- **RADIO 框架**：系统设计面试五阶段（Requirements → Architecture → Data/Deep dive → Identify tradeoffs → Operations）。
+- **决策证据化（Decision Evidence）**：简历与面试中用"业务目标 → 关键决策 → 量化结果 → 退出条件"代替单纯技术名词清单的方法。
+- **签字费（Sign-on Bonus）**：入职一次性奖金，是薪酬谈判的可变项。
+- **限制性股票单位（Restricted Stock Unit, RSU）**：4 年归属、离职失效的股票激励，按现价计税。
+
+### 4.5 现代架构主题（参考第 11 章）
+
+- **云原生（Cloud Native）**：CNCF 定义的技术集合（容器、编排、微服务、可观测性、声明式 API、自动化、服务网格、不可变基础设施）。
+- **Kubernetes（K8s）**：容器编排系统，提供调度、扩缩容、自愈能力。
+- **Service Mesh**：服务间通信的横切关注点治理层（Istio、Linkerd、Consul Connect），典型通过 Sidecar 代理实现。
+- **Sidecar 代理**：与服务实例同生命周期部署的辅助进程（如 Envoy），处理网络、可观测性、安全等横切关注点。
+- **GitOps**：以 Git 作为系统期望状态的单一事实来源，自动化 Agent 持续同步与运行时的偏差。
+- **内部开发者平台（Internal Developer Platform, IDP）**：把 DevOps 实践产品化为内部"开发者一站式入口"，代表案例 Spotify Backstage。
+- **Serverless / FaaS（Function as a Service）**：事件驱动、按调用付费、自动扩缩容的函数执行服务（AWS Lambda、Cloudflare Workers）；"恰好一次"由平台近似，业务仍需幂等。
+- **冷启动（Cold Start）**：FaaS/容器首次调用时初始化运行时导致的延迟尖峰。
+- **边缘计算（Edge Computing）**：把计算、存储延伸到靠近用户的位置（CDN 节点、运营商 MEC、IoT 边缘），用于降低延迟、节省带宽、满足数据驻留。
+- **WebAssembly（Wasm）**：可移植的二进制指令格式，沙箱执行、多语言、近原生性能；用于浏览器插件、边缘计算、多租户插件化平台。
+- **OpenTelemetry（OTel）**：CNCF 的可观测性标准，融合 OpenTracing 和 OpenCensus，统一 traces/metrics/logs 采集。
+- **Continuous Profiling**：持续收集生产环境的 profiling 数据（CPU、内存、锁、I/O），用于定位性能瓶颈。
+- **eBPF（extended Berkeley Packet Filter）**：在内核中安全运行沙箱程序，用于网络（Cilium）、安全（Falco）、可观测性（Pixie、bpftrace）。
+- **AIOps（AI for IT Operations）**：用机器学习改进运维（异常检测、告警聚合、根因分析、容量预测），是补充而非替代工程实践。
+- **Lakehouse**：在低成本对象存储上提供数据仓库式管理与查询能力的架构范式（Iceberg、Hudi、Delta Lake）。
+- **向量数据库（Vector Database）**：存储高维向量并支持相似度检索（KNN/ANN），用于 RAG、推荐召回、语义搜索（Pinecone、Milvus、Weaviate、Qdrant）。
+- **零信任（Zero Trust）**：NIST SP 800-207 定义的安全架构原则（永不信任、持续验证、最小权限、假设失陷）。
+- **机密计算（Confidential Computing）**：用硬件可信执行环境（TEE，如 Intel SGX、AMD SEV、ARM TrustZone）保护"使用中"的数据。
+- **后量子密码学（Post-Quantum Cryptography, PQC）**：抵抗量子计算攻击的密码学算法（NIST 已发布 ML-KEM、ML-DSA、SLH-DSA 标准）。
+
+### 4.6 行业垂直架构（参考第 12 章）
+
+- **多租户架构（Multi-Tenant Architecture）**：一个系统实例服务多个客户的架构模式，隔离级别从共享 DB+tenant_id 到独立 DB 不等。
+- **租户路由（Tenant Routing）**：按域名/路径/Header 识别租户并路由到对应租户上下文的机制。
+- **租户级 SLA / SLO**：按租户套餐分级承诺的可用性、性能目标。
+- **特征存储（Feature Store）**：统一管理 ML 特征（在线 KV + 离线数仓），保证训练-服务一致性（Feast、Tecton、阿里 PAI）。
+- **设备影子（Device Shadow）**：在 IoT 系统中记录设备的期望状态（Desired）和上报状态（Reported），用于离线同步和命令重放。
+- **OTA（Over-The-Air）升级**：IoT 设备固件远程升级机制，需支持分批灰度、断点续传、回滚。
+- **MQTT（Message Queuing Telemetry Transport）**：IoT 常用的轻量级发布-订阅消息协议，适合不稳定网络。
+- **CoAP（Constrained Application Protocol）**：IoT 资源受限设备使用的类 HTTP 协议，基于 UDP。
+- **实时音视频（Real-Time Communication, RTC）**：低延迟（< 300ms）的音视频通信技术，主流基于 WebRTC/SFU 架构。
+- **SFU（Selective Forwarding Unit）**：转发而非混流的媒体服务器，适合多人互动场景（Janus、Mediasoup、LiveKit）。
+- **跨境数据合规**：数据出境受法规约束（中国《数据出境安全评估办法》、欧盟 GDPR 等），需数据驻留、匿名化、本地化部署。
+
 ## 5. 可复用工作模板
 
 ### 5.1 一页式架构简报

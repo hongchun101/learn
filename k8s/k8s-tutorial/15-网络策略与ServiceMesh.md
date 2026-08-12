@@ -559,3 +559,313 @@ kubectl logs <pod> -c istio-proxy
 - Istio 用 VirtualService 切流量、AuthorizationPolicy 授权
 - mTLS + SA 级别的零信任
 - 多层防御:NetworkPolicy + Mesh + API Gateway + WAF
+## 15.17 专家级:Cilium 高级特性
+
+### Cilium Clusterwide Network Policy
+
+```yaml
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: cluster-default-deny
+spec:
+  endpointSelector: {}
+  ingress: []
+  egress:
+  - toEntities:
+    - "cluster"
+    - "world"
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: ANY
+      rules:
+        dns:
+        - matchPattern: "*"
+```
+
+### Cilium L7 Visibility 实战
+
+```yaml
+# 自动捕获 HTTP 协议元数据
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: api-l7
+spec:
+  endpointSelector:
+    matchLabels:
+      app: api
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        app: web
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+      rules:
+        http:
+        - method: "GET"
+          path: "/api/v1/.*"
+        - method: "POST"
+          path: "/api/v1/orders"
+        - method: "GET"
+          path: "/health"
+```
+
+```bash
+# Hubble 看到 L7 流量
+hubble observe --namespace prod -t l7
+# prod.api-xxx       → web-to-api-xxx  HTTP.GET /api/v1/users/123  200  5.2ms
+# prod.api-xxx       → web-to-api-xxx  HTTP.POST /api/v1/orders    201  12.3ms
+```
+
+## 15.18 Multus:多网卡(多网络)
+
+**场景**:Pod 需要多个网络接口(数据平面/管理平面分离、5G/电信场景)。
+
+```bash
+# 安装 Multus
+kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
+```
+
+### NetworkAttachmentDefinition
+
+```yaml
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: macvlan-conf
+  namespace: default
+spec:
+  config: '{
+    "type": "macvlan",
+    "master": "eth0",
+    "mode": "bridge",
+    "ipam": {
+      "type": "whereabouts",
+      "range": "192.168.1.0/24"
+    }
+  }'
+```
+
+### Pod 多网卡
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multus-pod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: macvlan-conf
+spec:
+  containers:
+  - name: app
+    image: alpine
+    command: ["/bin/sh", "-c", "ip addr; sleep 3600"]
+```
+
+**应用场景**:
+- 5G/电信:DU/CU 分离
+- DPDK/SR-IOV 高性能网络
+- 数据/管理平面隔离
+
+## 15.19 IPv6 双栈
+
+### K8s 1.21+ IPv4/IPv6 双栈
+
+```bash
+# kubeadm init 双栈
+kubeadm init --feature-gates=IPv6DualStack=true \
+  --service-dns-domain=cluster.local \
+  --pod-network-cidr=10.244.0.0/16,fd00::/48 \
+  --service-cidr=10.96.0.0/16,fd03::/112
+```
+
+```yaml
+# Service 双栈
+apiVersion: v1
+kind: Service
+metadata: { name: web }
+spec:
+  ipFamilies: [IPv4, IPv6]
+  ipFamilyPolicy: PreferDualStack
+  selector: { app: web }
+  ports:
+  - port: 80
+    targetPort: 80
+```
+
+```yaml
+# Pod IPv6
+apiVersion: v1
+kind: Pod
+metadata: { name: web }
+spec:
+  containers:
+  - name: web
+    image: nginx
+  - name: debug
+    image: busybox
+    ports:
+    - containerPort: 80
+  podIPs:
+  - ip: 10.244.1.5
+  - ip: fd00::1
+```
+
+### IPv6 实战注意
+
+```text
+问题:
+  - 部分应用不监听 IPv6
+  - 防火墙规则不全
+  - DNS AAAA 记录缺失
+  - 出口流量(IPv6 NAT 不需要)
+  
+解决:
+  - 应用显式监听 [::]
+  - 防火墙规则 IPv4+IPv6 都加
+  - CoreDNS 配 dual-stack
+  - 测试连通性: ping6 / curl -6
+```
+
+## 15.20 网络性能调优
+
+### MTU 优化
+
+```bash
+# 大 MTU 减少包数,提升吞吐
+# Cilium/Flannel/Canal 默认 1450(因 vxlan/overlay 损耗)
+# 直连路由模式可设 1500
+
+# 查看
+ip link show | grep mtu
+```
+
+### TCP 调优
+
+```yaml
+# sysctl
+net.core.somaxconn: 65535
+net.ipv4.tcp_max_syn_backlog: 65535
+net.ipv4.tcp_tw_reuse: 1
+net.core.rmem_max: 16777216
+net.core.wmem_max: 16777216
+```
+
+```yaml
+# Pod 内生效
+spec:
+  containers:
+  - name: app
+    securityContext:
+      sysctls:
+      - name: net.core.somaxconn
+        value: "65535"
+```
+
+### eBPF 绕过 iptables(Cilium)
+
+```yaml
+# Cilium 启用 eBPF host routing
+# 大幅减少 conntrack 开销
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+spec:
+  values:
+    bpf:
+      masquerading: true
+      hostRouting: true
+    kubeProxyReplacement: true
+```
+
+## 15.21 零信任网络架构
+
+```text
+传统边界安全:
+  防火墙 → 内部网络 → 信任所有
+  
+零信任:
+  - 永不信任,持续验证
+  - 每次请求都认证
+  - 最小权限
+  - 加密一切
+```
+
+### K8s 零信任实践
+
+```yaml
+# 1. mTLS 全网(Istio)
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT
+---
+# 2. SA 级授权
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: api-authz
+  namespace: prod
+spec:
+  selector:
+    matchLabels:
+      app: api
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/prod/sa/web-sa"]
+    to:
+    - operation:
+        methods: ["GET", "POST"]
+        paths: ["/api/v1/*"]
+---
+# 3. NetworkPolicy 边界
+# (见本章 15.4)
+---
+# 4. 镜像签名(Kyverno/cosign)
+# (见 29 章)
+```
+
+### SPIFFE/SPIRE:工作负载身份
+
+```bash
+# SPIRE - 颁发 SVID 给工作负载
+spire-server token generate -spiffeID spiffe://example.com/ns/prod/sa/api
+```
+
+**优势**:
+- Pod 身份与基础设施解耦
+- 跨集群统一身份
+- 替代静态凭证
+
+## 15.22 专家清单(完整)
+
+- [ ] 部署 Cilium 替代 iptables
+- [ ] 用 Hubble 排网络问题
+- [ ] 启用 Cilium L7 策略(关键服务)
+- [ ] Multus 多网卡场景(电信/5G)
+- [ ] IPv6 双栈规划
+- [ ] 网络性能调优(MTU/TCP/eBPF)
+- [ ] 零信任:mTLS + AuthorizationPolicy + SPIFFE
+- [ ] NetworkPolicy 自动化测试
+- [ ] Hubble 流量可视化
+- [ ] 定期 review 策略
+
+## 15.23 本章小结(完整)
+
+- **CNI** = K8s 网络基石(Calico/Cilium/Flannel)
+- **NetworkPolicy** = L3/L4 白名单(必须)
+- **Cilium** = eBPF 驱动,支持 L7 策略
+- **Service Mesh** = L7 能力(mTLS/可观测/流量)
+- **Istio** = 主流 Mesh,Linkerd 更轻量
+- **Multus** = 多网卡(高性能/电信场景)
+- **IPv6** = K8s 1.21+ 双栈
+- **零信任** = mTLS + SA 授权 + 镜像签名
+- 性能优化:eBPF host routing、MTU 调优、sysctl

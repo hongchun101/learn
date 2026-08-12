@@ -21,7 +21,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\basics",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_concurrency",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -30,7 +30,7 @@
           }
         }
       },
-      "fullName": "cangjie_learning.basics",
+      "fullName": "cangjie_learning.advanced_concurrency",
       "isMacroPackage": false,
       "output-type": "static",
       "compile-option": "",
@@ -41,17 +41,47 @@
       "requires": [],
       "std-requires": [
         {
+          "std.binary": [
+            "std.core"
+          ]
+        },
+        {
           "std.collection": [
             "std.core",
             "std.math"
           ]
         },
         {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
           "std.core": []
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
         },
         {
           "std.math": [
             "std.core"
+          ]
+        },
+        {
+          "std.sync": [
+            "std.core",
+            "std.time"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
           ]
         }
       ],
@@ -90,7 +120,65 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\concurrency",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\basics",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.basics",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.core": []
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\concurrency",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -159,7 +247,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\enums",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\enums",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -179,6 +267,64 @@
       "requires": [],
       "std-requires": [
         {
+          "std.core": []
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\examples",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.examples",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
           "std.collection": [
             "std.core",
             "std.math"
@@ -228,7 +374,65 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\functions",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\ffi_interop",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.ffi_interop",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.core": []
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\functions",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -248,18 +452,7 @@
       "requires": [],
       "std-requires": [
         {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
           "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
         }
       ],
       "c_libs": {},
@@ -297,7 +490,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\interfaces_traits",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\interfaces_traits",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -317,17 +510,107 @@
       "requires": [],
       "std-requires": [
         {
+          "std.core": []
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\io_filesystem",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.io_filesystem",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.binary": [
+            "std.core"
+          ]
+        },
+        {
           "std.collection": [
             "std.core",
             "std.math"
           ]
         },
         {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
           "std.core": []
+        },
+        {
+          "std.fs": [
+            "std.collection",
+            "std.core",
+            "std.io",
+            "std.time"
+          ]
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
         },
         {
           "std.math": [
             "std.core"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
           ]
         }
       ],
@@ -366,7 +649,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\lambdas",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\lambdas",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -435,7 +718,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\macros",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\macros",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -455,18 +738,7 @@
       "requires": [],
       "std-requires": [
         {
-          "std.collection": [
-            "std.core",
-            "std.math"
-          ]
-        },
-        {
           "std.core": []
-        },
-        {
-          "std.math": [
-            "std.core"
-          ]
         }
       ],
       "c_libs": {},
@@ -504,7 +776,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\operator_overloading",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\operator_overloading",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -562,7 +834,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\pattern_matching",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\pattern_matching",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -631,7 +903,182 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\structs_classes",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\reflection_macros",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.reflection_macros",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\regex_string",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.regex_string",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.binary": [
+            "std.core"
+          ]
+        },
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        },
+        {
+          "std.regex": [
+            "std.collection",
+            "std.core",
+            "std.sync"
+          ]
+        },
+        {
+          "std.sync": [
+            "std.core",
+            "std.time"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\structs_classes",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -700,7 +1147,100 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\advanced_types",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\time_datetime",
+              "features": [],
+              "product": true,
+              "configuredProduct": true,
+              "outputSuffix": ""
+            }
+          }
+        }
+      },
+      "fullName": "cangjie_learning.time_datetime",
+      "isMacroPackage": false,
+      "output-type": "static",
+      "compile-option": "",
+      "native-compile-option": "",
+      "customized-option": {},
+      "link-option": "",
+      "native-link-option": "",
+      "requires": [],
+      "std-requires": [
+        {
+          "std.binary": [
+            "std.core"
+          ]
+        },
+        {
+          "std.collection": [
+            "std.core",
+            "std.math"
+          ]
+        },
+        {
+          "std.convert": [
+            "std.core"
+          ]
+        },
+        {
+          "std.core": []
+        },
+        {
+          "std.io": [
+            "std.core"
+          ]
+        },
+        {
+          "std.math": [
+            "std.core"
+          ]
+        },
+        {
+          "std.time": [
+            "std.binary",
+            "std.collection",
+            "std.convert",
+            "std.core",
+            "std.io"
+          ]
+        }
+      ],
+      "c_libs": {},
+      "cross_c_libs": {},
+      "hasTestFiles": false,
+      "hasProdFiles": true,
+      "hasTestsInProdFiles": false,
+      "accessLevel": "public",
+      "features": [
+        "os.windows"
+      ],
+      "deducer": {
+        "features": [],
+        "mapping": {}
+      }
+    },
+    {
+      "rootPackageName": "cangjie_learning",
+      "modulePath": ".",
+      "packagePath": {
+        "isMultiplatform": false,
+        "sources": {
+          "roots": [
+            "src"
+          ],
+          "graph": {
+            "src": {
+              "indeg": [],
+              "outdeg": []
+            }
+          },
+          "toposort": [
+            "src"
+          ],
+          "data": {
+            "src": {
+              "sourceSetDir": "src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\advanced_types",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -771,7 +1311,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\collection_ops",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\collection_ops",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -842,7 +1382,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\error_handling",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\error_handling",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -913,7 +1453,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\extensions",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\extensions",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -984,7 +1524,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src\\generics",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src\\generics",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -1055,7 +1595,7 @@
           "data": {
             "src": {
               "sourceSetDir": "src",
-              "srcDir": "D:\\work\\project\\cangjie-learning\\src",
+              "srcDir": "D:\\work\\project\\learn\\cangjie-learning\\src",
               "features": [],
               "product": true,
               "configuredProduct": true,
@@ -1073,20 +1613,28 @@
       "link-option": "",
       "native-link-option": "",
       "requires": [
+        "cangjie_learning.advanced_concurrency",
         "cangjie_learning.advanced_types",
         "cangjie_learning.basics",
         "cangjie_learning.collection_ops",
         "cangjie_learning.concurrency",
         "cangjie_learning.enums",
         "cangjie_learning.error_handling",
+        "cangjie_learning.examples",
         "cangjie_learning.extensions",
+        "cangjie_learning.ffi_interop",
         "cangjie_learning.functions",
         "cangjie_learning.generics",
         "cangjie_learning.interfaces_traits",
+        "cangjie_learning.io_filesystem",
         "cangjie_learning.lambdas",
+        "cangjie_learning.macros",
         "cangjie_learning.operator_overloading",
         "cangjie_learning.pattern_matching",
-        "cangjie_learning.structs_classes"
+        "cangjie_learning.reflection_macros",
+        "cangjie_learning.regex_string",
+        "cangjie_learning.structs_classes",
+        "cangjie_learning.time_datetime"
       ],
       "std-requires": [
         {

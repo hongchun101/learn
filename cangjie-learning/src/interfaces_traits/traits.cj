@@ -7,7 +7,6 @@
 
 package cangjie_learning.interfaces_traits
 
-import std.collection.*
 
 /// 接口演示入口
 public func traitsDemo(): Unit {
@@ -31,9 +30,9 @@ public func traitsDemo(): Unit {
 
     let n: Int64 = 42
     println("42 是否偶数: ${n.isEven()}")
+    println("42 是否奇数: ${n.isOdd()}")
     println("42 平方: ${n.squared()}")
-
-    // ----- 接口组合 -----
+    println("42 限制在 [0,10]: ${n.clamped(min: 0, max: 10)}")
     let bird = Bird("麻雀")
     let swimmer = Duck("唐老鸭")
     let flyer = Duck("唐老鸭")

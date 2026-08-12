@@ -99,9 +99,15 @@ public class Channel<T> {
         if (queue.isEmpty()) {
             throw Exception("通道为空")
         }
-        // 返回第一个元素并清空（简化实现）
+        // FIFO: 取第一个元素并从队列中移除
         let v = queue[0]
-        queue = ArrayList<T>()
+        var newQ = ArrayList<T>()
+        var i: Int64 = 1
+        while (i < queue.size) {
+            newQ.add(queue[i])
+            i += 1
+        }
+        queue = newQ
         return v
     }
 

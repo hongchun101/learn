@@ -13,44 +13,52 @@ Monad 让 effect 有"形状"。但 Monad 的语义是"绑定",有些 effect 难�
 
 代数效应提供另一种抽象:**handler 调用影响,handler 解释如何响应**。
 
-## 15.2 形式
+代数效应可视为"带 handler 的 Free Monad"。这里用 Haskell 的 `Free` 实现:
 
 ### 15.2.1 操作签名
 
 ```haskell
-effect Choose a where
-  choose :: [a] -> a
+-- 1. 底函子: 每个操作一个构造子, 参数 = "剩余计算"
+data ChooseF next = ChooseF [Int] (Int -> next)
+  deriving Functor
 
-effect Throw e where
-  throw :: e -> a
+data ThrowF next = ThrowF String
+  deriving Functor
 
-effect State s where
-  get :: s
-  put :: s -> ()
+data StateF next = GetF (s -> next) | PutF s next
+  deriving Functor
 ```
 
 ### 15.2.2 effectful 计算
 
 ```haskell
-prog :: (Choose Int, Throw String) ()
+type Choose = Free ChooseF
+type Throw  = Free ThrowF
+
+prog :: Free ChooseF (Free ThrowF ())
 prog = do
-  x <- choose [1, 2, 3]
+  x <- liftF (ChooseF [1, 2, 3] id)
   if even x
-    then throw "even"
-    else return ()
+    then liftF (ThrowF "even")
+    else pure ()
 ```
 
 ### 15.2.3 handler
 
+handler 决定 effect 的"语义"。`ChooseF` 给出第一个, `ThrowF` 吞掉:
+
 ```haskell
-handleProg :: ()
-handleProg = handle prog
-  { choose xs = k (head xs)  -- 取第一个
-  , throw e  = k ()          -- 吞掉错误
-  }
+-- "deep handler" / "shallow handler" 都是 Free 折叠方式
+runChoose :: Free ChooseF a -> [a]
+runChoose (Pure a) = [a]
+runChoose (Free (ChooseF xs k)) = concat [runChoose (k x) | x <- xs]
+
+runThrow :: Free ThrowF a -> Maybe a
+runThrow (Pure a) = Just a
+runThrow (Free (ThrowF e)) = Nothing
 ```
 
-Handler 决定 effect 的"语义"。
+在 Eff/Koka 中,handler 是语法内建(更轻量);在 Haskell 中,我们把 handler 写成 Free 折叠函数。两者本质相同。
 
 ## 15.3 与 Monad 的对比
 

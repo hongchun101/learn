@@ -216,14 +216,38 @@ data Json = JNull
 
 ### 20.5.3 简易 Reducer
 
-```haskell
-foldl' :: (b -> a -> b) -> b -> [a] -> b
-foldl' f z []     = z
-foldl' f z (x:xs) = foldl' f (f z x) xs
+Reducer 模式 = 抽象 fold 的状态/步骤/终止:
 
--- 自定义 reducer
-data Reduce m a = Reduce { initState :: m, step :: m -> a -> m, done :: m -> a }
+```haskell
+-- 抽象的"reducer" 接口
+data Reduce m a = Reduce
+  { initState :: m           -- 初始状态
+  , step      :: m -> a -> m -- 单步更新
+  , done      :: m -> b      -- 终止到结果
+  }
+
+-- fold 看作 reducer
+asReduce :: Monoid m => Reduce m a
+asReduce = Reduce
+  { initState = mempty
+  , step      = mappend
+  , done      = id
+  }
+
+-- 跑 reducer
+runReduce :: Reduce m a -> [a] -> b
+runReduce r xs = done r (foldl' (step r) (initState r) xs)
+
+-- 实战: 词频统计 reducer
+wordCount :: Reduce (Map String Int) String
+wordCount = Reduce
+  { initState = Map.empty
+  , step      = \m w -> Map.insertWith (+) w 1 m
+  , done      = id
+  }
 ```
+
+完整可运行版本见 `code/Ch20/Reducer.hs`。
 
 ## 20.6 思考题
 
@@ -290,6 +314,100 @@ Closure (Ch20)
    实践 + 学习路径
 ```
 
+## 20.8A 生产工程:从理论到就业
+
+本节是给"马上要入职 FP 公司"的人准备的工程清单。
+### 20.8A.1 项目布局
+
+**cabal-project 布局**(标准):
+
+```
+my-project/
+├── cabal.project
+├── package.yaml            # hpack 推荐
+├── src/MyLib/
+│   ├── Core.hs
+│   ├── Internal.hs
+│   └── Types.hs
+├── app/Main.hs
+├── test/
+│   ├── Spec.hs
+│   └── Properties.hs
+├── bench/Bench.hs
+└── CHANGELOG.md
+```
+
+关键点: 库代码在 `src/MyLib/`,**不**含 `Main` 模块。用 `hpack` 写 `package.yaml` 比手写 `.cabal` 易维护。
+
+### 20.8A.2 错误处理策略
+
+```haskell
+-- 1. 局部失败: Maybe
+lookup :: k -> Map k v -> Maybe v
+
+-- 2. 带错误: Either String / ExceptT
+parseJson :: String -> Either String Json
+
+-- 3. 不可恢复: error / undefined (仅在不可能时)
+
+-- 4. IO 异常: safe-exceptions 包
+import Control.Exception.Safe
+tryAny (readFile "x") :: IO (Either SomeException String)
+```
+
+**生产规则**: 纯函数中**绝不**抛异常,所有错误用 `Maybe` / `Either` / `ExceptT`。
+
+### 20.8A.3 部分函数 vs. 总函数
+
+```haskell
+-- 错误: partial functions
+head [1,2,3]      -- 危险! 空列表运行时崩
+fromJust (Just 1) -- 危险! Nothing 时崩
+
+-- 正确: total functions
+head' :: NonEmpty a -> a
+listToNE :: [a] -> Maybe (NonEmpty a)
+```
+
+**生产标准**: `head` / `tail` / `fromJust` / `!!` 这些 partial 函数**禁止**出现在生产代码。
+
+### 20.8A.4 工具链
+
+```bash
+cabal install hlint            # 风格建议
+cabal install fourmolu         # 自动格式化
+cabal install stylish-haskell
+```
+
+### 20.8A.5 测试策略
+
+1. 单元: hspec / tasty
+2. 性质: QuickCheck / Hedgehog
+3. 黄金测试: tasty-golden
+4. 集成: HSpec + IO
+5. 性能: criterion
+
+### 20.8A.6 性能调优流程
+
+1. 先写正确,再写快速。
+2. 用 criterion 测量。
+3. 看 GHC Core (`-ddump-simpl`)。
+4. 加 pragma (`INLINE` / `SPECIALIZE` / `RULES`)。
+5. 用 strict data 与 `foldl'` 防 thunk。
+6. 必要时换数据结构 (Vector / Text)。
+
+### 20.8A.7 公司与岗位
+
+50K RMB 级别的 FP 岗位集中在:
+
+- **量化金融**: Jane Street (Scala/OCaml), 标准件, Two Sigma
+- **编译器/区块链**: IOG / IOHK (Haskell), Kadena
+- **Web3**: Well-Typed, Tweag, Serokell
+- **国内**: 蚂蚁链 (部分 Haskell), 字节跳动 FP 工具链团队, 平安科技
+- **远程**: Mercury, Hackage 上活跃的库作者
+
+这些岗位需要的不是"会用 map",而是能**用类型 + 律 + 范畴论** 设计**可推理**的工业级系统。
+
 ## 20.9 下一步
 
 1. **选一个项目**: 用 FP 重新写一个以前写过的小项目。
@@ -298,7 +416,6 @@ Closure (Ch20)
 4. **读论文**: Wadler / SPJ / Odersky 选一篇精读。
 5. **回到**: 写一个 free monad DSL, 一个 GADT 求值器, 一个 category-theoretic 库。
 
-## 20.10 最后一句话
 
 > *函数式编程不是关于 lambda calculus 或 monad,而是关于一种思维方式:程序是数学结构,不是动作序列。理解这一点,你就不是从命令式迁移,你已经站在了另一个范式里。*
 
