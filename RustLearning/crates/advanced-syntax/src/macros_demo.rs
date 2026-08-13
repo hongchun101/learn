@@ -28,14 +28,13 @@ pub mod proc_macro_derive_demo {
 
 /// 从一个由逗号分隔的列表构建 `Vec<T>`，允许末尾的逗号。
 #[macro_export]
+#[allow(clippy::vec_init_then_push)]
 macro_rules! vec_of {
     () => {
         ::std::vec::Vec::new()
     };
     ($($item:expr),+ $(,)?) => {{
-        let mut v = ::std::vec::Vec::new();
-        $(v.push($item);)+
-        v
+        ::std::vec![$($item),+]
     }};
 }
 

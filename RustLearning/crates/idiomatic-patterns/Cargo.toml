@@ -5,9 +5,9 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 description = "Patterns that showcase idiomatic Rust (RAII, lock-free structures, zero-copy parsing, etc.)."
-
 [lints]
 workspace = true
 
 [dependencies]
+thiserror = { workspace = true }
 winnow = { workspace = true }

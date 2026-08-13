@@ -15,6 +15,33 @@
 //   * Structured: TLV, KLV (SMPTE-style), Protobuf-style tag reader.
 // =============================================================================
 
+// -----------------------------------------------------------------------------
+// STUDY (read alongside docs/STUDY/ch02-encoding-wire.md)
+// -----------------------------------------------------------------------------
+// Prerequisites: Chapter 01.
+// Why it matters: a wire format is a contract. Once you commit to big- vs
+// little-endian, varint vs fixed, TLV vs Protobuf-style, you cannot change
+// it without breaking every deployment. This chapter teaches you to read
+// the contract and pick the right primitive for each field.
+// Key invariants:
+//   * Network order = big-endian. TCP, UDP, IP, DNS, TLS, HTTP, BGP, RADIUS
+//     are big-endian on the wire. USB, PCI, PCIe, most file systems are LE.
+//   * Protobuf sint32 uses zig-zag; signed LEB128 sign-extends in two's
+//     complement. Do not confuse them.
+//   * TLV length is the value length; the record is `type + length + value`.
+//   * BER length < 128 fits in one byte (short form); ≥ 128 uses long form
+//     with top 2 bits = 0b10.
+// Common pitfalls:
+//   * Mixing signed/unsigned varint encodings.
+//   * Confusing KLV (BER length) with TLV (fixed-width length).
+//   * Using `number` for u64 — JavaScript numbers are only safe up to 2^53.
+//   * Treating binary16 as if it were binary32; precision is 10 mantissa
+//     bits, not 23.
+// Interview-ready summary: I can encode any structured record in three
+// different wire formats, pick the right one for a workload, and decode
+// a Protobuf-style tag stream by hand.
+
+
 export {
   u16Be,
   u32Be,

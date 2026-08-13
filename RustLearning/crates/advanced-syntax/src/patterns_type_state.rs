@@ -174,7 +174,10 @@ mod tests {
 
     #[test]
     fn session_must_log_in_before_use() {
-        let sess = Session::<Unauthenticated> { user_id: 42, _token: Unauthenticated };
+        let sess = Session::<Unauthenticated> {
+            user_id: 42,
+            _token: Unauthenticated,
+        };
         let auth = Session::login(sess);
         assert_eq!(auth.user_id(), 42);
     }

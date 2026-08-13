@@ -33,7 +33,10 @@ impl<T> Buf<T> {
         // SAFETY：layout 非零，且我们立即拥有该分配。
         let raw = unsafe { alloc(layout) as *mut T };
         let nn = NonNull::new(raw).expect("alloc failure");
-        Self { ptr: nn, written: false }
+        Self {
+            ptr: nn,
+            written: false,
+        }
     }
 
     /// 使用 `value` 初始化该单元。若单元已被写入则会发生 panic。

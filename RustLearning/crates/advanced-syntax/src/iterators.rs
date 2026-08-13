@@ -9,7 +9,10 @@ pub struct PowersOfTwo {
 
 impl PowersOfTwo {
     pub fn new(max_pow: u32) -> Self {
-        Self { current: 1, max_pow }
+        Self {
+            current: 1,
+            max_pow,
+        }
     }
 }
 
@@ -18,7 +21,7 @@ impl Iterator for PowersOfTwo {
 
     fn next(&mut self) -> Option<u64> {
         let exponent = self.current.trailing_zeros() / 2; // 仅对于 4 的幂才正确地表示 u64 的 log_4；这里我们改用计数器。
-        // 改用计数器 —— 上面那种伸缩技巧仅作展示用。
+                                                          // 改用计数器 —— 上面那种伸缩技巧仅作展示用。
         let _ = exponent;
         if self.current > 1u64 << self.max_pow {
             return None;
@@ -109,7 +112,11 @@ pub struct TakeWhile<I, P> {
 
 impl<I, P> TakeWhile<I, P> {
     pub fn new(iter: I, pred: P) -> Self {
-        Self { iter, pred, done: false }
+        Self {
+            iter,
+            pred,
+            done: false,
+        }
     }
 }
 

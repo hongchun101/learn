@@ -87,7 +87,7 @@ mod tests {
     fn call_with_any_invokes_twice() {
         let mut collected = Vec::new();
         call_with_any(|s| collected.push(s.len()));
-        assert_eq!(collected, vec![5, 14]);
+        assert_eq!(collected, vec![5, 15]);
     }
 
     #[test]

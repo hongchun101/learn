@@ -9,25 +9,22 @@
 use std::sync::Mutex;
 
 /// 一个接受 `impl Fn` 的函数，针对闭包类型泛型化。
+/// 使用闭包逐块变换 `s`。闭包被依次以"前半段""后半段"为入参调用，
+/// 返回值会累积到结果 `String` 中。
+///
+/// 之所以要求 `FnMut` 是因为闭包会消费每次调用的输入；示例体现
+/// 了高阶函数在闭包上的泛型化方式。
 pub fn apply<F>(s: &mut String, mut f: F)
 where
     F: FnMut(&str) -> String,
 {
-    let mut buf = String::new();
-    while let Some(_) = Some(()) {
-        // 按引用从调用者那里取出片段。
-        if s.is_empty() {
-            break;
-        }
-        let half = s.split_off(s.len() / 2);
-        *s = f(s).clone();
-        buf.push_str(s);
-        *s = half;
-        if s.is_empty() {
-            break;
-        }
+    // 备份原内容后清空 `s`，让闭包可以原地往里追加。
+    let drained: String = std::mem::take(s);
+    // 演示方式：把字符串按 ASCII 空白切成多个片段，
+    // 用闭包逐个包装后再写回。
+    for piece in drained.split_whitespace() {
+        s.push_str(&f(piece));
     }
-    *s = buf;
 }
 
 /// 一个接受 `FnMut` 的函数（同时也满足 `Fn`）。
@@ -60,7 +57,10 @@ where
     F: FnMut(i32) -> i32,
 {
     pub fn new(initial: i32, func: F) -> Self {
-        Self { state: initial, func }
+        Self {
+            state: initial,
+            func,
+        }
     }
 
     pub fn step(&mut self) -> Option<i32> {
@@ -116,11 +116,10 @@ mod tests {
 
     #[test]
     fn apply_uses_fn_mut() {
-        let mut s = String::from("hello");
+        let mut s = String::from("hello world rust");
         apply(&mut s, |piece| format!("[{piece}]"));
-        // 我们不对具体的变更顺序做强断言（上面的辅助函数旨在以示例方式
-        // 讲解闭包类型的使用），只需验证类型可编译并能运行即可。
-        assert!(!s.is_empty());
+        // `apply` 按空白切分并用闭包包装每个片段，结果按顺序拼接。
+        assert_eq!(s, "[hello][world][rust]");
     }
 
     #[test]

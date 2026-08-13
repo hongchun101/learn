@@ -59,11 +59,7 @@ mod tests {
     #[test]
     fn accepts_unsized_refs() {
         // `fmt::Debug` 是 dyn 兼容的；这里对切片使用 `&[1, 2, 3]`。
-        let s = accept_unsized(
-            "x",
-            &[1, 2, 3],
-            &"a debuggable dyn",
-        );
+        let s = accept_unsized("x", &[1, 2, 3], &"a debuggable dyn");
         assert!(s.contains("debuggable"));
     }
 }

@@ -125,7 +125,11 @@ impl<'data> Future for SliceIndexFuture<'data> {
         }
         me.pending = true;
         cx.waker().wake_by_ref();
-        let idx = me.data.iter().position(|&b| b != 0).unwrap_or(me.data.len());
+        let idx = me
+            .data
+            .iter()
+            .position(|&b| b != 0)
+            .unwrap_or(me.data.len());
         let rest = &me.data[idx..];
         me.state = SliceState::Done(idx, rest);
         Poll::Ready(if rest.is_empty() { None } else { Some(rest) })

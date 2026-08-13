@@ -14,7 +14,11 @@ pub fn first_word(input: &str) -> &str {
 
 /// 双输入的生命周期省略：输出生命周期取两者中较短的那个。
 pub fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
-    if x.len() >= y.len() { x } else { y }
+    if x.len() >= y.len() {
+        x
+    } else {
+        y
+    }
 }
 
 /// `Cow` 是返回“借用或拥有”数据的经典示例。

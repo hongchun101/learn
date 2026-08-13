@@ -10,8 +10,7 @@ members = [
 
 [workspace.package]
 edition = "2021"
-rust-version = "1.75"
-authors = ["Rust Learning"]
+rust-version = "1.80"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 
@@ -37,10 +36,7 @@ cast_possible_wrap = "allow"
 cast_lossless = "allow"
 cast_sign_loss = "allow"
 similar_names = "allow"
-struct_excessive_bools = "allow"
-inline_always = "allow"
 default_numeric_fallback = "allow"
-no_effect_under_debug_assertion = "allow"
 needless_pass_by_value = "allow"
 
 [workspace.dependencies]

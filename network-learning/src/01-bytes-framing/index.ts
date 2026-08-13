@@ -18,6 +18,31 @@
 //     Reed-Solomon RS(7,3) over GF(2^3) — 2-byte error correction per codeword.
 // =============================================================================
 
+// -----------------------------------------------------------------------------
+// STUDY (read alongside docs/STUDY/ch01-bytes-framing.md)
+// -----------------------------------------------------------------------------
+// Prerequisites: none. This is the first chapter.
+// Why it matters: every later chapter is a sequence of bytes on a wire. If
+// you cannot read a hex dump you cannot debug a packet capture, decode an
+// RFC example, or implement a custom protocol. The bit, framing, and CRC
+// primitives here are the substrate for everything else.
+// Key invariants:
+//   * BitCursor reads MSB-first within each byte — same as the wire order.
+//   * CRC-32 (IEEE, poly 0xEDB88320 reflected) detects every single-bit
+//     error and any odd number of bit errors under 32 bits.
+//   * Hamming(7,4) corrects any single-bit error and detects any double-bit
+//     error (minimum distance 3).
+//   * RS(7,3) over GF(2^3) corrects up to 2 byte errors per 7-byte codeword.
+// Common pitfalls:
+//   * Off-by-one bit: readBits(12) is not readBits(8) + readBits(4).
+//   * Internet checksum is one's-complement; do not flip bits at the end.
+//   * TLV "length" is the value length, not the record length.
+//   * COBS encodes the payload only; the trailing 0x00 is the sentinel.
+// Interview-ready summary: I can wax a hex dump, name the framing family
+// (length-prefixed / delimiter / self-synchronizing), pick a CRC, and
+// correct a single-bit error by hand with Hamming.
+
+
 export {
   BitCursor,
   BitWriter,

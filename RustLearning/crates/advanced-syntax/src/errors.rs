@@ -53,7 +53,10 @@ impl AppError {
 
 pub fn parse_even(n: &str) -> Result<u32, AppError> {
     if n.is_empty() {
-        return Err(AppError::during("parse_even", DomainError::InvalidInput("empty".into())));
+        return Err(AppError::during(
+            "parse_even",
+            DomainError::InvalidInput("empty".into()),
+        ));
     }
     let value: u32 = n.parse().map_err(|_: std::num::ParseIntError| {
         AppError::during("parse_even", DomainError::InvalidInput(n.to_string()))
@@ -86,7 +89,10 @@ mod tests {
     #[test]
     fn into_conversion_works() {
         let app: AppError = DomainError::PermissionDenied.into();
-        assert!(matches!(app, AppError::Domain(DomainError::PermissionDenied)));
+        assert!(matches!(
+            app,
+            AppError::Domain(DomainError::PermissionDenied)
+        ));
     }
 
     #[test]

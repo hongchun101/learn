@@ -14,6 +14,7 @@ import { demo as ch09 } from '../src/09-clocks-ordering/index.js';
 import { demo as ch10 } from '../src/10-consensus/index.js';
 import { demo as ch11 } from '../src/11-replication-sharding/index.js';
 import { demo as ch12 } from '../src/12-advanced/index.js';
+import { demo as capstone } from '../src/capstone/index.js';
 
 const demos: Array<[string, () => void]> = [
   ['01 bytes & framing',       ch01],
@@ -28,6 +29,7 @@ const demos: Array<[string, () => void]> = [
   ['10 consensus',              ch10],
   ['11 replication & sharding', ch11],
   ['12 advanced',               ch12],
+  ['capstone',                  capstone],
 ];
 
 for (const [name, fn] of demos) {
